@@ -1,27 +1,25 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Chart } from "chart.js/auto";
-import { useEffect, useRef } from "react";
-import "./Retriever.css";
+import Sidebar from "../components/Sidebar";
+import "../css/page/Analyze.css";
 
-const ProgressBar = ({ label, percentage, color }) => {
-    return (
-        <div className="progress-bar-container">
-            <div className="progress-bar-label">
-                <span>{label}</span>
-                <span>{percentage}%</span>
-            </div>
-            <div className="progress-bar">
-                <div
-                    className="progress-bar-fill"
-                    style={{
-                        width: `${percentage}%`,
-                        backgroundColor: color,
-                    }}
-                ></div>
-            </div>
+const ProgressBar = ({ label, percentage, color }) => (
+    <div className="progress-bar-container">
+        <div className="progress-bar-label">
+            <span>{label}</span>
+            <span>{percentage}%</span>
         </div>
-    );
-};
+        <div className="progress-bar">
+            <div
+                className="progress-bar-fill"
+                style={{
+                    width: `${percentage}%`,
+                    backgroundColor: color,
+                }}
+            ></div>
+        </div>
+    </div>
+);
 
 const RankList = ({ title, items }) => (
     <div className="rank-card">
@@ -34,44 +32,20 @@ const RankList = ({ title, items }) => (
                         <p className="rank-title">{item.name}</p>
                         <p className="rank-detail">{item.detail}</p>
                     </div>
-                    <span className={`rank-change ${item.change > 0 ? "up" : "down"}`}>
-                        {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
-                    </span>
+                    <span
+                        className={`rank-change ${item.change > 0 ? "up" : "down"}`}
+                    >
+            {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
+          </span>
                 </li>
             ))}
         </ul>
     </div>
 );
 
-const Dashboard = () => {
+const Analyze = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-
-    const slangData = [
-        { label: "Food Safety", percentage: 74, color: "rgba(255, 99, 132, 0.8)" },
-        { label: "Compliance Basics Procedures", percentage: 52, color: "rgba(54, 162, 235, 0.8)" },
-        { label: "Company Networking", percentage: 36, color: "rgba(75, 192, 192, 0.8)" },
-    ];
-
-    const drugData = [
-        { label: "대마", percentage: 95, color: "rgba(153, 102, 255, 0.8)" },
-        { label: "펜타닐", percentage: 92, color: "rgba(255, 159, 64, 0.8)" },
-        { label: "프로포폴", percentage: 89, color: "rgba(255, 206, 86, 0.8)" },
-    ];
-
-    const latestChannels = [
-        { name: "Houston Facility", detail: "52 Points / User - 97% Correct", change: 1 },
-        { name: "Test Group", detail: "52 Points / User - 95% Correct", change: -2 },
-        { name: "Sales Leadership", detail: "52 Points / User - 87% Correct", change: 3 },
-        { name: "Northeast Region", detail: "52 Points / User - 85% Correct", change: 4 },
-    ];
-
-    const newSlang = [
-        { name: "Slang A", detail: "80%", change: 2 },
-        { name: "Slang B", detail: "78%", change: 1 },
-        { name: "Slang C", detail: "75%", change: -1 },
-        { name: "Slang D", detail: "72%", change: -2 },
-    ];
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -84,7 +58,7 @@ const Dashboard = () => {
                 labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
                 datasets: [
                     {
-                        label: "월별 거래 탐지 지수",
+                        label: "월별 마약 거래 채널 탐지수",
                         data: [300, 400, 450, 500, 520, 480, 490, 600, 620, 650, 700, 750],
                         backgroundColor: "rgba(75, 192, 192, 0.6)",
                         borderColor: "rgba(75, 192, 192, 1)",
@@ -115,60 +89,47 @@ const Dashboard = () => {
         };
     }, []);
 
+    const slangData = [
+        { label: "XOR", percentage: 74, color: "#ff6384" },
+        { label: "Co9in", percentage: 52, color: "#36a2eb" },
+        { label: "아이스", percentage: 36, color: "#4bc0c0" },
+    ];
+
+    const drugData = [
+        { label: "대마", percentage: 95, color: "#ff9f40" },
+        { label: "펜타닐", percentage: 92, color: "#ffcd56" },
+        { label: "프로포폴", percentage: 89, color: "#c9cbcf" },
+    ];
+
+    const latestChannels = [
+        { name: "Jesse Thomas", detail: "637 Points - 98% Correct", change: 1 },
+        { name: "Thisal Mathiyazhagan", detail: "637 Points - 89% Correct", change: 2 },
+        { name: "Helen Chuang", detail: "637 Points - 88% Correct", change: 3 },
+        { name: "Lura Silverman", detail: "637 Points - 85% Correct", change: 4 },
+    ];
+
+    const newSlang = [
+        { name: "Houston Facility", detail: "52 Points / User - 97% Correct", change: 1 },
+        { name: "Test Group", detail: "52 Points / User - 95% Correct", change: -2 },
+        { name: "Sales Leadership", detail: "52 Points / User - 87% Correct", change: 3 },
+        { name: "Northeast Region", detail: "52 Points / User - 85% Correct", change: 4 },
+    ];
+
     return (
         <div className="dashboard">
-            <aside className="sidebar">
-                <img
-                    src={`${process.env.PUBLIC_URL}/logo.png`}
-                    alt="Retriever 로고"
-                    className="logo-image"
-                />
-                <nav className="menu">
-                    <ul>
-                        <li className="active">실시간 마약 거래 현황</li>
-                        <li>탐지 로그 확인</li>
-                        <li>AI 관리</li>
-                        <li>통계</li>
-                    </ul>
-                </nav>
-                <div className="support">
-                    <ul>
-                        <li>가이드</li>
-                        <li>설정</li>
-                    </ul>
-                </div>
-                <div className="user-info">
-                    <img
-                        src="https://via.placeholder.com/50"
-                        alt="프로필 이미지"
-                        className="profile-image"
-                    />
-                    <div className="user-details">
-                        <p className="user-name">관리자</p>
-                        <p className="user-email">cho010105@gachon.ac.kr</p>
-                    </div>
-                </div>
-
-            </aside>
-
+            <Sidebar />
             <main className="main">
                 <header className="header">
-                    <h1>Reports</h1>
+                    <h1>Statistics</h1>
                     <div className="filters">
                         <select>
                             <option value="all">시간대: 전체</option>
-                            <option value="morning">오전</option>
-                            <option value="afternoon">오후</option>
                         </select>
                         <select>
                             <option value="all">채널: All</option>
-                            <option value="specific">Specific Channel</option>
                         </select>
                         <select>
                             <option value="all">마약 종류: All</option>
-                            <option value="type1">마약</option>
-                            <option value="type2">항정신성의약품</option>
-                            <option value="type2">대마</option>
                         </select>
                     </div>
                     <button className="download">Download</button>
@@ -189,8 +150,8 @@ const Dashboard = () => {
                             <p>2m 34s</p>
                         </div>
                         <div className="card">
-                            <h3>Starting Knowledge</h3>
-                            <p>64%</p>
+                            <h3>전월 대비 거래 증가율</h3>
+                            <p>+64%</p>
                         </div>
                         <div className="card">
                             <h3>탐지 채널 검거 연계율</h3>
@@ -231,9 +192,8 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-
                 <section className="tables">
-                    <RankList title="최신 탐지 채널" items={latestChannels}/>
+                    <RankList title="신규 탐지 채널" items={latestChannels}/>
                     <RankList title="신규 탐지 은어" items={newSlang}/>
                 </section>
             </main>
@@ -241,4 +201,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Analyze;
