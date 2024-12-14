@@ -72,7 +72,7 @@ const MainDashboard = () => {
         { name: "Channel Name", detail: "3 new Chats", change: 1 },
         { name: "Channel Name", detail: "3 new Chats", change: 2 },
         { name: "Channel Name", detail: "1 new Chats", change: 3 },
-        { name: "Channel Name", detail: "637 Points", change: 0 },
+        { name: "Channel Name", detail: "", change: 0 },
     ];
 
     const topSlang = [

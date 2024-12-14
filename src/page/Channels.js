@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import axios from "axios";
 import "../css/page/Channels.css";
 
-const Channels = () => {
-    const [channels, setChannels] = useState([]);
+const Channel = () => {
+    const [channels, setChannels] = useState([]); // Stores list of channels (ChInfo)
+    const [selectedChannel, setSelectedChannel] = useState(null); // Tracks the selected channel
+    const [channelDetails, setChannelDetails] = useState(null); // Stores detailed data for selected channel
 
-    // Simulated API call to fetch channel data (placeholder)
+    // Fetch all channels (ChInfo) when the component mounts
     useEffect(() => {
-        // Placeholder data for now
-        const fetchedChannels = [
-            { id: 1, name: "Channel 1", detail: "3 new Chats" },
-            { id: 2, name: "Channel 2", detail: "5 new Chats" },
-            { id: 3, name: "Channel 3", detail: "1 new Chat" },
-            { id: 4, name: "Channel 4", detail: "" },
-            { id: 5, name: "Channel 5", detail: "" },
-            { id: 6, name: "Channel 6", detail: "" },
-        ];
-        setChannels(fetchedChannels);
+        const fetchChannels = async () => {
+            try {
+                const response = await axios.get("/channels/all"); // Fetch channel list
+                setChannels(response.data);
+            } catch (error) {
+                console.error("Error fetching channels:", error);
+            }
+        };
+
+        fetchChannels();
     }, []);
+
+    // Fetch details of the selected channel (ChData) by channelID
+    const fetchChannelDetails = async (channelID) => {
+        try {
+            const response = await axios.get(`/chat/channel/${channelID}`); // Fetch by channelID
+            setChannelDetails(response.data); // Set channel details in state
+        } catch (error) {
+            console.error("Error fetching channel details:", error);
+        }
+    };
+
+    const handleChannelClick = (channel) => {
+        setSelectedChannel(channel.channelId); // Set the selected channelID
+        fetchChannelDetails(channel.channelId); // Fetch details for the selected channel
+    };
 
     return (
         <div className="channel-page">
@@ -25,21 +43,48 @@ const Channels = () => {
             <main className="channel-main">
                 <header className="channel-header">
                     <h1>Telegram Channels</h1>
+                    <button className="download-button">Download Channel Data</button>
                 </header>
+
                 <section className="channel-list">
+                    <h3>Channel List</h3>
                     {channels.length === 0 ? (
-                        <p className="no-channels">No channels available</p>
+                        <p>No channels available</p>
                     ) : (
                         <ul>
                             {channels.map((channel) => (
-                                <li key={channel.id} className="channel-item">
+                                <li
+                                    key={channel.channelId} // Changed key to use channelId
+                                    className={`channel-item ${
+                                        selectedChannel === channel.channelId ? "active" : ""
+                                    }`}
+                                    onClick={() => handleChannelClick(channel)}
+                                >
                                     <div className="channel-info">
                                         <p className="channel-name">{channel.name}</p>
-                                        <p className="channel-detail">{channel.detail}</p>
                                     </div>
                                 </li>
                             ))}
                         </ul>
+                    )}
+                </section>
+
+                <section className="channel-details">
+                    <h3>Selected Channel Details</h3>
+                    {channelDetails ? (
+                        <div>
+                            <p>
+                                <strong>Description:</strong> {channelDetails.description}
+                            </p>
+                            <p>
+                                <strong>Messages:</strong>{" "}
+                                {channelDetails.map((data) => (
+                                    <span key={data.id}>{data.text}</span>
+                                ))}
+                            </p>
+                        </div>
+                    ) : (
+                        <p>Select a channel to view its details</p>
                     )}
                 </section>
             </main>
@@ -47,4 +92,4 @@ const Channels = () => {
     );
 };
 
-export default Channels;
+export default Channel;

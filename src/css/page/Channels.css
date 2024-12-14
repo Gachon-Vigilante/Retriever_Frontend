@@ -1,30 +1,20 @@
-/* Page Container */
 .channel-page {
     display: flex;
     height: 100vh;
     background-color: #f8f9fa;
 }
 
-/* Main Content */
 .channel-main {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
 }
 
-/* Header */
 .channel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.channel-header h1 {
-    font-size: 24px;
-    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .download-button {
@@ -34,60 +24,33 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
 }
 
 .download-button:hover {
     background-color: #0056b3;
 }
 
-/* Channel List */
 .channel-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.channel-list ul {
-    list-style: none;
-    padding: 0;
+    margin-bottom: 20px;
 }
 
 .channel-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    margin-bottom: 10px;
+    padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.channel-item:hover {
-    background-color: #f8f9fa;
+.channel-item:hover,
+.channel-item.active {
+    background-color: #f0f0f0;
 }
 
-.channel-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.channel-name {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.channel-detail {
-    font-size: 14px;
-    color: gray;
-}
-
-/* No Channels Message */
-.no-channels {
-    text-align: center;
-    font-size: 16px;
-    color: gray;
-    margin-top: 20px;
+.channel-details {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }

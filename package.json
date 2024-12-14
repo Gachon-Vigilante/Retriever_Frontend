@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
+    "http-proxy-middleware": "^3.0.3",
     "mui": "^0.0.1",
     "muix": "^0.1.63",
     "openai": "^4.76.3",

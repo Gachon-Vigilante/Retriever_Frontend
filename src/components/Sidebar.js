@@ -62,7 +62,6 @@ const Sidebar = () => {
                 />
                 <div className="user-details">
                     <p className="user-name">관리자</p>
-                    <p className="user-email">cho010105@gachon.ac.kr</p>
                 </div>
             </div>
         </aside>

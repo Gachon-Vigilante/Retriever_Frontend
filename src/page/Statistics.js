@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, {useRef, useEffect, useState} from "react";
 import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Statistics.css";
+import axios from "axios";
 
 const ProgressBar = ({ label, percentage, color }) => (
     <div className="progress-bar-container">
@@ -47,6 +48,9 @@ const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
+    const [slangData, setSlangData] = useState([]); // "최다 사용 은어" 데이터
+    const [newSlangData, setNewSlangData] = useState([]);
+
     useEffect(() => {
         if (chartInstance.current) {
             chartInstance.current.destroy();
@@ -89,11 +93,63 @@ const Statistics = () => {
         };
     }, []);
 
-    const slangData = [
-        { label: "XOR", percentage: 74, color: "#ff6384" },
-        { label: "Co9in", percentage: 52, color: "#36a2eb" },
-        { label: "아이스", percentage: 36, color: "#4bc0c0" },
-    ];
+    // const slangData = [
+    //     { label: "XOR", percentage: 74, color: "#ff6384" },
+    //     { label: "Co9in", percentage: 52, color: "#36a2eb" },
+    //     { label: "아이스", percentage: 36, color: "#4bc0c0" },
+    // ];
+
+    useEffect(() => {
+        // "최다 사용 은어" 데이터 가져오기
+        const fetchSlangData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/slangs/sorted");
+                const formattedData = response.data.map((slang) => ({
+                    label: slang.slang,
+                    percentage: Math.min(slang.count, 100), // Ensure count doesn't exceed 100%
+                    color: getColorByPercentage(Math.min(slang.count, 100)), // Assign color based on percentage
+                }));
+                setSlangData(formattedData);
+            } catch (error) {
+                console.error("Error fetching slang data:", error);
+            }
+        };
+
+        // "신규 탐지 은어" 데이터 가져오기
+        const fetchNewSlangData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/slangs/all");
+                const formattedData = response.data.map((slang) => ({
+                    name: slang.slang,
+                    detail: `${new Date(
+                        slang.createdAt
+                    ).toLocaleDateString()}`,
+                    change: Math.random() > 0.5 ? 1 : -1, // 무작위 증가/감소 데이터
+                }));
+                setNewSlangData(formattedData);
+            } catch (error) {
+                console.error("Error fetching new slang data:", error);
+            }
+        };
+
+        fetchSlangData();
+        fetchNewSlangData();
+    }, []);
+
+    const getColorByPercentage = (percentage) => {
+        if (percentage <= 20) {
+            return "#ff6384"; // Red
+        } else if (percentage <= 40) {
+            return "#36a2eb"; // Blue
+        } else if (percentage <= 60) {
+            return "#4bc0c0"; // Green
+        } else if (percentage <= 80) {
+            return "#ff9f40"; // Orange
+        } else {
+            return "#ffcd56"; // Yellow
+        }
+    };
+
 
     const drugData = [
         { label: "대마", percentage: 95, color: "#ff9f40" },
@@ -194,7 +250,7 @@ const Statistics = () => {
 
                 <section className="tables">
                     <RankList title="신규 탐지 채널" items={latestChannels}/>
-                    <RankList title="신규 탐지 은어" items={newSlang}/>
+                    <RankList title="신규 탐지 은어" items={newSlangData}/>
                 </section>
             </main>
         </div>
