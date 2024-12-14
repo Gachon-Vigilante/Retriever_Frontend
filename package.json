@@ -10,6 +10,7 @@
     "chart.js": "^4.4.7",
     "mui": "^0.0.1",
     "muix": "^0.1.63",
+    "openai": "^4.76.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.2",

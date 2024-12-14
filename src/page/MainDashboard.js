@@ -4,24 +4,6 @@ import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/MainDashboard.css";
 
-const ProgressBar = ({ label, percentage, color }) => (
-    <div className="progress-bar-container">
-        <div className="progress-bar-label">
-            <span>{label}</span>
-            <span>{percentage}%</span>
-        </div>
-        <div className="progress-bar">
-            <div
-                className="progress-bar-fill"
-                style={{
-                    width: `${percentage}%`,
-                    backgroundColor: color,
-                }}
-            ></div>
-        </div>
-    </div>
-);
-
 const RankList = ({ title, items, link }) => (
     <div className="rank-card">
         <h3>{title}</h3>
@@ -104,7 +86,7 @@ const MainDashboard = () => {
             <Sidebar />
             <main className="main">
                 <header className="header">
-                    <h1>Reports</h1>
+                    <h1>Live Analytics</h1>
                     <div className="filters">
                         <select>
                             <option value="all">시간대: 전체</option>

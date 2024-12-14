@@ -1,9 +1,11 @@
 // 페이지 라우터 컴포넌트
 import React from 'react';
-import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Dashboard from "./page/MainDashboard";
 import AiChat from "./page/AiChat";
-import Analyze from "./page/Analyze";
+import Statistics from "./page/Statistics";
+import {Guide} from "./page/Guide";
+import {Settings} from "./page/Setting";
 
 function AppRouter() {
     return (
@@ -11,7 +13,9 @@ function AppRouter() {
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/aichat" element={<AiChat />} />
-                <Route path="/analyze" element={<Analyze />} />
+                <Route path="/statistics" element={<Statistics />} />
+                <Route path="/guide" element={<Guide />} />
+                <Route path="Setting" element={<Settings />} />
                 {/* 다른 RoutePath를 여기에 추가 */}
             </Routes>
         </BrowserRouter>

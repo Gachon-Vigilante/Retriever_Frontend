@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
-import "../css/page/Analyze.css";
+import "../css/page/Statistics.css";
 
 const ProgressBar = ({ label, percentage, color }) => (
     <div className="progress-bar-container">
@@ -43,7 +43,7 @@ const RankList = ({ title, items }) => (
     </div>
 );
 
-const Analyze = () => {
+const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
@@ -201,4 +201,4 @@ const Analyze = () => {
     );
 };
 
-export default Analyze;
+export default Statistics;

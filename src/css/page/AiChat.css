@@ -1,0 +1,183 @@
+/* AI Chat Page Container */
+.ai-chat-page {
+    display: flex;
+    height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.ai-chat-main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column; /* Stack header and content vertically */
+}
+
+/* Header */
+.ai-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-chat-header .filters {
+    display: flex;
+    gap: 10px;
+}
+
+.ai-chat-header .filters select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.download-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+}
+
+/* Content */
+.ai-chat-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Adjust column proportions */
+    gap: 20px;
+    padding: 0 20px; /* Match padding with header for uniform alignment */
+    box-sizing: border-box;
+}
+
+.channel-list {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    width: 100%; /* Ensure full width within grid */
+}
+
+.channel-list h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.channel-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.channel-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.channel-item:hover,
+.channel-item.active {
+    background-color: #f0f0f0;
+}
+
+.channel-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.channel-name {
+    font-weight: bold;
+}
+
+.channel-chatSendTime {
+    font-size: 12px;
+    color: gray;
+}
+
+/* Chat Window */
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Ensure full width within grid */
+}
+
+.chat-window h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.selected-channel-name {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: gray;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.ai-message {
+    background-color: #61dafb;
+    text-align: left;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    text-align: right;
+}
+
+.chat-input {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.chat-input input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input input:focus {
+    outline: none;
+}
+
+.chat-input button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.chat-input img {
+    width: 24px;
+    height: 24px;
+}
