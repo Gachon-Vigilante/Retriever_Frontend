@@ -1,20 +1,20 @@
-import React, {useRef, useEffect, useState} from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Statistics.css";
 import axios from "axios";
 
-const ProgressBar = ({ label, percentage, color }) => (
+const ProgressBar = ({ label, percentage, value, color }) => (
     <div className="progress-bar-container">
         <div className="progress-bar-label">
             <span>{label}</span>
-            <span>{percentage}%</span>
+            <span>{value} ({percentage}%)</span>
         </div>
         <div className="progress-bar">
             <div
                 className="progress-bar-fill"
                 style={{
-                    width: `${percentage}%`,
+                    width: `${percentage}%`, // Proportional width
                     backgroundColor: color,
                 }}
             ></div>
@@ -36,8 +36,8 @@ const RankList = ({ title, items }) => (
                     <span
                         className={`rank-change ${item.change > 0 ? "up" : "down"}`}
                     >
-            {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
-          </span>
+                        {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
+                    </span>
                 </li>
             ))}
         </ul>
@@ -48,8 +48,11 @@ const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
-    const [slangData, setSlangData] = useState([]); // "최다 사용 은어" 데이터
+    const [slangData, setSlangData] = useState([]);
     const [newSlangData, setNewSlangData] = useState([]);
+    const [drugData, setDrugData] = useState([]);
+    const [drugTypeFilter, setDrugTypeFilter] = useState("All");
+    const [drugTypes, setDrugTypes] = useState([]);
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -59,7 +62,20 @@ const Statistics = () => {
         chartInstance.current = new Chart(chartRef.current, {
             type: "bar",
             data: {
-                labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+                labels: [
+                    "JAN",
+                    "FEB",
+                    "MAR",
+                    "APR",
+                    "MAY",
+                    "JUN",
+                    "JUL",
+                    "AUG",
+                    "SEP",
+                    "OCT",
+                    "NOV",
+                    "DEC",
+                ],
                 datasets: [
                     {
                         label: "월별 마약 거래 채널 탐지수",
@@ -93,21 +109,14 @@ const Statistics = () => {
         };
     }, []);
 
-    // const slangData = [
-    //     { label: "XOR", percentage: 74, color: "#ff6384" },
-    //     { label: "Co9in", percentage: 52, color: "#36a2eb" },
-    //     { label: "아이스", percentage: 36, color: "#4bc0c0" },
-    // ];
-
     useEffect(() => {
-        // "최다 사용 은어" 데이터 가져오기
         const fetchSlangData = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/slangs/sorted");
                 const formattedData = response.data.map((slang) => ({
                     label: slang.slang,
-                    percentage: Math.min(slang.count, 100), // Ensure count doesn't exceed 100%
-                    color: getColorByPercentage(Math.min(slang.count, 100)), // Assign color based on percentage
+                    percentage: Math.min(slang.count, 100),
+                    color: getColorByPercentage(Math.min(slang.count, 100)),
                 }));
                 setSlangData(formattedData);
             } catch (error) {
@@ -115,16 +124,13 @@ const Statistics = () => {
             }
         };
 
-        // "신규 탐지 은어" 데이터 가져오기
         const fetchNewSlangData = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/slangs/all");
                 const formattedData = response.data.map((slang) => ({
                     name: slang.slang,
-                    detail: `${new Date(
-                        slang.createdAt
-                    ).toLocaleDateString()}`,
-                    change: Math.random() > 0.5 ? 1 : -1, // 무작위 증가/감소 데이터
+                    detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
+                    change: Math.random() > 0.5 ? 1 : -1,
                 }));
                 setNewSlangData(formattedData);
             } catch (error) {
@@ -132,43 +138,61 @@ const Statistics = () => {
             }
         };
 
+        const fetchDrugData = async () => {
+            try {
+                const url =
+                    drugTypeFilter === "All"
+                        ? "http://localhost:8080/drugs/sorted"
+                        : `http://localhost:8080/drugs/sorted/type/${drugTypeFilter}`;
+                const response = await axios.get(url);
+                const total = response.data.reduce((sum, drug) => sum + drug.count, 0); // Calculate total count
+                const formattedData = response.data.map((drug) => ({
+                    label: drug.drugName,
+                    value: drug.count,
+                    percentage: ((drug.count / total) * 100).toFixed(2), // Calculate ratio
+                    color: getColorByPercentage((drug.count / total) * 100),
+                }));
+                setDrugData(formattedData);
+            } catch (error) {
+                console.error("Error fetching drug data:", error);
+            }
+        };
+
+        const fetchDrugTypes = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/drugs/all");
+                const types = [...new Set(response.data.map((drug) => drug.drugType))];
+                setDrugTypes(["All", ...types]);
+            } catch (error) {
+                console.error("Error fetching drug types:", error);
+            }
+        };
+
         fetchSlangData();
         fetchNewSlangData();
-    }, []);
+        fetchDrugData();
+        fetchDrugTypes();
+    }, [drugTypeFilter]);
 
     const getColorByPercentage = (percentage) => {
         if (percentage <= 20) {
-            return "#ff6384"; // Red
+            return "#ff6384";
         } else if (percentage <= 40) {
-            return "#36a2eb"; // Blue
+            return "#36a2eb";
         } else if (percentage <= 60) {
-            return "#4bc0c0"; // Green
+            return "#4bc0c0";
         } else if (percentage <= 80) {
-            return "#ff9f40"; // Orange
+            return "#ff9f40";
         } else {
-            return "#ffcd56"; // Yellow
+            return "#ffcd56";
         }
     };
-
-
-    const drugData = [
-        { label: "대마", percentage: 95, color: "#ff9f40" },
-        { label: "펜타닐", percentage: 92, color: "#ffcd56" },
-        { label: "프로포폴", percentage: 89, color: "#c9cbcf" },
-    ];
 
     const latestChannels = [
         { name: "Jesse Thomas", detail: "637 Points - 98% Correct", change: 1 },
         { name: "Thisal Mathiyazhagan", detail: "637 Points - 89% Correct", change: 2 },
         { name: "Helen Chuang", detail: "637 Points - 88% Correct", change: 3 },
         { name: "Lura Silverman", detail: "637 Points - 85% Correct", change: 4 },
-    ];
-
-    const newSlang = [
-        { name: "Houston Facility", detail: "52 Points / User - 97% Correct", change: 1 },
-        { name: "Test Group", detail: "52 Points / User - 95% Correct", change: -2 },
-        { name: "Sales Leadership", detail: "52 Points / User - 87% Correct", change: 3 },
-        { name: "Northeast Region", detail: "52 Points / User - 85% Correct", change: 4 },
     ];
 
     return (
@@ -184,8 +208,15 @@ const Statistics = () => {
                         <select>
                             <option value="all">채널: All</option>
                         </select>
-                        <select>
-                            <option value="all">마약 종류: All</option>
+                        <select
+                            onChange={(e) => setDrugTypeFilter(e.target.value)}
+                            value={drugTypeFilter}
+                        >
+                            {drugTypes.map((type, index) => (
+                                <option key={index} value={type}>
+                                    마약 종류: {type}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <button className="download">Download</button>
@@ -241,6 +272,7 @@ const Statistics = () => {
                             <ProgressBar
                                 key={index}
                                 label={item.label}
+                                value={item.value}
                                 percentage={item.percentage}
                                 color={item.color}
                             />
@@ -249,8 +281,8 @@ const Statistics = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 탐지 채널" items={latestChannels}/>
-                    <RankList title="신규 탐지 은어" items={newSlangData}/>
+                    <RankList title="신규 탐지 채널" items={latestChannels} />
+                    <RankList title="신규 탐지 은어" items={newSlangData} />
                 </section>
             </main>
         </div>
