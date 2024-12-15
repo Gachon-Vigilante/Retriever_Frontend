@@ -40,7 +40,6 @@ const AiChat = () => {
                     <button className="download-button">Download</button>
                 </header>
                 <div className="ai-chat-content">
-                    {/* Left Section - Telegram Channels */}
                     <div className="channel-list">
                         <h3>Telegram Channels</h3>
                         <ul>
@@ -60,7 +59,6 @@ const AiChat = () => {
                             ))}
                         </ul>
                     </div>
-                    {/* Right Section - Chat Window */}
                     <div className="chat-window">
                         <h3>Channel AI</h3>
                         {selectedChannel && (

@@ -1,8 +1,8 @@
-//Main Page 실시간 마약 거래 현황
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/MainDashboard.css";
+import axios from "axios";
 
 const RankList = ({ title, items, link }) => (
     <div className="rank-card">
@@ -21,13 +21,17 @@ const RankList = ({ title, items, link }) => (
                 </li>
             ))}
         </ul>
-        <a href={link} className="view-link">View full leaderboard</a>
+        <a href={link} className="view-link">
+            View full leaderboard
+        </a>
     </div>
 );
 
 const MainDashboard = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
+
+    const [newSlangData, setNewSlangData] = useState([]);
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -36,7 +40,20 @@ const MainDashboard = () => {
         chartInstance.current = new Chart(chartRef.current, {
             type: "bar",
             data: {
-                labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+                labels: [
+                    "JAN",
+                    "FEB",
+                    "MAR",
+                    "APR",
+                    "MAY",
+                    "JUN",
+                    "JUL",
+                    "AUG",
+                    "SEP",
+                    "OCT",
+                    "NOV",
+                    "DEC",
+                ],
                 datasets: [
                     {
                         label: "월별 채팅 사용자 로그 수",
@@ -68,17 +85,33 @@ const MainDashboard = () => {
         };
     }, []);
 
+    useEffect(() => {
+        // Fetch "신규 탐지 은어" data, sorted by `createdAt`, and limit to the top 3
+        const fetchNewSlangData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/slangs/all");
+                const sortedData = response.data
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .slice(0, 4); // Take the top 3
+                const formattedData = sortedData.map((slang) => ({
+                    name: slang.slang,
+                    detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
+                    change: Math.random() > 0.5 ? 1 : -1,
+                }));
+                setNewSlangData(formattedData);
+            } catch (error) {
+                console.error("Error fetching new slang data:", error);
+            }
+        };
+
+        fetchNewSlangData();
+    }, []);
+
     const topChannels = [
         { name: "Channel Name", detail: "3 new Chats", change: 1 },
         { name: "Channel Name", detail: "3 new Chats", change: 2 },
         { name: "Channel Name", detail: "1 new Chats", change: 3 },
         { name: "Channel Name", detail: "", change: 0 },
-    ];
-
-    const topSlang = [
-        { name: "Houston Facility", detail: "52 Points / User - 97% Correct", change: 1 },
-        { name: "Test Group", detail: "52 Points / User - 95% Correct", change: -2 },
-        { name: "Sales Leadership", detail: "52 Points / User - 87% Correct", change: 3 },
     ];
 
     return (
@@ -135,8 +168,8 @@ const MainDashboard = () => {
 
                 <section className="tables">
                     <RankList title="실시간 텔레그램 채널" items={topChannels} link="/channels" />
-                    <RankList title="신규 탐지 채널" items={topSlang} link="/leaderboard" />
-                    <RankList title="신규 탐지 은어" items={topSlang} link="/slang" />
+                    <RankList title="신규 탐지 채널" items={topChannels} link="/leaderboard" />
+                    <RankList title="신규 탐지 은어" items={newSlangData} link="/statistics" />
                 </section>
             </main>
         </div>
@@ -144,5 +177,3 @@ const MainDashboard = () => {
 };
 
 export default MainDashboard;
-
-

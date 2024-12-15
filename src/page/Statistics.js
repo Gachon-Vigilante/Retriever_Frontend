@@ -33,11 +33,6 @@ const RankList = ({ title, items }) => (
                         <p className="rank-title">{item.name}</p>
                         <p className="rank-detail">{item.detail}</p>
                     </div>
-                    <span
-                        className={`rank-change ${item.change > 0 ? "up" : "down"}`}
-                    >
-                        {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
-                    </span>
                 </li>
             ))}
         </ul>
@@ -127,11 +122,13 @@ const Statistics = () => {
         const fetchNewSlangData = async () => {
             try {
                 const response = await axios.get("http://localhost:8080/slangs/all");
-                const formattedData = response.data.map((slang) => ({
-                    name: slang.slang,
-                    detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
-                    change: Math.random() > 0.5 ? 1 : -1,
-                }));
+                const formattedData = response.data
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt descending
+                    .map((slang) => ({
+                        name: slang.slang,
+                        detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
+                        change: Math.random() > 0.5 ? 1 : -1,
+                    }));
                 setNewSlangData(formattedData);
             } catch (error) {
                 console.error("Error fetching new slang data:", error);
