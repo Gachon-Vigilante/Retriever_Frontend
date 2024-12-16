@@ -5,6 +5,7 @@ import "../css/page/MainDashboard.css";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
+import useFetchChannelCount from "../hooks/useFetchChannelCount";
 
 
 const RankList = ({ title, items, link }) => {
@@ -45,6 +46,7 @@ const MainDashboard = () => {
     const { channels: newTelegramChannels } = useFetchNewTelegramChannels(4);
     const { slangData: newSlangData } = useFetchNewSlangData(4);
     const { posts: newPosts } = useFetchNewPosts(4);
+    const { channelCount } = useFetchChannelCount();
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -126,7 +128,7 @@ const MainDashboard = () => {
                         </div>
                         <div className="card">
                             <h3>총 탐지 채널</h3>
-                            <p>3,298</p>
+                            <p>{channelCount}</p>
                         </div>
                         <div className="card">
                             <h3>평균 채널</h3>

@@ -2,22 +2,13 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
+import useFetchChannels from "../hooks/useFetchChannels";
 
 const AiChat = () => {
     const [selectedChannel, setSelectedChannel] = useState(null);
 
-    const channels = [
-        { id: 1, name: "Channel Name 1", chatSendTime: "3 new Chats" },
-        { id: 2, name: "Channel Name 2", chatSendTime: "2 new Chats" },
-        { id: 3, name: "Channel Name 3", chatSendTime: "1 new Chat" },
-        { id: 4, name: "Channel Name 4", chatSendTime: "637 Points" },
-        { id: 5, name: "Channel Name 5", chatSendTime: "637 Points" },
-        { id: 6, name: "Channel Name 6", chatSendTime: "637 Points" },
-        { id: 7, name: "Channel Name 7", chatSendTime: "637 Points" },
-        { id: 8, name: "Channel Name 8", chatSendTime: "637 Points" },
-        { id: 9, name: "Channel Name 9", chatSendTime: "637 Points" },
-        { id: 10, name: "Channel Name 10", chatSendTime: "637 Points" },
-    ];
+    // Fetch channels using the custom hook
+    const { channels, loading, error } = useFetchChannels();
 
     return (
         <div className="ai-chat-page">
@@ -42,6 +33,8 @@ const AiChat = () => {
                 <div className="ai-chat-content">
                     <div className="channel-list">
                         <h3>Telegram Channels</h3>
+                        {loading && <p>Loading channels...</p>}
+                        {error && <p>Error loading channels: {error}</p>}
                         <ul>
                             {channels.map((channel) => (
                                 <li
@@ -53,7 +46,9 @@ const AiChat = () => {
                                 >
                                     <div className="channel-info">
                                         <p className="channel-name">{channel.name}</p>
-                                        <p className="channel-chatSendTime">{channel.chatSendTime}</p>
+                                        <p className="channel-chatSendTime">
+                                            {new Date(channel.updatedAt).toLocaleString()}
+                                        </p>
                                     </div>
                                 </li>
                             ))}
@@ -63,7 +58,11 @@ const AiChat = () => {
                         <h3>Channel AI</h3>
                         {selectedChannel && (
                             <p className="selected-channel-name">
-                                {channels.find((channel) => channel.id === selectedChannel)?.name}
+                                {
+                                    channels.find(
+                                        (channel) => channel.id === selectedChannel
+                                    )?.name
+                                }
                             </p>
                         )}
                         <Chat />
