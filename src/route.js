@@ -8,6 +8,7 @@ import {Guide} from "./page/Guide";
 import {Settings} from "./page/Setting";
 import Channels from "./page/Channels";
 import Similarity from "./page/Similarity";
+import Posts from "./page/Posts";
 
 function AppRouter() {
     return (
@@ -15,12 +16,12 @@ function AppRouter() {
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/channels" element={<Channels />} />
+                <Route path="/posts" element={<Posts />} />
                 <Route path="/aichat" element={<AiChat />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/similarity" element={<Similarity />} />
                 <Route path="/guide" element={<Guide />} />
-                <Route path="Setting" element={<Settings />} />
-                {/* 다른 RoutePath를 여기에 추가 */}
+                <Route path="/setting" element={<Settings />} />
             </Routes>
         </BrowserRouter>
     );

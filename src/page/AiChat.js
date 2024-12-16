@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Chat from "../components/Chat"; // Reusing the Chat component
+import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
 
 const AiChat = () => {

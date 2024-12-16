@@ -3,12 +3,11 @@ import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import "../css/page/Channels.css";
 
-const Channel = () => {
+const Posts = () => {
     const [channels, setChannels] = useState([]); // Stores list of channels (ChInfo)
     const [selectedChannel, setSelectedChannel] = useState(null); // Tracks the selected channel
     const [channelDetails, setChannelDetails] = useState(null); // Stores detailed data for selected channel
 
-    // Fetch all channels (ChInfo) when the component mounts
     useEffect(() => {
         const fetchChannels = async () => {
             try {
@@ -92,4 +91,4 @@ const Channel = () => {
     );
 };
 
-export default Channel;
+export default Posts;

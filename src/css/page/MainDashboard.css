@@ -102,12 +102,10 @@
     background-color: #f8f9fa;
 }
 
-.rank-change.up {
-    color: green;
-}
-
-.rank-change.down {
-    color: red;
+.rank-new {
+    color: #28a745;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .view-link {

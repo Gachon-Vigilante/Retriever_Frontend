@@ -2,36 +2,49 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/MainDashboard.css";
-import axios from "axios";
+import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
+import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
+import useFetchNewPosts from "../hooks/useFetchNewPosts";
 
-const RankList = ({ title, items, link }) => (
-    <div className="rank-card">
-        <h3>{title}</h3>
-        <ul>
-            {items.map((item, index) => (
-                <li key={index} className="rank-item">
-                    <span className="rank-number">{index + 1}</span>
-                    <div className="rank-content">
-                        <p className="rank-title">{item.name}</p>
-                        <p className="rank-detail">{item.detail}</p>
-                    </div>
-                    <span className={`rank-change ${item.change > 0 ? "up" : "down"}`}>
-                        {item.change > 0 ? "▲" : "▼"} {Math.abs(item.change)}
-                    </span>
-                </li>
-            ))}
-        </ul>
-        <a href={link} className="view-link">
-            View full leaderboard
-        </a>
-    </div>
-);
+
+const RankList = ({ title, items, link }) => {
+    const isNew = (date) => {
+        const today = new Date();
+        const createdDate = new Date(date);
+        const diffTime = Math.abs(today - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Difference in days
+        return diffDays <= 3;
+    };
+
+    return (
+        <div className="rank-card">
+            <h3>{title}</h3>
+            <ul>
+                {items.map((item, index) => (
+                    <li key={index} className="rank-item">
+                        <span className="rank-number">{index + 1}</span>
+                        <div className="rank-content">
+                            <p className="rank-title">{item.name}</p>
+                            <p className="rank-detail">{item.detail}</p>
+                        </div>
+                        {isNew(item.createdAt) && <span className="rank-new">NEW</span>}
+                    </li>
+                ))}
+            </ul>
+            <a href={link} className="view-link">
+                View full leaderboard
+            </a>
+        </div>
+    );
+};
 
 const MainDashboard = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
-    const [newSlangData, setNewSlangData] = useState([]);
+    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(4);
+    const { slangData: newSlangData } = useFetchNewSlangData(4);
+    const { posts: newPosts } = useFetchNewPosts(4);
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -84,35 +97,6 @@ const MainDashboard = () => {
             }
         };
     }, []);
-
-    useEffect(() => {
-        // Fetch "신규 탐지 은어" data, sorted by `createdAt`, and limit to the top 3
-        const fetchNewSlangData = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/slangs/all");
-                const sortedData = response.data
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                    .slice(0, 4); // Take the top 3
-                const formattedData = sortedData.map((slang) => ({
-                    name: slang.slang,
-                    detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
-                    change: Math.random() > 0.5 ? 1 : -1,
-                }));
-                setNewSlangData(formattedData);
-            } catch (error) {
-                console.error("Error fetching new slang data:", error);
-            }
-        };
-
-        fetchNewSlangData();
-    }, []);
-
-    const topChannels = [
-        { name: "Channel Name", detail: "3 new Chats", change: 1 },
-        { name: "Channel Name", detail: "3 new Chats", change: 2 },
-        { name: "Channel Name", detail: "1 new Chats", change: 3 },
-        { name: "Channel Name", detail: "", change: 0 },
-    ];
 
     return (
         <div className="dashboard">
@@ -167,8 +151,8 @@ const MainDashboard = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="실시간 텔레그램 채널" items={topChannels} link="/channels" />
-                    <RankList title="신규 탐지 채널" items={topChannels} link="/leaderboard" />
+                    <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" />
+                    <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" />
                     <RankList title="신규 탐지 은어" items={newSlangData} link="/statistics" />
                 </section>
             </main>
