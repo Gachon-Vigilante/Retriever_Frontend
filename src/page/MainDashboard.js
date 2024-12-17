@@ -7,7 +7,6 @@ import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 
-
 const RankList = ({ title, items, link }) => {
     const isNew = (date) => {
         const today = new Date();
@@ -47,6 +46,26 @@ const MainDashboard = () => {
     const { slangData: newSlangData } = useFetchNewSlangData(4);
     const { posts: newPosts } = useFetchNewPosts(4);
     const { channelCount } = useFetchChannelCount();
+
+    const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
+    const [weeklyPostCount, setWeeklyPostCount] = useState(0);
+
+    // Utility function to calculate weekly count
+    const getWeeklyCount = (data) => {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+
+        return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
+    };
+
+    useEffect(() => {
+        if (newTelegramChannels.length) {
+            setWeeklyChannelCount(getWeeklyCount(newTelegramChannels));
+        }
+        if (newPosts.length) {
+            setWeeklyPostCount(getWeeklyCount(newPosts));
+        }
+    }, [newTelegramChannels, newPosts]);
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -106,45 +125,35 @@ const MainDashboard = () => {
             <main className="main">
                 <header className="header">
                     <h1>Live Analytics</h1>
-                    <div className="filters">
-                        <select>
-                            <option value="all">시간대: 전체</option>
-                        </select>
-                        <select>
-                            <option value="all">채널: All</option>
-                        </select>
-                        <select>
-                            <option value="all">마약 종류: All</option>
-                        </select>
-                    </div>
                     <button className="download">Download</button>
                 </header>
 
                 <section className="statistics-chart">
                     <div className="statistics">
                         <div className="card">
-                            <h3>현재 생성된 봇</h3>
-                            <p>27/80</p>
+                            <h3>주간 신규 탐지 채널</h3>
+                            <p>{weeklyChannelCount}</p>
+                        </div>
+                        <div className="card">
+                            <h3>주간 신규 탐지 포스트</h3>
+                            <p>{weeklyPostCount}</p>
                         </div>
                         <div className="card">
                             <h3>총 탐지 채널</h3>
                             <p>{channelCount}</p>
                         </div>
+
                         <div className="card">
-                            <h3>평균 채널</h3>
-                            <p>2m 34s</p>
-                        </div>
-                        <div className="card">
-                            <h3>전월 대비 거래 증가율</h3>
+                            <h3>전월 대비 홍보글 증가율</h3>
                             <p>+64%</p>
                         </div>
                         <div className="card">
-                            <h3>탐지 채널 검거 연계율</h3>
+                            <h3>전월 대비 거래 채널 증가율</h3>
                             <p>86%</p>
                         </div>
                         <div className="card">
-                            <h3>월별 거래 채널 증가율</h3>
-                            <p>+34%</p>
+                            <h3>월간 최다 거래 지역</h3>
+                            <p className="p">서울시 강남구</p>
                         </div>
                     </div>
                     <div className="chart">

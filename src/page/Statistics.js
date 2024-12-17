@@ -3,6 +3,9 @@ import { Chart } from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Statistics.css";
 import axios from "axios";
+import useFetchNewPosts from "../hooks/useFetchNewPosts";
+import useFetchChannelCount from "../hooks/useFetchChannelCount";
+import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 
 const ProgressBar = ({ label, percentage, value, color }) => (
     <div className="progress-bar-container">
@@ -48,6 +51,29 @@ const Statistics = () => {
     const [drugData, setDrugData] = useState([]);
     const [drugTypeFilter, setDrugTypeFilter] = useState("All");
     const [drugTypes, setDrugTypes] = useState([]);
+
+    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(5);
+    const { posts: newPosts } = useFetchNewPosts(4);
+    const { channelCount } = useFetchChannelCount();
+
+    const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
+    const [weeklyPostCount, setWeeklyPostCount] = useState(0);
+
+    const getWeeklyCount = (data) => {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+
+        return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
+    };
+
+    useEffect(() => {
+        if (newTelegramChannels.length) {
+            setWeeklyChannelCount(getWeeklyCount(newTelegramChannels));
+        }
+        if (newPosts.length) {
+            setWeeklyPostCount(getWeeklyCount(newPosts));
+        }
+    }, [newTelegramChannels, newPosts]);
 
     useEffect(() => {
         if (chartInstance.current) {
@@ -222,16 +248,16 @@ const Statistics = () => {
                 <section className="statistics-chart">
                     <div className="statistics">
                         <div className="card">
-                            <h3>현재 생성된 봇</h3>
-                            <p>27/80</p>
+                            <h3>주간 신규 탐지 채널</h3>
+                            <p>{weeklyChannelCount}</p>
+                        </div>
+                        <div className="card">
+                            <h3>주간 신규 탐지 포스트</h3>
+                            <p>{weeklyPostCount}</p>
                         </div>
                         <div className="card">
                             <h3>총 탐지 채널</h3>
-                            <p>3,298</p>
-                        </div>
-                        <div className="card">
-                            <h3>평균 채널</h3>
-                            <p>2m 34s</p>
+                            <p>{channelCount}</p>
                         </div>
                         <div className="card">
                             <h3>전월 대비 거래 증가율</h3>
@@ -278,7 +304,7 @@ const Statistics = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 탐지 채널" items={latestChannels} />
+                    <RankList title="신규 탐지 채널" items={newTelegramChannels} />
                     <RankList title="신규 탐지 은어" items={newSlangData} />
                 </section>
             </main>

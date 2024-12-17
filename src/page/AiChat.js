@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
 import useFetchChannels from "../hooks/useFetchChannels";
+import { marked } from "marked";
 
 const AiChat = () => {
     const [selectedChannel, setSelectedChannel] = useState(null);

@@ -58,6 +58,11 @@
     text-align: center;
 }
 
+.card .p{
+    font-size: 13px;
+    padding-top: 30px;
+}
+
 .chart {
     flex: 3;
     display: flex;
