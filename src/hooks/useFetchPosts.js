@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-const useFetchChannelDetails = () => {
+const useFetchPosts = () => {
     const [channels, setChannels] = useState([]);
     const [selectedDetails, setSelectedDetails] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -56,4 +56,4 @@ const useFetchChannelDetails = () => {
     };
 };
 
-export default useFetchChannelDetails;
+export default useFetchPosts;

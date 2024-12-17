@@ -109,20 +109,50 @@
     color: #333;
 }
 
-.details-content p {
-    margin-bottom: 10px;
-    font-size: 14px;
-    line-height: 1.5;
+/* Chat-like Details Styling */
+.details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Space between messages */
 }
 
-.message-item {
-    border-bottom: 1px solid #ddd;
-    padding: 8px 0;
-    font-size: 14px;
+.detail-item {
+    background-color: #e7f3ff; /* Light blue for messages */
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    position: relative;
+    margin: 25px 0; /* Add spacing between messages */
 }
 
-.message-item:last-child {
-    border-bottom: none;
+.detail-item::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: #e7f3ff; /* Add a small speech bubble tail */
+    border-bottom: 0;
+    margin-left: 8px;
+    margin-bottom: -8px;
+}
+
+.detail-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.detail-item a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.detail-item a:hover {
+    color: #0056b3;
+    text-decoration: none;
 }
 
 /* Error Handling */

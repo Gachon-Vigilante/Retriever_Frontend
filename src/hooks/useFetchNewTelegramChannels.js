@@ -14,8 +14,8 @@ const useFetchNewTelegramChannels = (limit = 4) => {
                     .slice(0, limit);
                 const formattedData = sortedData.map((channel) => ({
                     name: channel.name,
-                    detail: `${new Date(channel.createdAt).toLocaleDateString()}`,
-                    createdAt: channel.createdAt,
+                    detail: `${new Date(channel.updatedAt).toLocaleDateString()}`,
+                    updatedAt: channel.updatedAt,
                 }));
                 setChannels(formattedData);
             } catch (err) {
