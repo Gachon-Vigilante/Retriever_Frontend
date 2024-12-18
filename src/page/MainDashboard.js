@@ -142,7 +142,6 @@ const MainDashboard = () => {
                             <h3>총 탐지 채널</h3>
                             <p>{channelCount}</p>
                         </div>
-
                         <div className="card">
                             <h3>전월 대비 홍보글 증가율</h3>
                             <p>+64%</p>

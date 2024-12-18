@@ -14,7 +14,7 @@ const useFetchNewSlangData = (limit = 4) => {
                     .slice(0, limit);
                 const formattedData = sortedData.map((slang) => ({
                     name: slang.slang,
-                    detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
+                    detail: `${new Date(slang.updatedAt).toLocaleDateString()}`,
                     createdAt: slang.createdAt,
                 }));
                 setSlangData(formattedData);

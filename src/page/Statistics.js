@@ -229,7 +229,9 @@ const Statistics = () => {
                             <option value="all">시간대: 전체</option>
                         </select>
                         <select>
-                            <option value="all">채널: All</option>
+                            <option value="all">종류</option>
+                            <option value="all">채널</option>
+                            <option value="all">포스트</option>
                         </select>
                         <select
                             onChange={(e) => setDrugTypeFilter(e.target.value)}
@@ -260,16 +262,16 @@ const Statistics = () => {
                             <p>{channelCount}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 거래 증가율</h3>
+                            <h3>전월 대비 홍보글 증가율</h3>
                             <p>+64%</p>
                         </div>
                         <div className="card">
-                            <h3>탐지 채널 검거 연계율</h3>
+                            <h3>전월 대비 거래 채널 증가율</h3>
                             <p>86%</p>
                         </div>
                         <div className="card">
-                            <h3>월별 거래 채널 증가율</h3>
-                            <p>+34%</p>
+                            <h3>월간 최다 거래 지역</h3>
+                            <p className="p">서울시 강남구</p>
                         </div>
                     </div>
                     <div className="chart">
