@@ -1,91 +1,111 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import axios from "axios";
-import "../css/page/Channels.css";
+import useFetchPostDetails from "../hooks/useFetchPostDetails";
+import "../css/page/Posts.css";
 
 const Posts = () => {
-    const [channels, setChannels] = useState([]); // Stores list of channels (ChInfo)
-    const [selectedChannel, setSelectedChannel] = useState(null); // Tracks the selected channel
-    const [channelDetails, setChannelDetails] = useState(null); // Stores detailed data for selected channel
+    const {
+        posts,
+        selectedDetails,
+        selectedPost,
+        fetchDetailsByPostId,
+        loading,
+        error,
+    } = useFetchPostDetails();
+    const [selectedPostId, setSelectedPostId] = useState(null);
 
-    useEffect(() => {
-        const fetchChannels = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/channels/all"); // Fetch channel list
-                setChannels(response.data);
-            } catch (error) {
-                console.error("Error fetching channels:", error);
-            }
-        };
-
-        fetchChannels();
-    }, []);
-
-    // Fetch details of the selected channel (ChData) by channelID
-    const fetchChannelDetails = async (channelID) => {
-        try {
-            const response = await axios.get(`/chat/channel/${channelID}`); // Fetch by channelID
-            setChannelDetails(response.data); // Set channel details in state
-        } catch (error) {
-            console.error("Error fetching channel details:", error);
-        }
-    };
-
-    const handleChannelClick = (channel) => {
-        setSelectedChannel(channel.channelId); // Set the selected channelID
-        fetchChannelDetails(channel.channelId); // Fetch details for the selected channel
+    const handlePostClick = (postId) => {
+        setSelectedPostId(postId);
+        fetchDetailsByPostId(postId); // 문자열 그대로 전달
+        console.log("Fetching details for postId:", postId);
     };
 
     return (
-        <div className="channel-page">
+        <div className="posts-page">
             <Sidebar />
-            <main className="channel-main">
-                <header className="channel-header">
-                    <h1>Telegram Channels</h1>
-                    <button className="download-button">Download Channel Data</button>
+            <main className="posts-main">
+                {/* Header */}
+                <header className="posts-header">
+                    <h1>Post Similarity Analysis</h1>
                 </header>
 
-                <section className="channel-list">
-                    <h3>Channel List</h3>
-                    {channels.length === 0 ? (
-                        <p>No channels available</p>
-                    ) : (
-                        <ul>
-                            {channels.map((channel) => (
-                                <li
-                                    key={channel.channelId} // Changed key to use channelId
-                                    className={`channel-item ${
-                                        selectedChannel === channel.channelId ? "active" : ""
-                                    }`}
-                                    onClick={() => handleChannelClick(channel)}
-                                >
-                                    <div className="channel-info">
-                                        <p className="channel-name">{channel.name}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </section>
-
-                <section className="channel-details">
-                    <h3>Selected Channel Details</h3>
-                    {channelDetails ? (
-                        <div>
-                            <p>
-                                <strong>Description:</strong> {channelDetails.description}
-                            </p>
-                            <p>
-                                <strong>Messages:</strong>{" "}
-                                {channelDetails.map((data) => (
-                                    <span key={data.id}>{data.text}</span>
+                <div className="posts-content">
+                    {/* Post List */}
+                    <section className="posts-list">
+                        <h3>Post List</h3>
+                        {loading ? (
+                            <p>Loading posts...</p>
+                        ) : error ? (
+                            <p className="error-message">{error}</p>
+                        ) : (
+                            <ul>
+                                {posts.map((post) => (
+                                    <li
+                                        key={post.id}
+                                        className={`post-item ${
+                                            selectedPostId === post.id
+                                                ? "active"
+                                                : ""
+                                        }`}
+                                        onClick={() => handlePostClick(post.id)}
+                                    >
+                                        <div>
+                                            <p>
+                                                <strong>{post.title}</strong>
+                                            </p>
+                                            <p>
+                                                <strong>Site:</strong>{" "}
+                                                {post.siteName}
+                                            </p>
+                                            <p>
+                                                <strong>Timestamp:</strong>{" "}
+                                                {new Date(
+                                                    post.timestamp
+                                                ).toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </li>
                                 ))}
-                            </p>
-                        </div>
-                    ) : (
-                        <p>Select a channel to view its details</p>
-                    )}
-                </section>
+                            </ul>
+                        )}
+                    </section>
+
+                    {/* Post Details */}
+                    <section className="post-details">
+                        <h3>Similar Posts</h3>
+                        {loading ? (
+                            <p>Loading details...</p>
+                        ) : selectedDetails.length > 0 ? (
+                            <div className="details-content">
+                                <ul>
+                                    {selectedDetails.map((detail, index) => (
+                                        <li key={index} className="detail-item">
+                                            <div className="detail-box">
+                                                <p>
+                                                    <strong>Similar Post:</strong>{" "}
+                                                    {detail.similarPost}
+                                                </p>
+                                                <p>
+                                                    <strong>Similarity:</strong>{" "}
+                                                    {(detail.similarity * 100).toFixed(2)}%
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                                {selectedPost && selectedPost.promoSiteLink && (
+                                    <iframe
+                                        src={`https://${selectedPost.promoSiteLink}`}
+                                        title="Promo Site"
+                                        className="promo-iframe"
+                                    ></iframe>
+                                )}
+                            </div>
+                        ) : (
+                            <p>No similar posts found for this post.</p>
+                        )}
+                    </section>
+                </div>
             </main>
         </div>
     );
