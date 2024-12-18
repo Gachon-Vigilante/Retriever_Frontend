@@ -85,7 +85,7 @@ const Posts = () => {
                                     <p>
                                         <strong>Promo Link:</strong>{" "}
                                         <a
-                                            href={`https://${selectedPost.promoSiteLink}`}
+                                            href={`${selectedPost.promoSiteLink}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
