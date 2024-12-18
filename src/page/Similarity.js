@@ -88,7 +88,7 @@ const Similarity = () => {
                                         src={iframeSrc}
                                         title="Promo Site"
                                         width="100%"
-                                        height="300px"
+                                        height="600px"
                                         style={{ border: "none" }}
                                     />
                                 </div>

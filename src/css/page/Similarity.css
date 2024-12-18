@@ -47,6 +47,7 @@
 
 .iframe-container {
     margin-bottom: 20px;
+    height: 600px;
 }
 
 .similarity-results {
@@ -58,6 +59,7 @@
 .similarity-box {
     border: 1px solid #ccc;
     padding: 10px;
+    margin: 10px;
     border-radius: 5px;
     background-color: #f9f9f9;
 }

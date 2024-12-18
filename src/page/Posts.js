@@ -6,12 +6,12 @@ import "../css/page/Posts.css";
 const Posts = () => {
     const {
         posts,
-        selectedDetails,
         selectedPost,
         fetchDetailsByPostId,
         loading,
         error,
     } = useFetchPostDetails();
+
     const [selectedPostId, setSelectedPostId] = useState(null);
 
     const handlePostClick = (postId) => {
@@ -26,7 +26,7 @@ const Posts = () => {
             <main className="posts-main">
                 {/* Header */}
                 <header className="posts-header">
-                    <h1>Post Similarity Analysis</h1>
+                    <h1>Post Details View</h1>
                 </header>
 
                 <div className="posts-content">
@@ -59,9 +59,7 @@ const Posts = () => {
                                             </p>
                                             <p>
                                                 <strong>Timestamp:</strong>{" "}
-                                                {new Date(
-                                                    post.timestamp
-                                                ).toLocaleString()}
+                                                {post.timestamp}
                                             </p>
                                         </div>
                                     </li>
@@ -72,37 +70,44 @@ const Posts = () => {
 
                     {/* Post Details */}
                     <section className="post-details">
-                        <h3>Similar Posts</h3>
-                        {loading ? (
-                            <p>Loading details...</p>
-                        ) : selectedDetails.length > 0 ? (
+                        <h3>Post Details</h3>
+                        {selectedPost ? (
                             <div className="details-content">
-                                <ul>
-                                    {selectedDetails.map((detail, index) => (
-                                        <li key={index} className="detail-item">
-                                            <div className="detail-box">
-                                                <p>
-                                                    <strong>Similar Post:</strong>{" "}
-                                                    {detail.similarPost}
-                                                </p>
-                                                <p>
-                                                    <strong>Similarity:</strong>{" "}
-                                                    {(detail.similarity * 100).toFixed(2)}%
-                                                </p>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                                {selectedPost && selectedPost.promoSiteLink && (
+                                <div className="detail-box">
+                                    <p>
+                                        <strong>Post Title:</strong>{" "}
+                                        {selectedPost.title}
+                                    </p>
+                                    <p>
+                                        <strong>Site Name:</strong>{" "}
+                                        {selectedPost.siteName}
+                                    </p>
+                                    <p>
+                                        <strong>Promo Link:</strong>{" "}
+                                        <a
+                                            href={`https://${selectedPost.promoSiteLink}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {selectedPost.promoSiteLink}
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <strong>Timestamp:</strong>{" "}
+                                        {selectedPost.timestamp}
+                                    </p>
+                                </div>
+
+                                {selectedPost.link && (
                                     <iframe
-                                        src={`https://${selectedPost.promoSiteLink}`}
+                                        src={`${selectedPost.link}`}
                                         title="Promo Site"
                                         className="promo-iframe"
                                     ></iframe>
                                 )}
                             </div>
                         ) : (
-                            <p>No similar posts found for this post.</p>
+                            <p>Select a post to view its details.</p>
                         )}
                     </section>
                 </div>

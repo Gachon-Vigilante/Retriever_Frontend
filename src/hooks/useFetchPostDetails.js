@@ -8,6 +8,13 @@ const useFetchPostDetails = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const parseDateTime = (dateTime) => {
+        if (!dateTime) return "N/A"; // Return N/A if null or undefined
+        const dateString = dateTime.$date || dateTime; // Check for nested $date
+        const parsedDate = new Date(dateString);
+        return isNaN(parsedDate.getTime()) ? "N/A" : parsedDate.toLocaleString();
+    };
+
     // 1. Fetch post list
     useEffect(() => {
         const fetchPosts = async () => {
@@ -19,7 +26,8 @@ const useFetchPostDetails = () => {
                     title: post.title,
                     siteName: post.siteName,
                     promoSiteLink: post.promoSiteLink,
-                    timestamp: new Date(post.timestamp?.$date).toLocaleString(),
+                    link: post.link,
+                    timestamp: parseDateTime(post.timestamp),
                 }));
                 setPosts(formattedData);
             } catch (err) {
