@@ -86,7 +86,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .progress-bar {
@@ -131,7 +131,7 @@
 
 .rank-number {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     color: #007bff;
 }
 
@@ -141,12 +141,12 @@
 }
 
 .rank-title {
-    font-size: 14px;
+    font-size: 17px;
     font-weight: bold;
 }
 
 .rank-detail {
-    font-size: 12px;
+    font-size: 15px;
     color: gray;
 }
 

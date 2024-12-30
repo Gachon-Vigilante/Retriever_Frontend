@@ -210,14 +210,6 @@ const Statistics = () => {
             return "#ffcd56";
         }
     };
-
-    const latestChannels = [
-        { name: "Jesse Thomas", detail: "637 Points - 98% Correct", change: 1 },
-        { name: "Thisal Mathiyazhagan", detail: "637 Points - 89% Correct", change: 2 },
-        { name: "Helen Chuang", detail: "637 Points - 88% Correct", change: 3 },
-        { name: "Lura Silverman", detail: "637 Points - 85% Correct", change: 4 },
-    ];
-
     return (
         <div className="dashboard">
             <Sidebar />

@@ -70,7 +70,11 @@ const Similarity = () => {
                                     onClick={() => handlePostClick(post)}
                                 >
                                     <p className="item-title">{post.title}</p>
+                                    <p className="item-site">
+                                        <strong>Site:</strong> {post.siteName}
+                                    </p>
                                     <p className="item-timestamp">
+                                        <strong>Timestamp:</strong>{" "}
                                         {new Date(post.timestamp).toLocaleString()}
                                     </p>
                                 </li>
@@ -101,7 +105,10 @@ const Similarity = () => {
                                             {similarPosts.map((similarPost, index) => (
                                                 <li key={index} className="similarity-box">
                                                     <h4>Post ID: {similarPost.similarPost}</h4>
-                                                    <p>Similarity: {(similarPost.similarity * 100).toFixed(2)}%</p>
+                                                    <p>
+                                                        <strong>Similarity:</strong>{" "}
+                                                        {(similarPost.similarity * 100).toFixed(2)}%
+                                                    </p>
                                                 </li>
                                             ))}
                                         </ul>

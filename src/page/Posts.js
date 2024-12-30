@@ -4,19 +4,12 @@ import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
 
 const Posts = () => {
-    const {
-        posts,
-        selectedPost,
-        fetchDetailsByPostId,
-        loading,
-        error,
-    } = useFetchPostDetails();
-
+    const { posts, selectedPost, fetchDetailsByPostId, loading, error } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
 
     const handlePostClick = (postId) => {
         setSelectedPostId(postId);
-        fetchDetailsByPostId(postId); // 문자열 그대로 전달
+        fetchDetailsByPostId(postId); // Fetch post details
         console.log("Fetching details for postId:", postId);
     };
 
@@ -43,23 +36,17 @@ const Posts = () => {
                                     <li
                                         key={post.id}
                                         className={`post-item ${
-                                            selectedPostId === post.id
-                                                ? "active"
-                                                : ""
+                                            selectedPostId === post.id ? "active" : ""
                                         }`}
                                         onClick={() => handlePostClick(post.id)}
                                     >
                                         <div>
-                                            <p>
-                                                <strong>{post.title}</strong>
+                                            <p className="post-title">{post.title}</p>
+                                            <p className="post-site">
+                                                <strong>Site:</strong> {post.siteName}
                                             </p>
-                                            <p>
-                                                <strong>Site:</strong>{" "}
-                                                {post.siteName}
-                                            </p>
-                                            <p>
-                                                <strong>Timestamp:</strong>{" "}
-                                                {post.timestamp}
+                                            <p className="post-timestamp">
+                                                <strong>Timestamp:</strong> {post.timestamp}
                                             </p>
                                         </div>
                                     </li>
@@ -75,12 +62,10 @@ const Posts = () => {
                             <div className="details-content">
                                 <div className="detail-box">
                                     <p>
-                                        <strong>Post Title:</strong>{" "}
-                                        {selectedPost.title}
+                                        <strong>Post Title:</strong> {selectedPost.title}
                                     </p>
                                     <p>
-                                        <strong>Site Name:</strong>{" "}
-                                        {selectedPost.siteName}
+                                        <strong>Site Name:</strong> {selectedPost.siteName}
                                     </p>
                                     <p>
                                         <strong>Promo Link:</strong>{" "}
@@ -93,8 +78,7 @@ const Posts = () => {
                                         </a>
                                     </p>
                                     <p>
-                                        <strong>Timestamp:</strong>{" "}
-                                        {selectedPost.timestamp}
+                                        <strong>Timestamp:</strong> {selectedPost.timestamp}
                                     </p>
                                 </div>
 
