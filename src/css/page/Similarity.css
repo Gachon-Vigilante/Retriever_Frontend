@@ -123,3 +123,36 @@
     font-size: 14px;
     color: #4a5568;
 }
+
+/* General Button Styling */
+.toggle-button {
+    background-color: #007bff; /* Primary color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding for better click area */
+    font-size: 16px; /* Font size for better readability */
+    font-weight: bold; /* Bold text for emphasis */
+    border: none; /* Remove default border */
+    border-radius: 25px; /* Rounded corners for a pill shape */
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth hover and focus transitions */
+}
+
+/* Hover Effect */
+.toggle-button:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Focus Effect */
+.toggle-button:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3); /* Custom focus outline */
+}
+
+/* Active State */
+.toggle-button:active {
+    background-color: #003d80; /* Even darker shade for active state */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+    transform: translateY(2px); /* Slight downward movement */
+}

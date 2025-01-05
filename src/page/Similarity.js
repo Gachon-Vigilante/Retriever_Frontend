@@ -1,85 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Similarity.css";
+import useFetchData from "../hooks/useFetchSimilarityData";
 import axios from "axios";
 
 const Similarity = () => {
-    const [posts, setPosts] = useState([]); // Post data
-    const [selectedPost, setSelectedPost] = useState(null); // Selected post
-    const [similarPosts, setSimilarPosts] = useState([]); // Similar posts
+    const [selectedItem, setSelectedItem] = useState(null); // Selected post or channel
+    const [similarities, setSimilarities] = useState([]); // Similar posts or channels
     const [iframeSrc, setIframeSrc] = useState(""); // Iframe URL
+    const [mode, setMode] = useState("post"); // Current mode: "post" or "channel"
 
-    // Fetch all posts
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/posts/all");
-                setPosts(response.data);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+    // Fetch data using custom hook
+    const { data: posts, loading: postsLoading, error: postsError } = useFetchData(
+        mode === "post" ? "http://localhost:8080/posts/all" : null,
+        [mode]
+    );
+    const { data: channels, loading: channelsLoading, error: channelsError } = useFetchData(
+        mode === "channel" ? "http://localhost:8080/channels/all" : null,
+        [mode]
+    );
 
-        fetchPosts();
-    }, []);
-
-    // Handle post selection
-    const handlePostClick = (post) => {
-        setSelectedPost(post);
-        setIframeSrc(post.link); // Set iframe URL
-        fetchSimilarPosts(post.id);
+    // Toggle between post and channel modes
+    const handleToggle = () => {
+        setMode((prevMode) => (prevMode === "post" ? "channel" : "post"));
+        setSelectedItem(null);
+        setSimilarities([]);
+        setIframeSrc("");
     };
 
-    // Fetch similar posts for selected post
-    const fetchSimilarPosts = async (postId) => {
+    // Fetch similarity details
+    const fetchSimilarities = async (id) => {
         try {
-            // Fetch similar posts from post_similarity table
-            const response = await axios.get(
-                `http://localhost:8080/post-similarity/post/${postId}`
+            const endpoint =
+                mode === "post"
+                    ? `http://localhost:8080/post-similarity/post/${id}`
+                    : `http://localhost:8080/channel-similarity/chId/${id}`;
+            const response = await axios.get(endpoint);
+            const fetchedSimilarities = response.data.similarPosts || response.data.similarChannels;
+
+            // Fetch additional details for each similarity
+            const detailedSimilarities = await Promise.all(
+                fetchedSimilarities.map(async (item) => {
+                    try {
+                        const detailEndpoint = `http://localhost:8080/${
+                            mode === "post" ? "posts" : "channels"
+                        }/${item.similarPost || item.similarChannel}`;
+                        const detailResponse = await axios.get(detailEndpoint);
+                        const details = detailResponse.data;
+
+                        return {
+                            ...item,
+                            link: details.link || "#",
+                            title: details.title || "Unknown Title",
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching details for ${item.similarPost || item.similarChannel}:`, error);
+                        return {
+                            ...item,
+                            link: "#",
+                            title: "Unknown Title",
+                        };
+                    }
+                })
             );
 
-            if (response.data && response.data.similarPosts) {
-                // Fetch details for each similar post from posts table
-                const similarPostsWithDetails = await Promise.all(
-                    response.data.similarPosts.map(async (similarPost) => {
-                        try {
-                            const postResponse = await axios.get(
-                                `http://localhost:8080/posts/${similarPost.similarPost}`
-                            );
-                            const postDetails = postResponse.data;
-
-                            return {
-                                ...similarPost,
-                                link: postDetails.link || "#", // Use '#' if link is missing
-                                title: postDetails.title || "Unknown Title", // Fallback for missing title
-                            };
-                        } catch (error) {
-                            console.error(
-                                `Error fetching post details for ${similarPost.similarPost}:`,
-                                error
-                            );
-                            return {
-                                ...similarPost,
-                                link: "#",
-                                title: "Unknown Title",
-                            };
-                        }
-                    })
-                );
-
-                // Sort similar posts by similarity
-                const sortedSimilarPosts = similarPostsWithDetails.sort(
-                    (a, b) => b.similarity - a.similarity
-                );
-
-                setSimilarPosts(sortedSimilarPosts);
-            } else {
-                setSimilarPosts([]); // No similar posts found
-            }
+            // Sort by similarity and update state
+            setSimilarities(detailedSimilarities.sort((a, b) => b.similarity - a.similarity));
         } catch (error) {
-            console.error("Error fetching similar posts:", error);
-            setSimilarPosts([]); // Reset similar posts on error
+            console.error(`Error fetching ${mode} similarities:`, error);
+            setSimilarities([]);
         }
+    };
+
+    // Handle item (post or channel) selection
+    const handleItemClick = (item) => {
+        setSelectedItem(item);
+        setIframeSrc(item.link || "");
+        fetchSimilarities(item.id);
     };
 
     return (
@@ -89,37 +86,47 @@ const Similarity = () => {
                 {/* Header */}
                 <header className="similarity-header">
                     <h1>Similarity Analysis</h1>
+                    <button className="toggle-button" onClick={handleToggle}>
+                        {mode === "post" ? "Switch to Channel Similarity" : "Switch to Post Similarity"}
+                    </button>
                 </header>
 
                 <div className="content">
-                    {/* Post List */}
+                    {/* Item List */}
                     <aside className="item-list">
-                        <h3>Posts</h3>
-                        <ul>
-                            {posts.map((post) => (
-                                <li
-                                    key={post.id}
-                                    className={`item ${selectedPost?.id === post.id ? "selected" : ""}`}
-                                    onClick={() => handlePostClick(post)}
-                                >
-                                    <p className="item-title">{post.title}</p>
-                                    <p className="item-site">
-                                        <strong>Site:</strong> {post.siteName}
-                                    </p>
-                                    <p className="item-timestamp">
-                                        <strong>Timestamp:</strong>{" "}
-                                        {new Date(post.timestamp).toLocaleString()}
-                                    </p>
-                                </li>
-                            ))}
-                        </ul>
+                        <h3>{mode === "post" ? "Posts" : "Channels"}</h3>
+                        {mode === "post" && postsError && <p>{postsError}</p>}
+                        {mode === "channel" && channelsError && <p>{channelsError}</p>}
+                        {(mode === "post" ? postsLoading : channelsLoading) ? (
+                            <p>Loading...</p>
+                        ) : (
+                            <ul>
+                                {(mode === "post" ? posts : channels).map((item) => (
+                                    <li
+                                        key={item.id}
+                                        className={`item ${
+                                            selectedItem?.id === item.id ? "selected" : ""
+                                        }`}
+                                        onClick={() => handleItemClick(item)}
+                                    >
+                                        <p className="item-title">{item.title}</p>
+                                        <p className="item-site">
+                                            <strong>Site:</strong> {item.siteName || "Unknown Site"}
+                                        </p>
+                                        <p className="item-timestamp">
+                                            <strong>Timestamp:</strong>{" "}
+                                            {new Date(item.timestamp).toLocaleString()}
+                                        </p>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </aside>
 
                     {/* Similarity Details */}
                     <section className="similarity-details">
-                        {selectedPost ? (
+                        {selectedItem ? (
                             <>
-                                {/* Iframe for promoSiteLink */}
                                 <div className="iframe-container">
                                     <iframe
                                         src={iframeSrc}
@@ -129,38 +136,38 @@ const Similarity = () => {
                                         style={{ border: "none" }}
                                     />
                                 </div>
-
-                                {/* Similarity Results */}
-                                <h3>Similarity Results for: {selectedPost.title}</h3>
+                                <h3>
+                                    Similarity Results for: {selectedItem.title || "Unknown Title"}
+                                </h3>
                                 <div className="similarity-results">
-                                    {similarPosts.length > 0 ? (
+                                    {similarities.length > 0 ? (
                                         <ul>
-                                            {similarPosts.map((similarPost, index) => (
+                                            {similarities.map((similar, index) => (
                                                 <li key={index} className="similarity-box">
                                                     <h4>
                                                         <a
-                                                            href={similarPost.link}
+                                                            href={similar.link}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="similarity-link"
                                                         >
-                                                            {similarPost.title}
+                                                            {similar.title}
                                                         </a>
                                                     </h4>
                                                     <p>
                                                         <strong>Similarity:</strong>{" "}
-                                                        {(similarPost.similarity * 100).toFixed(2)}%
+                                                        {(similar.similarity * 100).toFixed(2)}%
                                                     </p>
                                                 </li>
                                             ))}
                                         </ul>
                                     ) : (
-                                        <p>No similar posts found.</p>
+                                        <p>No similar {mode === "post" ? "posts" : "channels"} found.</p>
                                     )}
                                 </div>
                             </>
                         ) : (
-                            <p>Select a post to analyze similarity.</p>
+                            <p>Select a {mode === "post" ? "post" : "channel"} to analyze similarity.</p>
                         )}
                     </section>
                 </div>
