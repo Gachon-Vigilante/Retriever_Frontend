@@ -33,19 +33,52 @@ const Similarity = () => {
     // Fetch similar posts for selected post
     const fetchSimilarPosts = async (postId) => {
         try {
+            // Fetch similar posts from post_similarity table
             const response = await axios.get(
                 `http://localhost:8080/post-similarity/post/${postId}`
             );
+
             if (response.data && response.data.similarPosts) {
-                const sortedSimilarPosts = response.data.similarPosts.sort(
+                // Fetch details for each similar post from posts table
+                const similarPostsWithDetails = await Promise.all(
+                    response.data.similarPosts.map(async (similarPost) => {
+                        try {
+                            const postResponse = await axios.get(
+                                `http://localhost:8080/posts/${similarPost.similarPost}`
+                            );
+                            const postDetails = postResponse.data;
+
+                            return {
+                                ...similarPost,
+                                link: postDetails.link || "#", // Use '#' if link is missing
+                                title: postDetails.title || "Unknown Title", // Fallback for missing title
+                            };
+                        } catch (error) {
+                            console.error(
+                                `Error fetching post details for ${similarPost.similarPost}:`,
+                                error
+                            );
+                            return {
+                                ...similarPost,
+                                link: "#",
+                                title: "Unknown Title",
+                            };
+                        }
+                    })
+                );
+
+                // Sort similar posts by similarity
+                const sortedSimilarPosts = similarPostsWithDetails.sort(
                     (a, b) => b.similarity - a.similarity
                 );
+
                 setSimilarPosts(sortedSimilarPosts);
             } else {
-                setSimilarPosts([]);
+                setSimilarPosts([]); // No similar posts found
             }
         } catch (error) {
             console.error("Error fetching similar posts:", error);
+            setSimilarPosts([]); // Reset similar posts on error
         }
     };
 
@@ -104,7 +137,16 @@ const Similarity = () => {
                                         <ul>
                                             {similarPosts.map((similarPost, index) => (
                                                 <li key={index} className="similarity-box">
-                                                    <h4>Post ID: {similarPost.similarPost}</h4>
+                                                    <h4>
+                                                        <a
+                                                            href={similarPost.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="similarity-link"
+                                                        >
+                                                            {similarPost.title}
+                                                        </a>
+                                                    </h4>
                                                     <p>
                                                         <strong>Similarity:</strong>{" "}
                                                         {(similarPost.similarity * 100).toFixed(2)}%

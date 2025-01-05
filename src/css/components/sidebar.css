@@ -4,7 +4,7 @@
     flex-direction: column;
     width: 250px;
     height: auto; /* Full height to fit the screen */
-    background-color: white;
+    /*background-color: white;*/
     padding: 20px;
     box-sizing: border-box; /* Includes padding in height calculation */
     justify-content: space-between; /* Space between main sections */

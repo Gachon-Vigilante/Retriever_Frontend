@@ -3,7 +3,6 @@ import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
 import useFetchChannels from "../hooks/useFetchChannels";
-import { marked } from "marked";
 
 const AiChat = () => {
     const [selectedChannel, setSelectedChannel] = useState(null);
@@ -17,18 +16,18 @@ const AiChat = () => {
             <main className="ai-chat-main">
                 <header className="ai-chat-header">
                     <h1>Ai Chat</h1>
-                    <div className="filters">
-                        <select>
-                            <option value="all">채널: All</option>
-                            <option value="arrested">채널: 검거</option>
-                            <option value="not-arrested">채널: 미검거</option>
-                        </select>
-                        <select>
-                            <option value="all">마약 종류: All</option>
-                            <option value="drug">마약 종류: 항정신성의약품</option>
-                            <option value="marijuana">마약 종류: 대마</option>
-                        </select>
-                    </div>
+                    {/*<div className="filters">*/}
+                    {/*    <select>*/}
+                    {/*        <option value="all">채널: All</option>*/}
+                    {/*        <option value="arrested">채널: 검거</option>*/}
+                    {/*        <option value="not-arrested">채널: 미검거</option>*/}
+                    {/*    </select>*/}
+                    {/*    <select>*/}
+                    {/*        <option value="all">마약 종류: All</option>*/}
+                    {/*        <option value="drug">마약 종류: 항정신성의약품</option>*/}
+                    {/*        <option value="marijuana">마약 종류: 대마</option>*/}
+                    {/*    </select>*/}
+                    {/*</div>*/}
                     <button className="download-button">Download</button>
                 </header>
                 <div className="ai-chat-content">
