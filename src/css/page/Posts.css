@@ -2,7 +2,6 @@
 .posts-page {
     display: flex;
     height: 100vh;
-    background-color: #f3f4f6; /* Light gray background */
 }
 
 .posts-main {
@@ -10,7 +9,7 @@
     flex-direction: column;
     flex: 1;
     padding: 20px;
-    background-color: #ffffff; /* White background */
+    background-color: #f3f4f6;
 }
 
 /* Header */

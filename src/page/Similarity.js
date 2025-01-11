@@ -85,7 +85,7 @@ const Similarity = () => {
             <main className="similarity-main">
                 {/* Header */}
                 <header className="similarity-header">
-                    <h1>Similarity Analysis</h1>
+                    <h1>유사도 분석</h1>
                     <button className="toggle-button" onClick={handleToggle}>
                         {mode === "post" ? "채널 유사도 분석" : "게시글 유사도 분석"}
                     </button>
@@ -94,7 +94,7 @@ const Similarity = () => {
                 <div className="content">
                     {/* Item List */}
                     <aside className="item-list">
-                        <h3>{mode === "post" ? "Posts" : "Channels"}</h3>
+                        <h3>{mode === "post" ? "게시글" : "채널"}</h3>
                         {mode === "post" && postsError && <p>{postsError}</p>}
                         {mode === "channel" && channelsError && <p>{channelsError}</p>}
                         {(mode === "post" ? postsLoading : channelsLoading) ? (
@@ -137,7 +137,7 @@ const Similarity = () => {
                                     />
                                 </div>
                                 <h3>
-                                    Similarity Results for: {selectedItem.title || "Unknown Title"}
+                                    유사도 분석 결과: {selectedItem.title || "Unknown Title"}
                                 </h3>
                                 <div className="similarity-results">
                                     {similarities.length > 0 ? (
@@ -155,19 +155,19 @@ const Similarity = () => {
                                                         </a>
                                                     </h4>
                                                     <p>
-                                                        <strong>Similarity:</strong>{" "}
+                                                        <strong>유사도:</strong>{" "}
                                                         {(similar.similarity * 100).toFixed(2)}%
                                                     </p>
                                                 </li>
                                             ))}
                                         </ul>
                                     ) : (
-                                        <p>No similar {mode === "post" ? "posts" : "channels"} found.</p>
+                                        <p>유사한 {mode === "post" ? "게시글" : "채널"} 정보가 없습니다.</p>
                                     )}
                                 </div>
                             </>
                         ) : (
-                            <p>Select a {mode === "post" ? "post" : "channel"} to analyze similarity.</p>
+                            <p>{mode === "post" ? "게시글" : "채널"}을 선택해 주세요.</p>
                         )}
                     </section>
                 </div>

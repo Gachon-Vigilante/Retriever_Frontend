@@ -44,7 +44,7 @@
 }
 
 .menu-item.active {
-    background-color: #007bff;
+    background-color: #00BAEA;
     color: white;
 }
 
@@ -64,6 +64,7 @@
 
 .submenu li {
     margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .submenu li a {

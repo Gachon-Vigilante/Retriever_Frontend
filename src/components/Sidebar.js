@@ -12,8 +12,8 @@ const Sidebar = () => {
         {
             name: "실시간 마약 거래 현황",
             subItems: [
-                { name: "신규 텔레그램 채널", path: "/channels" },
-                { name: "신규 탐지 게시글", path: "/posts" },
+                { name: "텔레그램 채널", path: "/channels" },
+                { name: "거래 게시글", path: "/posts" },
             ],
         },
         {

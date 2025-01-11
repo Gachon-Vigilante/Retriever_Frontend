@@ -80,12 +80,12 @@ export default function Chat() {
             <div className="chat-input">
                 <input
                     type="text"
-                    placeholder="Type your message..."
+                    placeholder="메세지를 입력해 주세요."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <button onClick={handleSendMessage}>보내기</button>
             </div>
         </div>
     );

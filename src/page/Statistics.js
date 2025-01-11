@@ -146,23 +146,6 @@ const Statistics = () => {
             }
         };
 
-        //현재 임의로 주석처리. 차후 useFetchNewSlangData.js와 합칠 예정
-        // const fetchNewSlangData = async () => {
-        //     try {
-        //         const response = await axios.get("http://localhost:8080/slangs/all");
-        //         const formattedData = response.data
-        //             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt descending
-        //             .map((slang) => ({
-        //                 name: slang.slang,
-        //                 detail: `${new Date(slang.createdAt).toLocaleDateString()}`,
-        //                 change: Math.random() > 0.5 ? 1 : -1,
-        //             }));
-        //         setNewSlangData(formattedData);
-        //     } catch (error) {
-        //         console.error("Error fetching new slang data:", error);
-        //     }
-        // };
-
         const fetchDrugData = async () => {
             try {
                 const url =
@@ -217,7 +200,7 @@ const Statistics = () => {
             <Sidebar />
             <main className="main">
                 <header className="header">
-                    <h1>Statistics</h1>
+                    <h1>통계</h1>
                     <div className="filters">
                         <select>
                             <option value="all">시간대: 전체</option>

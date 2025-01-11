@@ -15,7 +15,7 @@ const AiChat = () => {
             <Sidebar />
             <main className="ai-chat-main">
                 <header className="ai-chat-header">
-                    <h1>Ai Chat</h1>
+                    <h1>AI 관리</h1>
                     {/*<div className="filters">*/}
                     {/*    <select>*/}
                     {/*        <option value="all">채널: All</option>*/}
@@ -28,11 +28,11 @@ const AiChat = () => {
                     {/*        <option value="marijuana">마약 종류: 대마</option>*/}
                     {/*    </select>*/}
                     {/*</div>*/}
-                    <button className="download-button">Download</button>
+                    <button className="download-button">데이터 다운로드</button>
                 </header>
                 <div className="ai-chat-content">
                     <div className="channel-list">
-                        <h3>Telegram Channels</h3>
+                        <h3>텔레그램 채널</h3>
                         {loading && <p>Loading channels...</p>}
                         {error && <p>Error loading channels: {error}</p>}
                         <ul>
@@ -55,7 +55,7 @@ const AiChat = () => {
                         </ul>
                     </div>
                     <div className="chat-window">
-                        <h3>Channel AI</h3>
+                        <h3>채널별 AI</h3>
                         {selectedChannel && (
                             <p className="selected-channel-name">
                                 {

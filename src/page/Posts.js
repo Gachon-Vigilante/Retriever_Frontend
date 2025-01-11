@@ -19,13 +19,13 @@ const Posts = () => {
             <main className="posts-main">
                 {/* Header */}
                 <header className="posts-header">
-                    <h1>Post Details View</h1>
+                    <h1>거래 게시글</h1>
                 </header>
 
                 <div className="posts-content">
                     {/* Post List */}
                     <section className="posts-list">
-                        <h3>Post List</h3>
+                        <h3>거래글 목록</h3>
                         {loading ? (
                             <p>Loading posts...</p>
                         ) : error ? (
@@ -57,7 +57,7 @@ const Posts = () => {
 
                     {/* Post Details */}
                     <section className="post-details">
-                        <h3>Post Details</h3>
+                        <h3>게시글 상세</h3>
                         {selectedPost ? (
                             <div className="details-content">
                                 <div className="detail-box">
@@ -91,7 +91,7 @@ const Posts = () => {
                                 )}
                             </div>
                         ) : (
-                            <p>Select a post to view its details.</p>
+                            <p>게시글을 선택해 주세요.</p>
                         )}
                     </section>
                 </div>

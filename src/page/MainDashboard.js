@@ -32,7 +32,7 @@ const RankList = ({ title, items, link }) => {
                 ))}
             </ul>
             <a href={link} className="view-link">
-                View full leaderboard
+                전체 목록 확인
             </a>
         </div>
     );
@@ -75,18 +75,18 @@ const MainDashboard = () => {
             type: "bar",
             data: {
                 labels: [
-                    "JAN",
-                    "FEB",
-                    "MAR",
-                    "APR",
-                    "MAY",
-                    "JUN",
-                    "JUL",
-                    "AUG",
-                    "SEP",
-                    "OCT",
-                    "NOV",
-                    "DEC",
+                    "1월",
+                    "2월",
+                    "3월",
+                    "4월",
+                    "5월",
+                    "6월",
+                    "7월",
+                    "8월",
+                    "9월",
+                    "10월",
+                    "11월",
+                    "12월",
                 ],
                 datasets: [
                     {
@@ -124,7 +124,7 @@ const MainDashboard = () => {
             <Sidebar />
             <main className="main">
                 <header className="header">
-                    <h1>Live Analytics</h1>
+                    <h1>실시간 거래 현황</h1>
                     <button className="download">Download</button>
                 </header>
 
@@ -143,7 +143,7 @@ const MainDashboard = () => {
                             <p>{channelCount}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 홍보글 증가율</h3>
+                            <h3>전월 대비 홍보 게시글 증가율</h3>
                             <p>+64%</p>
                         </div>
                         <div className="card">
