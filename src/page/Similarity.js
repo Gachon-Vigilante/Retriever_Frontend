@@ -87,7 +87,7 @@ const Similarity = () => {
                 <header className="similarity-header">
                     <h1>Similarity Analysis</h1>
                     <button className="toggle-button" onClick={handleToggle}>
-                        {mode === "post" ? "Switch to Channel Similarity" : "Switch to Post Similarity"}
+                        {mode === "post" ? "채널 유사도 분석" : "게시글 유사도 분석"}
                     </button>
                 </header>
 
