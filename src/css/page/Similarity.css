@@ -2,7 +2,7 @@
 .similarity-page {
     display: flex;
     height: 100vh;
-    background-color: #f3f4f6; /* Light gray */
+    /*background-color: #f3f4f6; !* Light gray *!*/
 }
 
 .similarity-main {
@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #ffffff; /* White background */
+    background-color: #f3f4f6; /* White background */
 }
 
 /* Header */
@@ -31,15 +31,17 @@
 .content {
     display: flex;
     gap: 20px;
-    flex: 1;
+    height: 100%; /* Ensure the content takes full height of its container */
+    overflow: hidden; /* Prevent content overflow */
 }
 
 /* Post List */
 .item-list {
-    width: 30%;
+    width: 30%; /* Fixed width for the item list */
+    max-height: 100%; /* Ensures it does not exceed the parent container */
     border-right: 1px solid #e2e8f0;
     padding: 10px;
-    overflow-y: auto;
+    overflow-y: auto; /* Adds vertical scrolling for the list */
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -86,10 +88,11 @@
 .similarity-details {
     flex: 1;
     padding: 15px;
+    max-height: 100%; /* Prevents details from overflowing the container */
+    overflow-y: auto; /* Adds vertical scrolling for the details section */
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
 }
 
 .iframe-container {

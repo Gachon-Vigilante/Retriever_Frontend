@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { menuItems } from "./columns/MenuItems";
 import "../css/components/sidebar.css";
 
 const Sidebar = () => {
@@ -7,28 +8,6 @@ const Sidebar = () => {
 
     // State to track which main menu is expanded
     const [expandedMenu, setExpandedMenu] = useState(null);
-
-    const menuItems = [
-        {
-            name: "실시간 마약 거래 현황",
-            subItems: [
-                { name: "텔레그램 채널", path: "/channels" },
-                { name: "거래 게시글", path: "/posts" },
-            ],
-        },
-        {
-            name: "AI 관리",
-            path: "/aichat",
-        },
-        {
-            name: "통계",
-            path: "/statistics",
-        },
-        {
-            name: "유사도 분석",
-            path: "/similarity",
-        },
-    ];
 
     // Ensure the correct menu is expanded based on current location
     useEffect(() => {
@@ -55,65 +34,61 @@ const Sidebar = () => {
                 />
             </Link>
             <nav className="menu">
-                <ul>
-                    {menuItems.map((menuItem) => (
-                        <li key={menuItem.name} className="menu-item-container">
-                            {menuItem.subItems ? (
-                                <>
-                                    {/* Main menu item */}
-                                    <div
-                                        className={`menu-item ${
-                                            expandedMenu === menuItem.name ||
-                                            menuItem.subItems.some(
-                                                (subItem) => location.pathname === subItem.path
-                                            )
-                                                ? "active"
-                                                : ""
-                                        }`}
-                                        onClick={() => handleMenuClick(menuItem.name)}
-                                    >
-                                        {menuItem.name}
-                                    </div>
-                                    {/* Submenu items with smooth animation */}
-                                    <ul
-                                        className={`submenu ${
-                                            expandedMenu === menuItem.name ? "expanded" : ""
-                                        }`}
-                                        style={{
-                                            maxHeight:
-                                                expandedMenu === menuItem.name
-                                                    ? `${menuItem.subItems.length * 40}px`
-                                                    : "0",
-                                        }}
-                                    >
-                                        {menuItem.subItems.map((subItem) => (
-                                            <li
-                                                key={subItem.name}
-                                                className={`${
-                                                    location.pathname === subItem.path
-                                                        ? "active"
-                                                        : ""
-                                                }`}
-                                            >
-                                                <Link to={subItem.path}>{subItem.name}</Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </>
-                            ) : (
-                                // Main menu without submenus
-                                <Link
-                                    to={menuItem.path}
+                {menuItems.map((menuItem) => (
+                    <div key={menuItem.name} className="menu-item-container">
+                        {menuItem.subItems ? (
+                            <>
+                                {/* Main menu item */}
+                                <div
                                     className={`menu-item ${
-                                        location.pathname === menuItem.path ? "active" : ""
+                                        expandedMenu === menuItem.name ||
+                                        menuItem.subItems.some(
+                                            (subItem) => location.pathname === subItem.path
+                                        )
+                                            ? "active"
+                                            : ""
                                     }`}
+                                    onClick={() => handleMenuClick(menuItem.name)}
                                 >
                                     {menuItem.name}
-                                </Link>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                                </div>
+                                {/* Submenu items */}
+                                <div
+                                    className={`submenu ${
+                                        expandedMenu === menuItem.name ? "expanded" : ""
+                                    }`}
+                                    style={{
+                                        maxHeight:
+                                            expandedMenu === menuItem.name
+                                                ? `${menuItem.subItems.length * 40}px`
+                                                : "0",
+                                    }}
+                                >
+                                    {menuItem.subItems.map((subItem) => (
+                                        <div
+                                            key={subItem.name}
+                                            className={`submenu-item ${
+                                                location.pathname === subItem.path ? "active" : ""
+                                            }`}
+                                        >
+                                            <Link to={subItem.path}>{subItem.name}</Link>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            // Main menu without submenus
+                            <Link
+                                to={menuItem.path}
+                                className={`menu-item ${
+                                    location.pathname === menuItem.path ? "active" : ""
+                                }`}
+                            >
+                                {menuItem.name}
+                            </Link>
+                        )}
+                    </div>
+                ))}
             </nav>
             <div className="user-info">
                 <img

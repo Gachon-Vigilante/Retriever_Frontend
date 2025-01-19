@@ -3,10 +3,11 @@
     display: flex;
     flex-direction: column;
     width: 250px;
-    height: 100vh;
+    min-height: 100%; /* Matches the content height of the page */
     padding: 20px;
     background-color: white;
     color: #3f4d67;
+    box-sizing: border-box;
 }
 
 /* Logo */
@@ -17,84 +18,86 @@
 }
 
 /* Menu */
-.menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.menu {
+    flex-grow: 1;
 }
 
 .menu-item-container {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Consistent spacing between items */
 }
 
+/* Main menu item */
 .menu-item {
     cursor: pointer;
     font-size: 16px;
-    padding: 10px 15px;
+    padding: 15px;
     border-radius: 8px;
     color: black;
     background-color: transparent;
     transition: background-color 0.3s ease, color 0.3s ease;
-    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none; /* Remove underline */
 }
 
 .menu-item:hover {
     background-color: #007bff;
     color: white;
+    text-decoration: none; /* Ensure underline is not added on hover */
 }
 
 .menu-item.active {
     background-color: #00BAEA;
     color: white;
+    text-decoration: none; /* Ensure underline is not added for active state */
 }
 
 /* Submenu */
 .submenu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    padding-left: 10px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
 
 .submenu.expanded {
-    max-height: 200px; /* Adjust to allow enough height for submenu items */
+    max-height: 200px; /* Adjust this based on expected submenu height */
 }
 
-.submenu li {
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-
-.submenu li a {
-    text-decoration: none;
-    color: #3f4d67;
+/* Submenu item */
+.submenu-item {
     font-size: 14px;
-    display: block;
-    padding: 5px 10px;
+    padding: 10px 15px;
     border-radius: 5px;
+    color: #3f4d67;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.submenu li a:hover {
+.submenu-item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.submenu-item:hover {
     background-color: #007bff;
     color: white;
 }
 
-.submenu li.active a {
+.submenu-item.active {
     background-color: #007bff;
     color: white;
 }
 
 /* User Info */
 .user-info {
+    margin-top: auto; /* Pushes the user-info section to the bottom */
     display: flex;
     align-items: center;
     padding-top: 15px;
     border-top: 1px solid #e0e0e0;
-    margin-top: auto;
     color: black;
+    background-color: white;
 }
 
 .profile-image {
