@@ -1,28 +1,75 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
+import useFetchBookmarks from "../hooks/useFetchBookmarks";
 import "../css/page/Channels.css";
+import axios from "axios";
 
 const Channels = () => {
     const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } =
         useFetchChannelDetails();
     const [selectedChannelId, setSelectedChannelId] = useState(null);
 
-    // Search states
-    const [searchName, setSearchName] = useState(""); // Search by name
-    const [searchId, setSearchId] = useState(""); // Search by ID
-    const [searchLink, setSearchLink] = useState(""); // Search by link
-    const [filteredChannels, setFilteredChannels] = useState(channels); // Filtered list
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+    const [searchName, setSearchName] = useState("");
+    const [searchId, setSearchId] = useState("");
+    const [searchLink, setSearchLink] = useState("");
+    const [filteredChannels, setFilteredChannels] = useState([]);
 
-    // Perform search based on all inputs
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const userId = "admin";
+    const { bookmarks, setBookmarks, loading: bookmarksLoading, error: bookmarksError } =
+        useFetchBookmarks(userId);
+
+    // Check if a channel is bookmarked
+    const isBookmarked = (channelId) =>
+        bookmarks.some((bookmark) => bookmark.channelId === channelId);
+
+    // Toggle bookmark
+    const toggleBookmark = async (channel) => {
+        try {
+            if (isBookmarked(channel.id)) {
+                const bookmark = bookmarks.find(
+                    (bookmark) => bookmark.channelId === channel.id
+                );
+                await axios.delete(
+                    `http://localhost:8080/bookmarks/delete/${bookmark.id}`
+                );
+                setBookmarks((prev) =>
+                    prev.filter((b) => b.channelId !== channel.id)
+                );
+            } else {
+                const newBookmark = {
+                    channelId: channel.id,
+                    userId: userId,
+                };
+                await axios.post("http://localhost:8080/bookmarks/add", newBookmark);
+                setBookmarks((prev) => [...prev, newBookmark]);
+            }
+        } catch (error) {
+            console.error("Error toggling bookmark:", error);
+        }
+    };
+
+    // Sort channels to show bookmarked channels first
+    const sortChannels = (channels) => {
+        return [...channels].sort((a, b) => {
+            const aBookmarked = isBookmarked(a.id);
+            const bBookmarked = isBookmarked(b.id);
+            if (aBookmarked && !bBookmarked) return -1;
+            if (!aBookmarked && bBookmarked) return 1;
+            return 0;
+        });
+    };
+
+    // Perform search and sort results
     const handleSearch = () => {
         const filtered = channels.filter((channel) => {
             const matchesName =
                 searchName.trim() === "" ||
                 channel.name.toLowerCase().includes(searchName.toLowerCase());
             const matchesId =
-                searchId.trim() === "" || channel.id.toLowerCase().includes(searchId.toLowerCase());
+                searchId.trim() === "" ||
+                channel.id.toLowerCase().includes(searchId.toLowerCase());
             const matchesLink =
                 searchLink.trim() === "" ||
                 channel.link.toLowerCase().includes(searchLink.toLowerCase());
@@ -30,28 +77,25 @@ const Channels = () => {
         });
 
         if (filtered.length === 0) {
-            setIsModalOpen(true); // Show modal if no results
+            setIsModalOpen(true);
         } else {
-            setFilteredChannels(filtered); // Update the filtered list
+            setFilteredChannels(sortChannels(filtered)); // Sort filtered results
         }
     };
 
-    // Handle Enter key press in any input
-    const handleKeyPress = (e) => {
-        if (e.key === "Enter") {
-            handleSearch();
+    // Initial sorting when channels are loaded
+    useEffect(() => {
+        if (channels.length > 0) {
+            setFilteredChannels(sortChannels(channels));
         }
-    };
+    }, [channels, bookmarks]);
 
-    // Close modal
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+    const closeModal = () => setIsModalOpen(false);
 
     // Handle channel click
     const handleChannelClick = (channelId) => {
         setSelectedChannelId(channelId);
-        fetchDetailsByChannelId(channelId);
+        fetchDetailsByChannelId(channelId); // Ensure details are fetched
     };
 
     return (
@@ -62,32 +106,26 @@ const Channels = () => {
                 <header className="channel-header">
                     <h1>텔레그램 채널</h1>
                     <div className="search-container">
-                        {/* Search by Name */}
                         <input
                             type="text"
                             className="search-input"
                             placeholder="채널 이름 검색"
                             value={searchName}
                             onChange={(e) => setSearchName(e.target.value)}
-                            onKeyPress={handleKeyPress}
                         />
-                        {/* Search by ID */}
                         <input
                             type="text"
                             className="search-input"
                             placeholder="채널 ID 검색"
                             value={searchId}
                             onChange={(e) => setSearchId(e.target.value)}
-                            onKeyPress={handleKeyPress}
                         />
-                        {/* Search by Link */}
                         <input
                             type="text"
                             className="search-input"
                             placeholder="채널 링크 검색"
                             value={searchLink}
                             onChange={(e) => setSearchLink(e.target.value)}
-                            onKeyPress={handleKeyPress}
                         />
                         <button className="search-button" onClick={handleSearch}>
                             검색
@@ -98,39 +136,46 @@ const Channels = () => {
 
                 {/* Content */}
                 <div className="channel-content">
-                    {/* Channel List */}
                     <section className="channel-list">
                         <h3>채널 리스트</h3>
-                        {loading && !selectedChannelId ? (
+                        {loading ? (
                             <p>Loading channels...</p>
                         ) : error ? (
                             <p className="error-message">{error}</p>
                         ) : (
                             <ul>
-                                {(filteredChannels.length > 0 ? filteredChannels : channels).map(
-                                    (channel) => (
-                                        <li
-                                            key={channel.id}
-                                            className={`channel-item ${
-                                                selectedChannelId === channel.id ? "active" : ""
+                                {filteredChannels.map((channel) => (
+                                    <li
+                                        key={channel.id}
+                                        className={`channel-item ${
+                                            selectedChannelId === channel.id ? "active" : ""
+                                        }`}
+                                        onClick={() => handleChannelClick(channel.id)} // Ensure click triggers
+                                    >
+                                        <div>
+                                            <p className="channel-name">{channel.name}</p>
+                                            <p className="channel-link">Link: {channel.link}</p>
+                                            <p className="channel-updated">
+                                                Updated: {channel.updatedAt}
+                                            </p>
+                                        </div>
+                                        <button
+                                            className={`bookmark-button ${
+                                                isBookmarked(channel.id) ? "bookmarked" : ""
                                             }`}
-                                            onClick={() => handleChannelClick(channel.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent triggering channel click
+                                                toggleBookmark(channel);
+                                            }}
                                         >
-                                            <div>
-                                                <p className="channel-name">{channel.name}</p>
-                                                <p className="channel-link">Link: {channel.link}</p>
-                                                <p className="channel-updated">
-                                                    Updated: {channel.updatedAt}
-                                                </p>
-                                            </div>
-                                        </li>
-                                    )
-                                )}
+                                            {isBookmarked(channel.id) ? "★" : "☆"}
+                                        </button>
+                                    </li>
+                                ))}
                             </ul>
                         )}
                     </section>
 
-                    {/* Channel Details */}
                     <section className="channel-details">
                         <h3>채널 상세 정보</h3>
                         {loading && selectedChannelId ? (
@@ -159,19 +204,19 @@ const Channels = () => {
                         )}
                     </section>
                 </div>
-            </main>
 
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <p>검색 결과가 없습니다.</p>
-                        <button className="close-button" onClick={closeModal}>
-                            닫기
-                        </button>
+                {/* Modal */}
+                {isModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <p>검색 결과가 없습니다.</p>
+                            <button className="close-button" onClick={closeModal}>
+                                닫기
+                            </button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </main>
         </div>
     );
 };
