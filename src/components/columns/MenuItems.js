@@ -18,4 +18,8 @@ export const menuItems = [
         name: "유사도 분석",
         path: "/similarity",
     },
+    {
+        name: "유사도 빅데이터 확인",
+        path: "/channel-similarities",
+    }
 ];

@@ -9,6 +9,7 @@ import {Settings} from "./page/Setting";
 import Channels from "./page/Channels";
 import Similarity from "./page/Similarity";
 import Posts from "./page/Posts";
+import ChannelSimilarities from "./page/ChannelSimilarities";
 
 function AppRouter() {
     return (
@@ -22,6 +23,7 @@ function AppRouter() {
                 <Route path="/similarity" element={<Similarity />} />
                 <Route path="/guide" element={<Guide />} />
                 <Route path="/setting" element={<Settings />} />
+                <Route path="/channel-similarities" element={<ChannelSimilarities />} />
             </Routes>
         </BrowserRouter>
     );
