@@ -10,6 +10,7 @@ import Channels from "./page/Channels";
 import Similarity from "./page/Similarity";
 import Posts from "./page/Posts";
 import ChannelSimilarities from "./page/ChannelSimilarities";
+import NetworkGraph from "./components/NetworkGraph";
 
 function AppRouter() {
     return (
@@ -24,6 +25,7 @@ function AppRouter() {
                 <Route path="/guide" element={<Guide />} />
                 <Route path="/setting" element={<Settings />} />
                 <Route path="/channel-similarities" element={<ChannelSimilarities />} />
+                <Route path="/network-graph" element={<NetworkGraph />} />
             </Routes>
         </BrowserRouter>
     );
