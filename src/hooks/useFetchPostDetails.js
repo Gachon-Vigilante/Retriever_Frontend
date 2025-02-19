@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const useFetchPostDetails = () => {
-    const [posts, setPosts] = useState([]); // Posts list
-    const [selectedDetails, setSelectedDetails] = useState([]); // Similar posts
-    const [selectedPost, setSelectedPost] = useState(null); // Selected post details
+    const [posts, setPosts] = useState([]);
+    const [selectedDetails, setSelectedDetails] = useState([]);
+    const [selectedPost, setSelectedPost] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const parseDateTime = (dateTime) => {
-        if (!dateTime) return "N/A"; // Return N/A if null or undefined
-        const dateString = dateTime.$date || dateTime; // Check for nested $date
+        if (!dateTime) return null; // ✅ 날짜가 없으면 null 반환
+        const dateString = dateTime.$date || dateTime;
         const parsedDate = new Date(dateString);
-        return isNaN(parsedDate.getTime()) ? "N/A" : parsedDate.toLocaleString();
+        return isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString(); // ✅ UTC 형식으로 변환
     };
 
     // 1. Fetch post list
@@ -27,7 +27,7 @@ const useFetchPostDetails = () => {
                     siteName: post.siteName,
                     promoSiteLink: post.promoSiteLink,
                     link: post.link,
-                    timestamp: parseDateTime(post.timestamp),
+                    timestamp: parseDateTime(post.timestamp), // ✅ Date 객체를 ISO 문자열로 변환
                 }));
                 setPosts(formattedData);
             } catch (err) {
@@ -45,9 +45,7 @@ const useFetchPostDetails = () => {
         setLoading(true);
         try {
             const response = await axios.get(`http://localhost:8080/post-similarity/${postId}`);
-
-            // 데이터 안전 확인
-            const similarPosts = response.data?.similarPosts || []; // similarPosts가 undefined일 경우 빈 배열 사용
+            const similarPosts = response.data?.similarPosts || [];
 
             const formattedDetails = similarPosts.map((item) => ({
                 similarPost: item.similarPost,
@@ -55,17 +53,14 @@ const useFetchPostDetails = () => {
             }));
 
             setSelectedDetails(formattedDetails);
-
-            // 선택된 Post 저장
             setSelectedPost(posts.find((post) => post.id === postId));
         } catch (err) {
             setError(`Error fetching similar posts: ${err.message}`);
-            setSelectedDetails([]); // 초기화
+            setSelectedDetails([]);
         } finally {
             setLoading(false);
         }
     };
-
 
     return {
         posts,
