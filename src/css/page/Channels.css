@@ -105,6 +105,7 @@
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    max-height: 80vh;
 }
 
 .channel-details h3 {
@@ -133,6 +134,7 @@
     font-size: 14px;
     margin: 5px 0;
     color: #2d3748;
+    white-space: pre-wrap; /* 원래 줄 바꿈 유지 */
 }
 
 .detail-item a {

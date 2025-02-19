@@ -190,11 +190,11 @@ const Channels = () => {
                                                 {detail.msgUrl}
                                             </a>
                                         </p>
-                                        <p>
+                                        <p style={{whiteSpace: "pre-wrap"}}>
                                             <strong>Text:</strong> {detail.text}
                                         </p>
                                         <p>
-                                            <strong>Timestamp:</strong> {detail.timestamp}
+                                        <strong>Timestamp:</strong> {detail.timestamp}
                                         </p>
                                     </div>
                                 ))}
