@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// Utility function to safely parse date strings
 const parseDateTime = (dateTime) => {
     if (!dateTime) return "N/A"; // Return N/A if null or undefined
     const dateString = dateTime.$date || dateTime; // Check for nested $date
@@ -15,7 +14,6 @@ const useFetchChannelDetails = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // 1. 채널 목록 가져오기 (channel_info 테이블 사용)
     useEffect(() => {
         const fetchChannels = async () => {
             setLoading(true);
@@ -38,20 +36,20 @@ const useFetchChannelDetails = () => {
         fetchChannels();
     }, []);
 
-    // 2. 채널 상세 정보 가져오기 (channel_data 테이블 사용)
     const fetchDetailsByChannelId = async (channelId) => {
         setLoading(true);
         try {
             const response = await axios.get(`http://localhost:8080/chat/channel/${channelId}`);
             const formattedDetails = response.data.map((item) => ({
-                msgUrl: item.msgUrl || "N/A", // Safe fallback for msgUrl
-                text: item.text || "No text available", // Safe fallback for text
-                timestamp: parseDateTime(item.timestamp), // Parse date properly
+                msgUrl: item.msgUrl || "N/A",
+                text: item.text || "No text available",
+                image: item.image ? item.image.replace(/^data:image\/\w+;base64,/, "") : null, // ✅ 중복 프리픽스 제거
+                timestamp: parseDateTime(item.timestamp),
             }));
             setSelectedDetails(formattedDetails);
         } catch (err) {
             setError(`Error fetching channel details: ${err.message}`);
-            setSelectedDetails([]); // Reset details on error
+            setSelectedDetails([]);
         } finally {
             setLoading(false);
         }

@@ -190,11 +190,18 @@ const Channels = () => {
                                                 {detail.msgUrl}
                                             </a>
                                         </p>
-                                        <p style={{whiteSpace: "pre-wrap"}}>
+                                        <p className="channel-text">
                                             <strong>Text:</strong> {detail.text}
                                         </p>
+                                        {detail.image && (
+                                            <img
+                                                src={`data:image/jpeg;base64,${detail.image}`}
+                                                alt="채널 이미지"
+                                                className="channel-image"
+                                            />
+                                        )}
                                         <p>
-                                        <strong>Timestamp:</strong> {detail.timestamp}
+                                            <strong>Timestamp:</strong> {detail.timestamp}
                                         </p>
                                     </div>
                                 ))}
@@ -204,18 +211,6 @@ const Channels = () => {
                         )}
                     </section>
                 </div>
-
-                {/* Modal */}
-                {isModalOpen && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <p>검색 결과가 없습니다.</p>
-                            <button className="close-button" onClick={closeModal}>
-                                닫기
-                            </button>
-                        </div>
-                    </div>
-                )}
             </main>
         </div>
     );

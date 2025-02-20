@@ -114,6 +114,13 @@
     margin-bottom: 15px;
     color: #4a5568;
 }
+.channel-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 /* Chat-like Details Styling */
 .details-content {
@@ -123,11 +130,24 @@
 }
 
 .detail-item {
-    background-color: #e6fffa;
+    background-color: #f0fff4; /* ✅ 연한 녹색 배경 (더 부드럽게) */
     border: 1px solid #38b2ac;
     border-radius: 8px;
     padding: 12px 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.channel-text {
+    font-size: 18px; /* ✅ 글씨 크기 키우기 */
+    font-weight: bold; /* ✅ 글씨 진하게 */
+    color: #1a202c; /* ✅ 더 선명한 색상 (다크 그레이) */
+    line-height: 1.6; /* ✅ 가독성을 위해 줄 간격 조정 */
+    margin-top: 8px; /* ✅ 간격 조정 */
+    white-space: pre-wrap; /* ✅ 원래 줄 바꿈 유지 */
+}
+
+.channel-text strong {
+    color: #007bff; /* ✅ "Text:" 부분을 파란색으로 강조 */
 }
 
 .detail-item p {
