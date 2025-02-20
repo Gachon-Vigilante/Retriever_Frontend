@@ -15,11 +15,16 @@ export const menuItems = [
         path: "/statistics",
     },
     {
-        name: "게시글 유사도 분석",
-        path: "/similarity",
-    },
-    {
-        name: "채널 유사도 분석",
-        path: "/channel-similarities",
+        name: "유사도 분석",
+        subItems: [
+            {
+                name: "게시글 유사도 분석",
+                path: "/similarity",
+            },
+            {
+                name: "채널 유사도 분석",
+                path: "/channel-similarities",
+            }
+        ]
     }
 ];
