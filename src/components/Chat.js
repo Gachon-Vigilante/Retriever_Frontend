@@ -1,17 +1,23 @@
 import { useState } from "react";
 
 export default function Chat() {
-    const apiKey = process.env.REACT_APP_CHAT_API_KEY; // Replace with your API key
-    const apiEndpoint = "https://api.openai.com/v1/chat/completions";
+    const apiEndpoint = "http://127.0.0.1:5000/watson/c";
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState("");
+    const [selectedChannel, setSelectedChannel] = useState(null);  // 선택한 채널 ID
     const [loading, setLoading] = useState(false);
 
     const addMessage = (sender, message) => {
         setMessages((prevMessages) => [...prevMessages, { sender, message }]);
     };
 
+    // 메시지 전송 (action = "ask")
     const handleSendMessage = async () => {
+        if (!selectedChannel) {
+            addMessage("bot", "채널을 먼저 선택해주세요.");
+            return;
+        }
+
         const message = userInput.trim();
         if (message.length === 0) return;
 
@@ -24,32 +30,53 @@ export default function Chat() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${apiKey}`,
                 },
                 body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        {
-                            role: "system",
-                            content: "You are Watson, assisting Sherlock Holmes with great insight.",
-                        },
-                        ...messages.map((msg) => ({
-                            role: msg.sender === "user" ? "user" : "assistant",
-                            content: msg.message,
-                        })),
-                        { role: "user", content: message },
-                    ],
-                    max_tokens: 1024,
-                    temperature: 0.7,
+                    action: "ask",
+                    channel_ids: [String(selectedChannel)],  // String 변환 유지
+                    scope: "global",  // 변경된 scope 반영
+                    question: message,
                 }),
             });
 
             const data = await response.json();
-            const aiResponse = data.choices?.[0]?.message?.content || "No response";
+            const aiResponse = data.answer || "No response from Watson.";  // 변경된 부분
             addMessage("bot", aiResponse);
         } catch (error) {
             console.error("Error occurred:", error);
-            addMessage("bot", "An error occurred while processing your request.");
+            addMessage("bot", "서버 오류가 발생했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 대화 리셋 (action = "reset")
+    const handleResetChat = async () => {
+        if (!selectedChannel) {
+            addMessage("bot", "채널을 먼저 선택해주세요.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    action: "reset",
+                    channel_ids: [selectedChannel],
+                    scope: "local",
+                }),
+            });
+
+            const data = await response.json();
+            addMessage("bot", data.response || "대화가 리셋되었습니다.");
+        } catch (error) {
+            console.error("Error occurred:", error);
+            addMessage("bot", "서버 오류가 발생했습니다.");
         } finally {
             setLoading(false);
         }
@@ -64,7 +91,6 @@ export default function Chat() {
     return (
         <div className="chat-wrapper">
             <div className="chat-messages">
-                {loading && <div className="loading-indicator">Processing your request...</div>}
                 {messages.map((msg, index) => (
                     <div
                         key={index}
@@ -72,9 +98,16 @@ export default function Chat() {
                             msg.sender === "user" ? "user-message" : "bot-message"
                         }`}
                     >
-                        <p>{`${msg.sender === "user" ? "You" : "Watson"}: ${msg.message}`}</p>
+                        <p dangerouslySetInnerHTML={{ __html: msg.message.replace(/\n/g, "<br />") }} />
                     </div>
                 ))}
+            </div>
+
+            {/* 채널 선택 버튼 추가 */}
+            <div className="channel-selection">
+                <button onClick={() => setSelectedChannel(1890652954)} className={selectedChannel === 1890652954 ? "active" : ""}>
+                    채널 1890652954 선택
+                </button>
             </div>
 
             <div className="chat-input">
@@ -86,6 +119,7 @@ export default function Chat() {
                     onKeyDown={handleKeyDown}
                 />
                 <button onClick={handleSendMessage}>보내기</button>
+                <button onClick={handleResetChat}>대화 리셋</button>
             </div>
         </div>
     );

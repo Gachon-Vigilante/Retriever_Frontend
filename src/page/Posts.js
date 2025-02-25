@@ -112,7 +112,7 @@ const Posts = () => {
                                                     <strong>Site:</strong> {post.siteName}
                                                 </p>
                                                 <p className="post-timestamp">
-                                                    <strong>Timestamp:</strong>{" "}
+                                                    <strong>Posted Time:</strong>{" "}
                                                     {new Date(post.timestamp).toLocaleString()}
                                                 </p>
                                             </div>
@@ -138,7 +138,7 @@ const Posts = () => {
                                         <strong>Site Name:</strong> {selectedPost.siteName}
                                     </p>
                                     <p>
-                                        <strong>Timestamp:</strong>{" "}
+                                        <strong>게시일:</strong>{" "}
                                         {new Date(selectedPost.timestamp).toLocaleString()}
                                     </p>
                                     <p>
