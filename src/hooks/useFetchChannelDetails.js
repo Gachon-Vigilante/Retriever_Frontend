@@ -43,7 +43,7 @@ const useFetchChannelDetails = () => {
             const formattedDetails = response.data.map((item) => ({
                 msgUrl: item.msgUrl || "N/A",
                 text: item.text || "No text available",
-                image: item.image ? item.image.replace(/^data:image\/\w+;base64,/, "") : null, // ✅ 중복 프리픽스 제거
+                image: item.image ? item.image.replace(/^data:image\/\w+;base64,/, "") : null,
                 timestamp: parseDateTime(item.timestamp),
             }));
             setSelectedDetails(formattedDetails);

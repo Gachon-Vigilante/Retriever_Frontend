@@ -258,9 +258,10 @@ const Similarity = () => {
             <main className="similarity-main">
                 {/* 헤더 */}
                 <header className="similarity-header">
-                    <h1>게시글 유사도 분석</h1>
+                    <div className="similarity-title">
+                        <h1>게시글 유사도 분석</h1>
+                    </div>
                 </header>
-
                 <div className="content">
                     {/* 게시글 리스트 */}
                     <aside className="item-list">

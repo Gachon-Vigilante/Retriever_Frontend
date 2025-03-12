@@ -28,10 +28,10 @@ const AiChat = () => {
                     {/*        <option value="marijuana">마약 종류: 대마</option>*/}
                     {/*    </select>*/}
                     {/*</div>*/}
-                    <button className="download-button">데이터 다운로드</button>
+                    {/*<button className="download-button">데이터 다운로드</button>*/}
                 </header>
                 <div className="ai-chat-content">
-                    <div className="channel-list">
+                    <div className="chatbot-list">
                         <h3>텔레그램 채널</h3>
                         {loading && <p>Loading channels...</p>}
                         {error && <p>Error loading channels: {error}</p>}

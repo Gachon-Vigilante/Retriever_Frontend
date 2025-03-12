@@ -58,35 +58,42 @@ const Posts = () => {
             <Sidebar />
             <main className="posts-main">
                 {/* 검색 조건 UI 추가 */}
-                <div className="search-container">
-                    <input
-                        type="text"
-                        className="search-input"
-                        placeholder="거래글 제목 검색"
-                        value={searchTitle}
-                        onChange={(e) => setSearchTitle(e.target.value)}
-                    />
-                    <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        className="search-input"
-                        placeholderText="시작 날짜"
-                        dateFormat="yyyy-MM-dd"
-                        showMonthYearDropdown
-                    />
-                    <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        className="search-input"
-                        placeholderText="종료 날짜"
-                        dateFormat="yyyy-MM-dd"
-                        showMonthYearDropdown
-                    />
-                    <button className="search-button" onClick={handleSearch}>
-                        검색
-                    </button>
-                </div>
+                <header className="posts-header">
+                    <div className="posts-title">
+                        <h1>거래 게시글</h1>
+                    </div>
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="거래글 제목 검색"
+                            value={searchTitle}
+                            onChange={(e) => setSearchTitle(e.target.value)}
+                        />
+                        <div className="datepickers">
+                            <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                className="search-input"
+                                placeholderText="시작 날짜"
+                                dateFormat="yyyy-MM-dd"
+                                showMonthYearDropdown
+                            />
+                            <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                className="search-input"
+                                placeholderText="종료 날짜"
+                                dateFormat="yyyy-MM-dd"
+                                showMonthYearDropdown
+                            />
+                        </div>
 
+                        <button className="search-button" onClick={handleSearch}>
+                            검색
+                        </button>
+                    </div>
+                </header>
                 <div className="posts-content">
                     {/* Post List */}
                     <section className="posts-list">

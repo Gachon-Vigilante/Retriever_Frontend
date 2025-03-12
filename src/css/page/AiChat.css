@@ -2,7 +2,7 @@
 .ai-chat-page {
     display: flex;
     height: 100vh;
-    background-color: #f8f9fa;
+    background-color: #f3f4f6;
 }
 
 .ai-chat-main {
@@ -18,6 +18,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
 }
 
 .ai-chat-header .filters {
@@ -51,11 +52,12 @@
     display: grid;
     grid-template-columns: 1fr 2fr; /* Adjust column proportions */
     gap: 20px;
-    padding: 0 20px; /* Match padding with header for uniform alignment */
+    padding: 0 10px; /* Match padding with header for uniform alignment */
     box-sizing: border-box;
+    padding-top: 20px;
 }
 
-.channel-list {
+.chatbot-list {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -64,14 +66,15 @@
     width: 100%; /* Ensure full width within grid */
 }
 
-.channel-list h3 {
+.chatbot-list h3 {
     margin-bottom: 15px;
     font-size: 18px;
     font-weight: bold;
     margin-left: 25px;
+    color: #4a5568;
 }
 
-.channel-list ul {
+.chatbot-list ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -183,4 +186,12 @@
 .chat-input img {
     width: 24px;
     height: 24px;
+}
+
+.button-send {
+    padding: 10px;
+}
+
+.button-reset {
+    padding: 10px;
 }

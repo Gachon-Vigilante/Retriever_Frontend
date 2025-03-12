@@ -86,7 +86,9 @@ const ChannelSimilarities = () => {
             <Sidebar />
             <main className="channel-similarities-main">
                 <header className="channel-similarities-header">
-                    <h1>채널 유사도 분석</h1>
+                    <div className="channel-similarities-title">
+                        <h1>채널 유사도 분석</h1>
+                    </div>
                 </header>
                 <div className="content">
                     {/* 📌 채널 리스트 */}

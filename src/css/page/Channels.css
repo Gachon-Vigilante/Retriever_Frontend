@@ -9,7 +9,7 @@
     flex-direction: column;
     flex: 1;
     padding: 20px;
-    background-color: #f3f4f6; /* Light background */
+    background-color: #f3f4f6;
 }
 
 /* Header */
@@ -20,8 +20,21 @@
     margin-bottom: 20px;
 }
 
-.channel-header h1 {
-    font-size: 24px;
+/*.channel-header h1 {*/
+/*    font-size: 1vw;*/
+/*    font-weight: bold;*/
+/*    color: #2d3748;*/
+/*}*/
+
+.channel-title {
+    display: flex;
+    align-items: center; /* 세로 정렬 */
+    white-space: nowrap; /* 제목이 줄바꿈되지 않도록 설정 */
+}
+
+.channel-title h1 {
+    padding-right: 15px;
+    font-size: 1.5rem; /* 가독성 있는 크기로 조정 */
     font-weight: bold;
     color: #2d3748;
 }
@@ -51,7 +64,7 @@
 /* Channel List */
 .channel-list {
     flex: 1;
-    background-color: #fff;
+    background-color: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     overflow-y: auto;
@@ -60,9 +73,10 @@
 }
 
 .channel-list h3 {
+    margin-bottom: 15px;
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-left: 25px;
     color: #4a5568;
 }
 
@@ -105,7 +119,7 @@
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
-    max-height: 80vh;
+    /*max-height: 80vh;*/
 }
 
 .channel-details h3 {
@@ -179,15 +193,28 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
     background-color: #fff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1; /* 가변 너비 설정 */
 }
 
+.channel-title {
+    display: flex;
+    align-items: center; /* 세로 정렬 */
+    white-space: nowrap; /* 제목이 줄바꿈되지 않도록 설정 */
+}
+
+.channel-title h1 {
+    font-size: 1.5rem; /* 가독성 있는 크기로 조정 */
+    font-weight: bold;
+    color: #2d3748;
+}
+
+
 .search-input {
-    flex: 1;
+    /*flex: 1;*/
     padding: 10px;
     font-size: 14px;
     border: 1px solid #e2e8f0;

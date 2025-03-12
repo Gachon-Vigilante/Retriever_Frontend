@@ -104,7 +104,9 @@ const Channels = () => {
             <main className="channel-main">
                 {/* Header */}
                 <header className="channel-header">
-                    <h1>텔레그램 채널</h1>
+                    <div className="channel-title">
+                        <h1>텔레그램 채널</h1>
+                    </div>
                     <div className="search-container">
                         <input
                             type="text"
@@ -131,7 +133,7 @@ const Channels = () => {
                             검색
                         </button>
                     </div>
-                    <button className="download-button">데이터 다운로드</button>
+                    {/*<button className="download-button">데이터 다운로드</button>*/}
                 </header>
 
                 {/* Content */}
@@ -182,29 +184,50 @@ const Channels = () => {
                             <p>Loading details...</p>
                         ) : selectedDetails.length > 0 ? (
                             <div className="details-content">
-                                {selectedDetails.map((detail, index) => (
-                                    <div key={index} className="detail-item">
-                                        <p>
-                                            <strong>Message URL:</strong>{" "}
-                                            <a href={detail.msgUrl} target="_blank" rel="noreferrer">
-                                                {detail.msgUrl}
-                                            </a>
-                                        </p>
-                                        <p className="channel-text">
-                                            <strong>Text:</strong> {detail.text}
-                                        </p>
-                                        {detail.image && (
-                                            <img
-                                                src={`data:image/jpeg;base64,${detail.image}`}
-                                                alt="채널 이미지"
-                                                className="channel-image"
-                                            />
-                                        )}
-                                        <p>
-                                            <strong>Timestamp:</strong> {detail.timestamp}
-                                        </p>
-                                    </div>
-                                ))}
+                                {selectedDetails.map((detail, index) => {
+                                    // 파일 타입을 추출하는 정규식
+                                    let fileType = "";
+                                    if (detail.image) {
+                                        if (detail.image.startsWith("/9j/")) fileType = "jpeg"; // JPEG Base64 시작 패턴
+                                        else if (detail.image.startsWith("R0lGOD")) fileType = "gif"; // GIF Base64 시작 패턴
+                                        else if (detail.image.startsWith("iVBOR")) fileType = "png"; // PNG Base64 시작 패턴
+                                        else if (detail.image.startsWith("AAAA")) fileType = "mp4"; // MP4 Base64 시작 패턴
+                                    }
+
+                                    return (
+                                        <div key={index} className="detail-item">
+                                            <p>
+                                                <strong>Message URL:</strong>{" "}
+                                                <a href={detail.msgUrl} target="_blank" rel="noreferrer">
+                                                    {detail.msgUrl}
+                                                </a>
+                                            </p>
+                                            <p className="channel-text">
+                                                <strong>Text:</strong> {detail.text}
+                                            </p>
+
+                                            {/* 파일 타입에 따라 적절한 태그 사용 */}
+                                            {detail.image && fileType !== "mp4" && (
+                                                <img
+                                                    src={`data:image/${fileType};base64,${detail.image}`}
+                                                    alt="채널 이미지"
+                                                    className="channel-image"
+                                                />
+                                            )}
+                                            {detail.image && fileType === "mp4" && (
+                                                <video controls width="300" className="channel-video">
+                                                    <source src={`data:video/mp4;base64,${detail.image}`}
+                                                            type="video/mp4"/>
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            )}
+
+                                            <p>
+                                                <strong>Timestamp:</strong> {detail.timestamp}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <p>채널을 선택해 주세요.</p>
