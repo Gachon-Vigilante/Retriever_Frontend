@@ -6,7 +6,7 @@ import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
 
 const Posts = () => {
-    const { posts, selectedPost, fetchDetailsByPostId, loading, error } = useFetchPostDetails();
+    const { posts, selectedPost, fetchPostsDetail, loading, error } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
 
     // ✅ 검색 조건 상태
@@ -23,7 +23,7 @@ const Posts = () => {
     // ✅ 게시글 클릭 시 상세 정보 가져오기
     const handlePostClick = (postId) => {
         setSelectedPostId(postId);
-        fetchDetailsByPostId(postId);
+        fetchPostsDetail(postId);
     };
 
     // ✅ 검색 버튼 클릭 시 필터링
@@ -70,7 +70,7 @@ const Posts = () => {
                             value={searchTitle}
                             onChange={(e) => setSearchTitle(e.target.value)}
                         />
-                        <div className="datepickers">
+                        {/*<div className="datepickers">*/}
                             <DatePicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
@@ -87,7 +87,7 @@ const Posts = () => {
                                 dateFormat="yyyy-MM-dd"
                                 showMonthYearDropdown
                             />
-                        </div>
+                        {/*</div>*/}
 
                         <button className="search-button" onClick={handleSearch}>
                             검색
@@ -114,7 +114,9 @@ const Posts = () => {
                                             onClick={() => handlePostClick(post.id)}
                                         >
                                             <div>
-                                                <p className="post-title">{post.title}</p>
+                                                <p className="post-title">
+                                                    {post.content.length > 30 ? post.content.slice(0, 30) + "..." : post.content}
+                                                </p>
                                                 <p className="post-site">
                                                     <strong>Site:</strong> {post.siteName}
                                                 </p>
@@ -138,15 +140,18 @@ const Posts = () => {
                         {selectedPost ? (
                             <div className="details-content">
                                 <div className="detail-box">
-                                    <p>
-                                        <strong>Post Title:</strong> {selectedPost.title}
+                                    <p> {/* 게시글 제목의 경우 null값으로 반환되므로 03.27 이후 미사용 예정*/}
+                                        <strong>게시글 제목:</strong> {selectedPost.title}
                                     </p>
                                     <p>
-                                        <strong>Site Name:</strong> {selectedPost.siteName}
+                                        <strong>사이트명:</strong> {selectedPost.siteName}
                                     </p>
                                     <p>
                                         <strong>게시일:</strong>{" "}
                                         {new Date(selectedPost.timestamp).toLocaleString()}
+                                    </p>
+                                    <p>
+                                        <strong>게시글 내용:</strong> {selectedPost.content}
                                     </p>
                                     <p>
                                         <strong>Promo Link:</strong>{" "}

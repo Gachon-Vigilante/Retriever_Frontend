@@ -145,7 +145,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr) auto;  /* ✅ 3개는 동일한 비율, 버튼은 고정 */
     width: 100%;
-    max-width: 1600px;
+    max-width: 1000px;
     align-items: center;
     gap: 10px; /* ✅ 간격을 고정 */
     background-color: #fff;
@@ -189,7 +189,7 @@
     display: flex;
     flex: 1;
     /*width: 100%;*/
-    min-width: 150px;
+    /*min-width: 150px;*/
 }
 
 .react-datepicker__input-container {

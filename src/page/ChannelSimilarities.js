@@ -32,7 +32,7 @@ const ChannelSimilarities = () => {
 
         try {
             const response = await axios.get(`http://localhost:8080/channel-similarity/chId/${channel.channelId}`);
-            const filteredSimilarChannels = response.data.similarChannels.filter((sc) => sc.similarity >= 0.9);
+            const filteredSimilarChannels = response.data.similarChannels.filter((sc) => sc.similarity >= 0.7);
             setSimilarChannels(filteredSimilarChannels);
 
             const channelInfoResponse = await axios.get(`http://localhost:8080/channels/id/${channel.channelId}`);
@@ -114,7 +114,7 @@ const ChannelSimilarities = () => {
                                 <button className="similarity-modal-button" onClick={openNetworkGraph}>
                                     유사도 보기 (새 창)
                                 </button>
-                                <h4>유사도가 0.9 이상인 채널</h4>
+                                <h4>유사도가 0.7 이상인 채널</h4>
                                 <ul>
                                     {similarChannels.map((ch, index) => (
                                         <li key={index} onClick={() => handleSimilarChannelClick(ch)} className="similar-channel-item">

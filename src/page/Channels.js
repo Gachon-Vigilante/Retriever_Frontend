@@ -1,102 +1,105 @@
-import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
-import useFetchBookmarks from "../hooks/useFetchBookmarks";
-import "../css/page/Channels.css";
-import axios from "axios";
+"use client"
+
+import { useEffect, useState } from "react"
+import Sidebar from "../components/Sidebar"
+import useFetchChannelDetails from "../hooks/useFetchChannelDetails"
+import useFetchBookmarks from "../hooks/useFetchBookmarks"
+import "../css/page/Channels.css"
+import axios from "axios"
 
 const Channels = () => {
-    const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } =
-        useFetchChannelDetails();
-    const [selectedChannelId, setSelectedChannelId] = useState(null);
+    const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } = useFetchChannelDetails()
+    const [selectedChannelId, setSelectedChannelId] = useState(null)
 
-    const [searchName, setSearchName] = useState("");
-    const [searchId, setSearchId] = useState("");
-    const [searchLink, setSearchLink] = useState("");
-    const [filteredChannels, setFilteredChannels] = useState([]);
+    const [searchName, setSearchName] = useState("")
+    const [searchId, setSearchId] = useState("")
+    const [searchLink, setSearchLink] = useState("")
+    const [filteredChannels, setFilteredChannels] = useState([])
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const userId = "admin";
-    const { bookmarks, setBookmarks, loading: bookmarksLoading, error: bookmarksError } =
-        useFetchBookmarks(userId);
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const userId = "admin"
+    const { bookmarks, setBookmarks, loading: bookmarksLoading, error: bookmarksError } = useFetchBookmarks(userId)
 
     // Check if a channel is bookmarked
-    const isBookmarked = (channelId) =>
-        bookmarks.some((bookmark) => bookmark.channelId === channelId);
+    const isBookmarked = (channelId) => bookmarks.some((bookmark) => bookmark.channelId === channelId)
 
     // Toggle bookmark
     const toggleBookmark = async (channel) => {
         try {
             if (isBookmarked(channel.id)) {
-                const bookmark = bookmarks.find(
-                    (bookmark) => bookmark.channelId === channel.id
-                );
-                await axios.delete(
-                    `http://localhost:8080/bookmarks/delete/${bookmark.id}`
-                );
-                setBookmarks((prev) =>
-                    prev.filter((b) => b.channelId !== channel.id)
-                );
+                const bookmark = bookmarks.find((bookmark) => bookmark.channelId === channel.id)
+                await axios.delete(`http://localhost:8080/bookmarks/delete/${bookmark.id}`)
+                setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id))
             } else {
                 const newBookmark = {
                     channelId: channel.id,
                     userId: userId,
-                };
-                await axios.post("http://localhost:8080/bookmarks/add", newBookmark);
-                setBookmarks((prev) => [...prev, newBookmark]);
+                }
+                await axios.post("http://localhost:8080/bookmarks/add", newBookmark)
+                setBookmarks((prev) => [...prev, newBookmark])
             }
         } catch (error) {
-            console.error("Error toggling bookmark:", error);
+            console.error("Error toggling bookmark:", error)
         }
-    };
+    }
 
     // Sort channels to show bookmarked channels first
     const sortChannels = (channels) => {
         return [...channels].sort((a, b) => {
-            const aBookmarked = isBookmarked(a.id);
-            const bBookmarked = isBookmarked(b.id);
-            if (aBookmarked && !bBookmarked) return -1;
-            if (!aBookmarked && bBookmarked) return 1;
-            return 0;
-        });
-    };
+            const aBookmarked = isBookmarked(a.id)
+            const bBookmarked = isBookmarked(b.id)
+            if (aBookmarked && !bBookmarked) return -1
+            if (!aBookmarked && bBookmarked) return 1
+            return 0
+        })
+    }
 
     // Perform search and sort results
     const handleSearch = () => {
         const filtered = channels.filter((channel) => {
-            const matchesName =
-                searchName.trim() === "" ||
-                channel.name.toLowerCase().includes(searchName.toLowerCase());
-            const matchesId =
-                searchId.trim() === "" ||
-                channel.id.toLowerCase().includes(searchId.toLowerCase());
-            const matchesLink =
-                searchLink.trim() === "" ||
-                channel.link.toLowerCase().includes(searchLink.toLowerCase());
-            return matchesName && matchesId && matchesLink;
-        });
+            const channelName = channel.title || channel.name || ""
+            const channelId = channel.id || ""
+            const channelLink = channel.link || ""
+
+            const matchesName = searchName.trim() === "" || channelName.toLowerCase().includes(searchName.toLowerCase())
+            const matchesId = searchId.trim() === "" || channelId.toString().toLowerCase().includes(searchId.toLowerCase())
+            const matchesLink = searchLink.trim() === "" || channelLink.toLowerCase().includes(searchLink.toLowerCase())
+            return matchesName && matchesId && matchesLink
+        })
 
         if (filtered.length === 0) {
-            setIsModalOpen(true);
+            setIsModalOpen(true)
         } else {
-            setFilteredChannels(sortChannels(filtered)); // Sort filtered results
+            setFilteredChannels(sortChannels(filtered)) // Sort filtered results
         }
-    };
+    }
 
     // Initial sorting when channels are loaded
     useEffect(() => {
         if (channels.length > 0) {
-            setFilteredChannels(sortChannels(channels));
+            setFilteredChannels(sortChannels(channels))
         }
-    }, [channels, bookmarks]);
+    }, [channels, bookmarks])
 
-    const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => setIsModalOpen(false)
 
     // Handle channel click
-    const handleChannelClick = (channelId) => {
-        setSelectedChannelId(channelId);
-        fetchDetailsByChannelId(channelId); // Ensure details are fetched
-    };
+    const handleChannelClick = (mongoId) => {
+        setSelectedChannelId(mongoId)
+
+        // 선택된 채널 찾기
+        const selectedChannel = channels.find((channel) => channel._id === mongoId)
+
+        if (selectedChannel) {
+            console.log(`Selected channel: ${selectedChannel.title || selectedChannel.name}`)
+            console.log(`Using numeric ID: ${selectedChannel.id}`)
+
+            // 채널 상세 정보 ��져오기
+            fetchDetailsByChannelId(mongoId)
+        } else {
+            console.error("Selected channel not found")
+        }
+    }
 
     return (
         <div className="channel-page">
@@ -148,29 +151,29 @@ const Channels = () => {
                             <ul>
                                 {filteredChannels.map((channel) => (
                                     <li
-                                        key={channel.id}
-                                        className={`channel-item ${
-                                            selectedChannelId === channel.id ? "active" : ""
-                                        }`}
-                                        onClick={() => handleChannelClick(channel.id)} // Ensure click triggers
+                                        key={channel._id}
+                                        className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
+                                        onClick={() => handleChannelClick(channel._id)}
                                     >
                                         <div>
-                                            <p className="channel-name">{channel.name}</p>
+                                            <p className="channel-name">{channel.title || channel.name || "제목 없음"}</p>
+                                            <p className="channel-username">@{channel.username || "unknown"}</p>
+                                            {channel.id && (
+                                                <p className="channel-numeric-id">
+                                                    <strong>채널 ID:</strong> {channel.id}
+                                                </p>
+                                            )}
                                             <p className="channel-link">Link: {channel.link}</p>
-                                            <p className="channel-updated">
-                                                Updated: {channel.updatedAt}
-                                            </p>
+                                            <p className="channel-updated">Updated: {channel.updatedAt}</p>
                                         </div>
                                         <button
-                                            className={`bookmark-button ${
-                                                isBookmarked(channel.id) ? "bookmarked" : ""
-                                            }`}
+                                            className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
                                             onClick={(e) => {
-                                                e.stopPropagation(); // Prevent triggering channel click
-                                                toggleBookmark(channel);
+                                                e.stopPropagation() // Prevent triggering channel click
+                                                toggleBookmark(channel)
                                             }}
                                         >
-                                            {isBookmarked(channel.id) ? "★" : "☆"}
+                                            {isBookmarked(channel._id) ? "★" : "☆"}
                                         </button>
                                     </li>
                                 ))}
@@ -182,16 +185,19 @@ const Channels = () => {
                         <h3>채널 상세 정보</h3>
                         {loading && selectedChannelId ? (
                             <p>Loading details...</p>
+                        ) : error ? (
+                            <p className="error-message">{error}</p>
                         ) : selectedDetails.length > 0 ? (
                             <div className="details-content">
                                 {selectedDetails.map((detail, index) => {
-                                    // 파일 타입을 추출하는 정규식
-                                    let fileType = "";
-                                    if (detail.image) {
-                                        if (detail.image.startsWith("/9j/")) fileType = "jpeg"; // JPEG Base64 시작 패턴
-                                        else if (detail.image.startsWith("R0lGOD")) fileType = "gif"; // GIF Base64 시작 패턴
-                                        else if (detail.image.startsWith("iVBOR")) fileType = "png"; // PNG Base64 시작 패턴
-                                        else if (detail.image.startsWith("AAAA")) fileType = "mp4"; // MP4 Base64 시작 패턴
+                                    // 미디어 타입 처리 로직
+                                    let fileType = detail.mediaType || ""
+                                    if (!fileType && detail.image) {
+                                        // Base64 이미지 타입 감지
+                                        if (detail.image.startsWith("/9j/")) fileType = "jpeg"
+                                        else if (detail.image.startsWith("R0lGOD")) fileType = "gif"
+                                        else if (detail.image.startsWith("iVBOR")) fileType = "png"
+                                        else if (detail.image.startsWith("AAAA")) fileType = "mp4"
                                     }
 
                                     return (
@@ -206,27 +212,54 @@ const Channels = () => {
                                                 <strong>Text:</strong> {detail.text}
                                             </p>
 
-                                            {/* 파일 타입에 따라 적절한 태그 사용 */}
-                                            {detail.image && fileType !== "mp4" && (
-                                                <img
-                                                    src={`data:image/${fileType};base64,${detail.image}`}
-                                                    alt="채널 이미지"
-                                                    className="channel-image"
-                                                />
+                                            {/* 발신자 정보 표시 */}
+                                            {detail.sender && (
+                                                <p>
+                                                    <strong>Sender:</strong> {detail.sender.name || detail.sender.id || "Unknown"}
+                                                </p>
                                             )}
-                                            {detail.image && fileType === "mp4" && (
-                                                <video controls width="300" className="channel-video">
-                                                    <source src={`data:video/mp4;base64,${detail.image}`}
-                                                            type="video/mp4"/>
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            )}
+
+                                            {/* 이미지 URL 직접 사용 (Base64가 아닌 경우) */}
+                                            {detail.image &&
+                                                !detail.image.startsWith("/") &&
+                                                !detail.image.startsWith("i") &&
+                                                !detail.image.startsWith("R") &&
+                                                !detail.image.startsWith("A") && (
+                                                    <img src={detail.image || "/placeholder.svg"} alt="채널 이미지" className="channel-image" />
+                                                )}
+
+                                            {/* Base64 이미지 처리 */}
+                                            {detail.image &&
+                                                (detail.image.startsWith("/") ||
+                                                    detail.image.startsWith("i") ||
+                                                    detail.image.startsWith("R")) &&
+                                                fileType !== "mp4" && (
+                                                    <img
+                                                        src={`data:image/${fileType};base64,${detail.image}`}
+                                                        alt="채널 이미지"
+                                                        className="channel-image"
+                                                    />
+                                                )}
+
+                                            {/* 비디오 처리 */}
+                                            {detail.image &&
+                                                (detail.image.startsWith("A") || fileType === "mp4" || fileType === "video/mp4") && (
+                                                    <video controls width="300" className="channel-video">
+                                                        <source
+                                                            src={
+                                                                detail.image.startsWith("A") ? `data:video/mp4;base64,${detail.image}` : detail.image
+                                                            }
+                                                            type="video/mp4"
+                                                        />
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                )}
 
                                             <p>
                                                 <strong>Timestamp:</strong> {detail.timestamp}
                                             </p>
                                         </div>
-                                    );
+                                    )
                                 })}
                             </div>
                         ) : (
@@ -236,7 +269,8 @@ const Channels = () => {
                 </div>
             </main>
         </div>
-    );
-};
+    )
+}
 
-export default Channels;
+export default Channels
+

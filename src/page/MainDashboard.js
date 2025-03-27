@@ -91,7 +91,7 @@ const MainDashboard = () => {
                 datasets: [
                     {
                         label: "월별 채팅 사용자 로그 수",
-                        data: [300, 400, 450, 500, 520, 480, 490, 600, 620, 650, 700, 750],
+                        data: [300, 400, 450, 500, 520, 480, 490, 600, 620, 650, 700, 750], // 이거를 실제 post 데이터로 교체 예정
                         backgroundColor: "rgba(75, 192, 192, 0.6)",
                         borderColor: "rgba(75, 192, 192, 1)",
                         borderWidth: 1,

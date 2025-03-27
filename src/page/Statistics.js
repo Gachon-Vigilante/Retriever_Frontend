@@ -201,26 +201,26 @@ const Statistics = () => {
             <main className="main">
                 <header className="header">
                     <h1>통계</h1>
-                    <div className="filters">
-                        <select>
-                            <option value="all">시간대: 전체</option>
-                        </select>
-                        <select>
-                            <option value="all">종류</option>
-                            <option value="all">채널</option>
-                            <option value="all">포스트</option>
-                        </select>
-                        <select
-                            onChange={(e) => setDrugTypeFilter(e.target.value)}
-                            value={drugTypeFilter}
-                        >
-                            {drugTypes.map((type, index) => (
-                                <option key={index} value={type}>
-                                    마약 종류: {type}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    {/*<div className="filters">*/}
+                    {/*    <select>*/}
+                    {/*        <option value="all">시간대: 전체</option>*/}
+                    {/*    </select>*/}
+                    {/*    <select>*/}
+                    {/*        <option value="all">종류</option>*/}
+                    {/*        <option value="all">채널</option>*/}
+                    {/*        <option value="all">포스트</option>*/}
+                    {/*    </select>*/}
+                    {/*    <select*/}
+                    {/*        onChange={(e) => setDrugTypeFilter(e.target.value)}*/}
+                    {/*        value={drugTypeFilter}*/}
+                    {/*    >*/}
+                    {/*        {drugTypes.map((type, index) => (*/}
+                    {/*            <option key={index} value={type}>*/}
+                    {/*                마약 종류: {type}*/}
+                    {/*            </option>*/}
+                    {/*        ))}*/}
+                    {/*    </select>*/}
+                    {/*</div>*/}
                     <button className="download">Download</button>
                 </header>
 

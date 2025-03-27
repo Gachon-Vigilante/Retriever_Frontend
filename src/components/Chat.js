@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
 export default function Chat() {
-    const apiEndpoint = "http://127.0.0.1:5000/watson/c";
+    const apiEndpoint = "http://34.64.201.10:5000/watson/c";
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState("");
     const [selectedChannel, setSelectedChannel] = useState(null);
@@ -115,8 +115,8 @@ export default function Chat() {
 
             <div className="channel-selection">
                 <button
-                    onClick={() => setSelectedChannel(1890652954)}
-                    className={selectedChannel === 1890652954 ? "active" : ""}
+                    onClick={() => setSelectedChannel(1334212632)}
+                    className={selectedChannel === 1334212632 ? "active" : ""}
                 >
                     채널 '겨울왕국 후기' 선택
                 </button>

@@ -12,7 +12,7 @@ const useFetchChannels = () => {
                 const response = await axios.get("http://localhost:8080/channels/all");
                 const formattedData = response.data.map((channel) => ({
                     id: channel.id,
-                    name: channel.name,
+                    name: channel.title,
                     updatedAt: channel.updatedAt, // Time when chats were last updated
                 }));
                 setChannels(formattedData);

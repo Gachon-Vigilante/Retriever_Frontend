@@ -9,13 +9,13 @@ const useFetchPostDetails = () => {
     const [error, setError] = useState(null);
 
     const parseDateTime = (dateTime) => {
-        if (!dateTime) return null; // ✅ 날짜가 없으면 null 반환
+        if (!dateTime) return null;
         const dateString = dateTime.$date || dateTime;
         const parsedDate = new Date(dateString);
-        return isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString(); // ✅ UTC 형식으로 변환
+        return isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
     };
 
-    // 1. Fetch post list
+    // 1. 게시글 목록
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -24,10 +24,11 @@ const useFetchPostDetails = () => {
                 const formattedData = response.data.map((post) => ({
                     id: post.id,
                     title: post.title,
+                    content: post.content,
                     siteName: post.siteName,
                     promoSiteLink: post.promoSiteLink,
                     link: post.link,
-                    timestamp: parseDateTime(post.timestamp), // ✅ Date 객체를 ISO 문자열로 변환
+                    timestamp: parseDateTime(post.timestamp),
                 }));
                 setPosts(formattedData);
             } catch (err) {
@@ -40,7 +41,33 @@ const useFetchPostDetails = () => {
         fetchPosts();
     }, []);
 
-    // 2. Fetch similar posts
+    const fetchPostsDetail = async (id) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://localhost:8080/posts/id/${id}`);
+
+            const post = response.data;
+
+            const formattedPost = {
+                id: post.id,
+                title: post.title,
+                content: post.content,
+                siteName: post.siteName,
+                promoSiteLink: post.promoSiteLink,
+                link: post.link,
+                timestamp: parseDateTime(post.timestamp),
+            };
+
+            setSelectedPost(formattedPost);
+        } catch (err) {
+            setError(`Error fetching post detail: ${err.message}`);
+            setSelectedPost(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 2. 게시글 유사도 분석용
     const fetchDetailsByPostId = async (postId) => {
         setLoading(true);
         try {
@@ -67,6 +94,7 @@ const useFetchPostDetails = () => {
         selectedDetails,
         selectedPost,
         fetchDetailsByPostId,
+        fetchPostsDetail,
         loading,
         error,
     };
