@@ -29,6 +29,7 @@ const useFetchPostDetails = () => {
                     promoSiteLink: post.promoSiteLink,
                     link: post.link,
                     timestamp: parseDateTime(post.timestamp),
+                    updatedAt: parseDateTime(post.updatedAt),
                 }));
                 setPosts(formattedData);
             } catch (err) {

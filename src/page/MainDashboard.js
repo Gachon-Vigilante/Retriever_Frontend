@@ -6,6 +6,7 @@ import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
+import useFetchPostDetails from "../hooks/useFetchPostDetails";
 
 const RankList = ({ title, items, link }) => {
     const isNew = (date) => {
@@ -41,6 +42,8 @@ const RankList = ({ title, items, link }) => {
 const MainDashboard = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
+    const { posts } = useFetchPostDetails(); // 불러오기
+    const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const { channels: newTelegramChannels } = useFetchNewTelegramChannels(4);
     const { slangData: newSlangData } = useFetchNewSlangData(4);
@@ -68,48 +71,81 @@ const MainDashboard = () => {
     }, [newTelegramChannels, newPosts]);
 
     useEffect(() => {
+        if (posts.length) {
+            const counts = getMonthlyPostCount(posts, 2024);
+            setMonthlyPostData(counts);
+        }
+    }, [posts]);
+
+    const getMonthlyPostCount = (posts, year) => {
+        const monthlyCounts = Array(12).fill(0); // 12개월 초기화
+
+        posts.forEach((post) => {
+            if (!post.updatedAt) return;
+            const date = new Date(post.updatedAt);
+            const postYear = date.getFullYear();
+            const month = date.getMonth(); // 0부터 시작 (0 = 1월)
+
+            if (postYear === year) {
+                monthlyCounts[month]++;
+            }
+        });
+
+        return monthlyCounts;
+    };
+
+    useEffect(() => {
+        if (!posts.length) return;
+
+        // 월별 개수 계산
+        const monthlyCounts = Array(12).fill(0);
+        posts.forEach((post) => {
+            const updatedAt = new Date(post.updatedAt);
+            if (updatedAt.getFullYear() === 2024) {
+                const month = updatedAt.getMonth(); // 0~11
+                monthlyCounts[month]++;
+            }
+        });
+
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
+
         chartInstance.current = new Chart(chartRef.current, {
             type: "bar",
             data: {
                 labels: [
-                    "1월",
-                    "2월",
-                    "3월",
-                    "4월",
-                    "5월",
-                    "6월",
-                    "7월",
-                    "8월",
-                    "9월",
-                    "10월",
-                    "11월",
-                    "12월",
+                    "1월", "2월", "3월", "4월", "5월", "6월",
+                    "7월", "8월", "9월", "10월", "11월", "12월"
                 ],
                 datasets: [
                     {
-                        label: "월별 채팅 사용자 로그 수",
-                        data: [300, 400, 450, 500, 520, 480, 490, 600, 620, 650, 700, 750], // 이거를 실제 post 데이터로 교체 예정
+                        label: "월별 신규 게시글 감지 수",
+                        data: monthlyCounts,
                         backgroundColor: "rgba(75, 192, 192, 0.6)",
                         borderColor: "rgba(75, 192, 192, 1)",
-                        borderWidth: 1,
-                    },
-                ],
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
                         display: true,
-                        position: "top",
-                    },
+                        position: "top"
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true },
-                },
-            },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    }
+                }
+            }
         });
 
         return () => {
@@ -117,7 +153,7 @@ const MainDashboard = () => {
                 chartInstance.current.destroy();
             }
         };
-    }, []);
+    }, [posts]);
 
     return (
         <div className="dashboard">
