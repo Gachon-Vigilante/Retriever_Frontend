@@ -7,6 +7,7 @@ import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
+import useFetchPostDetails from "../hooks/useFetchPostDetails";
 
 const ProgressBar = ({ label, percentage, value, color }) => (
     <div className="progress-bar-container">
@@ -46,6 +47,8 @@ const RankList = ({ title, items }) => (
 const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
+    const { posts } = useFetchPostDetails(); // 불러오기
+    const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const [slangData, setSlangData] = useState([]);
     const { slangData: newSlangData } = useFetchNewSlangData(5);
@@ -77,6 +80,42 @@ const Statistics = () => {
     }, [newTelegramChannels, newPosts]);
 
     useEffect(() => {
+        if (posts.length) {
+            const counts = getMonthlyPostCount(posts, 2024);
+            setMonthlyPostData(counts);
+        }
+    }, [posts]);
+
+    const getMonthlyPostCount = (posts, year) => {
+        const monthlyCounts = Array(12).fill(0); // 12개월 초기화
+
+        posts.forEach((post) => {
+            if (!post.updatedAt) return;
+            const date = new Date(post.updatedAt);
+            const postYear = date.getFullYear();
+            const month = date.getMonth(); // 0부터 시작 (0 = 1월)
+
+            if (postYear === year) {
+                monthlyCounts[month]++;
+            }
+        });
+
+        return monthlyCounts;
+    };
+
+    useEffect(() => {
+        if (!posts.length) return;
+
+        // 월별 개수 계산
+        const monthlyCounts = Array(12).fill(0);
+        posts.forEach((post) => {
+            const updatedAt = new Date(post.updatedAt);
+            if (updatedAt.getFullYear() === 2024) {
+                const month = updatedAt.getMonth(); // 0~11
+                monthlyCounts[month]++;
+            }
+        });
+
         if (chartInstance.current) {
             chartInstance.current.destroy();
         }
@@ -85,43 +124,37 @@ const Statistics = () => {
             type: "bar",
             data: {
                 labels: [
-                    "JAN",
-                    "FEB",
-                    "MAR",
-                    "APR",
-                    "MAY",
-                    "JUN",
-                    "JUL",
-                    "AUG",
-                    "SEP",
-                    "OCT",
-                    "NOV",
-                    "DEC",
+                    "1월", "2월", "3월", "4월", "5월", "6월",
+                    "7월", "8월", "9월", "10월", "11월", "12월"
                 ],
                 datasets: [
                     {
-                        label: "월별 마약 거래 채널 탐지수",
-                        data: [300, 400, 450, 500, 520, 480, 490, 600, 620, 650, 700, 750],
+                        label: "월별 신규 게시글 감지 수",
+                        data: monthlyCounts,
                         backgroundColor: "rgba(75, 192, 192, 0.6)",
                         borderColor: "rgba(75, 192, 192, 1)",
-                        borderWidth: 1,
-                    },
-                ],
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
                         display: true,
-                        position: "top",
-                    },
+                        position: "top"
+                    }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                    },
-                },
-            },
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    }
+                }
+            }
         });
 
         return () => {
@@ -129,7 +162,7 @@ const Statistics = () => {
                 chartInstance.current.destroy();
             }
         };
-    }, []);
+    }, [posts]);
 
     useEffect(() => {
         const fetchSlangData = async () => {
