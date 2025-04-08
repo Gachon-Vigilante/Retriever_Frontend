@@ -5,9 +5,7 @@ import "../css/page/AiChat.css";
 import useFetchChannels from "../hooks/useFetchChannels";
 
 const AiChat = () => {
-    const [selectedChannel, setSelectedChannel] = useState(null);
-
-    // Fetch channels using the custom hook
+    const [selectedChannelId, setSelectedChannelId] = useState(null);
     const { channels, loading, error } = useFetchChannels();
 
     return (
@@ -16,19 +14,6 @@ const AiChat = () => {
             <main className="ai-chat-main">
                 <header className="ai-chat-header">
                     <h1>AI 관리</h1>
-                    {/*<div className="filters">*/}
-                    {/*    <select>*/}
-                    {/*        <option value="all">채널: All</option>*/}
-                    {/*        <option value="arrested">채널: 검거</option>*/}
-                    {/*        <option value="not-arrested">채널: 미검거</option>*/}
-                    {/*    </select>*/}
-                    {/*    <select>*/}
-                    {/*        <option value="all">마약 종류: All</option>*/}
-                    {/*        <option value="drug">마약 종류: 항정신성의약품</option>*/}
-                    {/*        <option value="marijuana">마약 종류: 대마</option>*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
-                    {/*<button className="download-button">데이터 다운로드</button>*/}
                 </header>
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
@@ -38,11 +23,9 @@ const AiChat = () => {
                         <ul>
                             {channels.map((channel) => (
                                 <li
-                                    key={channel.id}
-                                    className={`channel-item ${
-                                        selectedChannel === channel.id ? "active" : ""
-                                    }`}
-                                    onClick={() => setSelectedChannel(channel.id)}
+                                    key={channel._id}
+                                    className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
+                                    onClick={() => setSelectedChannelId(channel._id)}
                                 >
                                     <div className="channel-info">
                                         <p className="channel-name">{channel.name}</p>
@@ -56,16 +39,14 @@ const AiChat = () => {
                     </div>
                     <div className="chat-window">
                         <h3>채널별 AI</h3>
-                        {selectedChannel && (
+                        {selectedChannelId && (
                             <p className="selected-channel-name">
                                 {
-                                    channels.find(
-                                        (channel) => channel.id === selectedChannel
-                                    )?.name
+                                    channels.find((ch) => ch._id === selectedChannelId)?.name
                                 }
                             </p>
                         )}
-                        <Chat />
+                        <Chat channelId={selectedChannelId} />
                     </div>
                 </div>
             </main>

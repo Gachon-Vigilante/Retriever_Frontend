@@ -3,49 +3,45 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
-export default function Chat() {
-    const apiEndpoint = "http://34.64.201.10:5000/watson/c";
+const Chat = ({ channelId }) => {
+    const apiEndpoint = "http://localhost:5000/watson/c";
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState("");
-    const [selectedChannel, setSelectedChannel] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const addMessage = (sender, message) => {
-        setMessages((prevMessages) => [...prevMessages, { sender, message }]);
+        setMessages((prev) => [...prev, { sender, message }]);
     };
 
     const handleSendMessage = async () => {
-        if (!selectedChannel) {
+        if (!channelId) {
             addMessage("bot", "채널을 먼저 선택해주세요.");
             return;
         }
 
         const message = userInput.trim();
-        if (message.length === 0) return;
+        if (!message) return;
 
         addMessage("user", message);
         setUserInput("");
         setLoading(true);
 
         try {
-            const response = await fetch(apiEndpoint, {
+            const res = await fetch(apiEndpoint, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     action: "ask",
-                    channel_ids: [selectedChannel],
+                    channel_ids: [Number(channelId)],  // ✅ 여기 수정
                     scope: "local",
                     question: message,
                 }),
             });
 
-            const data = await response.json();
-            const aiResponse = data.answer || "No response from Watson.";
-            addMessage("bot", aiResponse);
-        } catch (error) {
-            console.error("Error occurred:", error);
+            const data = await res.json();
+            addMessage("bot", data.answer || "응답이 없습니다.");
+        } catch (err) {
+            console.error(err);
             addMessage("bot", "서버 오류가 발생했습니다.");
         } finally {
             setLoading(false);
@@ -53,57 +49,44 @@ export default function Chat() {
     };
 
     const handleResetChat = async () => {
-        if (!selectedChannel) {
+        if (!channelId) {
             addMessage("bot", "채널을 먼저 선택해주세요.");
             return;
         }
 
         setLoading(true);
-
         try {
-            const response = await fetch(apiEndpoint, {
+            const res = await fetch(apiEndpoint, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     action: "reset",
-                    channel_ids: [selectedChannel],
+                    channel_ids: [Number(channelId)],  // ✅ 여기도 수정
                     scope: "local",
                 }),
             });
 
-            const data = await response.json();
-            addMessage("bot", data.response || "대화가 리셋되었습니다.");
-        } catch (error) {
-            console.error("Error occurred:", error);
+            const data = await res.json();
+            addMessage("bot", data.response || "대화가 초기화되었습니다.");
+        } catch (err) {
+            console.error(err);
             addMessage("bot", "서버 오류가 발생했습니다.");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            handleSendMessage();
-        }
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") handleSendMessage();
     };
 
     return (
         <div className="chat-wrapper">
             <div className="chat-messages">
-                {messages.map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`chat-message ${
-                            msg.sender === "user" ? "user-message" : "bot-message"
-                        }`}
-                    >
+                {messages.map((msg, i) => (
+                    <div key={i} className={`chat-message ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
                         {msg.sender === "bot" ? (
-                            <ReactMarkdown
-                                remarkPlugins={[remarkGfm]}
-                                rehypePlugins={[rehypeHighlight]}
-                            >
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
                                 {msg.message}
                             </ReactMarkdown>
                         ) : (
@@ -111,15 +94,6 @@ export default function Chat() {
                         )}
                     </div>
                 ))}
-            </div>
-
-            <div className="channel-selection">
-                <button
-                    onClick={() => setSelectedChannel(1334212632)}
-                    className={selectedChannel === 1334212632 ? "active" : ""}
-                >
-                    채널 '겨울왕국 후기' 선택
-                </button>
             </div>
 
             <div className="chat-input">
@@ -130,13 +104,11 @@ export default function Chat() {
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                 />
-                <button className="button-send" onClick={handleSendMessage}>
-                    보내기
-                </button>
-                <button className="button-reset" onClick={handleResetChat}>
-                    대화 리셋
-                </button>
+                <button onClick={handleSendMessage}>보내기</button>
+                <button onClick={handleResetChat}>대화 리셋</button>
             </div>
         </div>
     );
-}
+};
+
+export default Chat;

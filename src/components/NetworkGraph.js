@@ -19,9 +19,20 @@ const NetworkGraph = () => {
                 const decoded = Buffer.from(decodeURIComponent(encoded), "base64").toString("utf-8");
                 const parsed = JSON.parse(decoded);
 
-                // 👉 유사도 수치 저장
-                adjustSimilarity(parsed);
-                setGraphData(parsed);
+                // 노드 유형 설정: similarchannel → channel, similarpost → post
+                const updatedNodes = parsed.nodes.map(node => {
+                    if (node.hasOwnProperty('similarchannel')) {
+                        return { ...node, type: "channel" };
+                    } else if (node.hasOwnProperty('similarpost')) {
+                        return { ...node, type: "post" };
+                    }
+                    return node;
+                });
+
+                const updatedData = { ...parsed, nodes: updatedNodes };
+
+                adjustSimilarity(updatedData);
+                setGraphData(updatedData);
             }
         } catch (error) {
             console.error("Error decoding graph data:", error);
@@ -43,18 +54,19 @@ const NetworkGraph = () => {
         },
         defaultNodeColor: "#409EFF",
         backgroundColor: "#f5f5f5",
-        // 🔽 노드 별 모양을 유형에 따라 설정
         nodeConfig: (node) => {
             if (node.type === "post") {
                 return {
-                    shape: 2, // shape 2 = 직사각형
+                    shape: 2, // 직사각형
                     width: 160,
                     height: 60,
+                    color: "#6C63FF",
                 };
             } else {
                 return {
-                    shape: 0, // shape 0 = 원형 (기본값)
+                    shape: 0, // 원형
                     radius: 40,
+                    color: "#409EFF",
                 };
             }
         },
