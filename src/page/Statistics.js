@@ -71,9 +71,10 @@ const Statistics = () => {
     };
 
     useEffect(() => {
-        if (newTelegramChannels.length) {
-            setWeeklyChannelCount(getWeeklyCount(newTelegramChannels));
-        }
+    if (newTelegramChannels.length) {
+        const activeChannels = newTelegramChannels.filter(channel => channel.status === "active");
+        setWeeklyChannelCount(getWeeklyCount(activeChannels));
+    }
         if (newPosts.length) {
             setWeeklyPostCount(getWeeklyCount(newPosts));
         }
@@ -368,7 +369,7 @@ const Statistics = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 탐지 채널" items={newTelegramChannels} />
+                    <RankList title="신규 탐지 채널" items={newTelegramChannels.filter(channel => channel.status === "active")} />
                     <RankList title="최근 탐지 은어" items={newArgotData} />
                 </section>
             </main>

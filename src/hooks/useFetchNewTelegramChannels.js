@@ -18,6 +18,7 @@ const useFetchNewTelegramChannels = (limit = 4) => {
                         ? new Date(channel.createdAt).toLocaleDateString("ko-KR")
                         : "날짜 없음",
                     createdAt: channel.createdAt,
+                    status: channel.status,
                 }));
                 setChannels(formattedData);
             } catch (err) {
