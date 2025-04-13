@@ -6,7 +6,7 @@ import axios from "axios";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
-import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
+import useFetchNewArgotData from "../hooks/useFetchNewArgotData";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 
 const ProgressBar = ({ label, percentage, value, color }) => (
@@ -50,8 +50,8 @@ const Statistics = () => {
     const { posts } = useFetchPostDetails(); // 불러오기
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
-    const [slangData, setSlangData] = useState([]);
-    const { slangData: newSlangData } = useFetchNewSlangData(5);
+    const [argotData, setArgotData] = useState([]);
+    const { argotData: newArgotData } = useFetchNewArgotData(5);
     const [drugData, setDrugData] = useState([]);
     const [drugTypeFilter, setDrugTypeFilter] = useState("All");
     const [drugTypes, setDrugTypes] = useState([]);
@@ -165,34 +165,68 @@ const Statistics = () => {
     }, [posts]);
 
     useEffect(() => {
-        const fetchSlangData = async () => {
+        const fetchArgotData = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/slangs/sorted");
-                const formattedData = response.data.map((slang) => ({
-                    label: slang.slang,
-                    percentage: Math.min(slang.count, 100),
-                    color: getColorByPercentage(Math.min(slang.count, 100)),
+                const response = await axios.get("http://localhost:8080/chat/all");
+                const argotCounts = {};
+                response.data.forEach((item) => {
+                    if (item.argot) item.argot.forEach((argotId) => {
+                        argotCounts[argotId] = (argotCounts[argotId] || 0) + 1;
+                    });
+                });
+
+                const sorted = Object.entries(argotCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
+
+                const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
+                const argotNamesPromises = sorted.map(([argotId]) =>
+                    axios.get(`http://localhost:8080/argots/id/${argotId}`).then(res => {
+                        const data = res.data;
+                        return data.name || data.argot || data.slang || "알 수 없음";
+                    })
+                );
+
+                const argotNames = await Promise.all(argotNamesPromises);
+                const formattedData = sorted.map(([, count], index) => ({
+                    label: argotNames[index],
+                    percentage: ((count / total) * 100).toFixed(2),
+                    color: getColorByPercentage((count / total) * 100),
                 }));
-                setSlangData(formattedData);
+
+                setArgotData(formattedData);
             } catch (error) {
-                console.error("Error fetching slang data:", error);
+                console.error("Error fetching argot data:", error);
             }
         };
 
         const fetchDrugData = async () => {
             try {
-                const url =
-                    drugTypeFilter === "All"
-                        ? "http://localhost:8080/drugs/sorted"
-                        : `http://localhost:8080/drugs/sorted/type/${drugTypeFilter}`;
-                const response = await axios.get(url);
-                const total = response.data.reduce((sum, drug) => sum + drug.count, 0); // Calculate total count
-                const formattedData = response.data.map((drug) => ({
-                    label: drug.drugName,
-                    value: drug.count,
-                    percentage: ((drug.count / total) * 100).toFixed(2), // Calculate ratio
-                    color: getColorByPercentage((drug.count / total) * 100),
+                const response = await axios.get("http://localhost:8080/chat/all");
+                const drugCounts = {};
+                response.data.forEach((item) => {
+                    if (item.drugs) item.drugs.forEach((drugId) => {
+                        drugCounts[drugId] = (drugCounts[drugId] || 0) + 1;
+                    });
+                });
+
+                const sorted = Object.entries(drugCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
+
+                const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
+                const drugNamesPromises = sorted.map(([drugId]) =>
+                    axios.get(`http://localhost:8080/drugs/id/${drugId}`).then(res => res.data.drugName)
+                );
+
+                const drugNames = await Promise.all(drugNamesPromises);
+                const formattedData = sorted.map(([, count], index) => ({
+                    label: drugNames[index],
+                    value: count,
+                    percentage: ((count / total) * 100).toFixed(2),
+                    color: getColorByPercentage((count / total) * 100),
                 }));
+
                 setDrugData(formattedData);
             } catch (error) {
                 console.error("Error fetching drug data:", error);
@@ -209,8 +243,7 @@ const Statistics = () => {
             }
         };
 
-        fetchSlangData();
-        // fetchNewSlangData();
+        fetchArgotData();
         fetchDrugData();
         fetchDrugTypes();
     }, [drugTypeFilter]);
@@ -234,26 +267,6 @@ const Statistics = () => {
             <main className="main">
                 <header className="header">
                     <h1>통계</h1>
-                    {/*<div className="filters">*/}
-                    {/*    <select>*/}
-                    {/*        <option value="all">시간대: 전체</option>*/}
-                    {/*    </select>*/}
-                    {/*    <select>*/}
-                    {/*        <option value="all">종류</option>*/}
-                    {/*        <option value="all">채널</option>*/}
-                    {/*        <option value="all">포스트</option>*/}
-                    {/*    </select>*/}
-                    {/*    <select*/}
-                    {/*        onChange={(e) => setDrugTypeFilter(e.target.value)}*/}
-                    {/*        value={drugTypeFilter}*/}
-                    {/*    >*/}
-                    {/*        {drugTypes.map((type, index) => (*/}
-                    {/*            <option key={index} value={type}>*/}
-                    {/*                마약 종류: {type}*/}
-                    {/*            </option>*/}
-                    {/*        ))}*/}
-                    {/*    </select>*/}
-                    {/*</div>*/}
                     <button className="download">Download</button>
                 </header>
 
@@ -292,7 +305,7 @@ const Statistics = () => {
                 <section className="additional-statistics">
                     <div className="card">
                         <h3>최다 사용 은어</h3>
-                        {slangData.map((item, index) => (
+                        {argotData.map((item, index) => (
                             <ProgressBar
                                 key={index}
                                 label={item.label}
@@ -317,7 +330,7 @@ const Statistics = () => {
 
                 <section className="tables">
                     <RankList title="신규 탐지 채널" items={newTelegramChannels} />
-                    <RankList title="신규 탐지 은어" items={newSlangData} />
+                    <RankList title="신규 탐지 은어" items={newArgotData} />
                 </section>
             </main>
         </div>
