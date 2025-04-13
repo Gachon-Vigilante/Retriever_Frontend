@@ -30,7 +30,7 @@ const AiChat = () => {
                                     <div className="channel-info">
                                         <p className="channel-name">{channel.name}</p>
                                         <p className="channel-chatSendTime">
-                                            {new Date(channel.updatedAt).toLocaleString()}
+                                            {new Date(channel.createdAt).toLocaleString()}
                                         </p>
                                     </div>
                                 </li>

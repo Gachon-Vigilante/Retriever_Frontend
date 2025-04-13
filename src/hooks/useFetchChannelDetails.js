@@ -30,7 +30,7 @@ const useFetchChannelDetails = () => {
                 username: ch.username || "",
                 status: ch.status || "unknown",
                 link: ch.link || "",
-                updatedAt: parseDateTime(ch.updatedAt),
+                createdAt: parseDateTime(ch.createdAt),
             }));
             setChannels(formatted);
         } catch (err) {

@@ -51,7 +51,7 @@ const Statistics = () => {
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const [argotData, setArgotData] = useState([]);
-    const { argotData: newArgotData } = useFetchNewArgotData(5);
+    const [newArgotData, setNewArgotData] = useState([]);
     const [drugData, setDrugData] = useState([]);
     const [drugTypeFilter, setDrugTypeFilter] = useState("All");
     const [drugTypes, setDrugTypes] = useState([]);
@@ -90,8 +90,8 @@ const Statistics = () => {
         const monthlyCounts = Array(12).fill(0); // 12개월 초기화
 
         posts.forEach((post) => {
-            if (!post.updatedAt) return;
-            const date = new Date(post.updatedAt);
+            if (!post.createdAt) return;
+            const date = new Date(post.createdAt);
             const postYear = date.getFullYear();
             const month = date.getMonth(); // 0부터 시작 (0 = 1월)
 
@@ -183,7 +183,7 @@ const Statistics = () => {
                 const argotNamesPromises = sorted.map(([argotId]) =>
                     axios.get(`http://localhost:8080/argots/id/${argotId}`).then(res => {
                         const data = res.data;
-                        return data.name || data.argot || data.slang || "알 수 없음";
+                        return data.name || data.slang || data.argot || "알 수 없음";
                     })
                 );
 
@@ -243,9 +243,48 @@ const Statistics = () => {
             }
         };
 
+        const fetchRecentArgotData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/chat/all");
+                const latestArgotMap = {};
+
+                response.data.forEach((item) => {
+                    if (item.argot && item.timestamp) {
+                        item.argot.forEach((argotId) => {
+                            if (
+                                !latestArgotMap[argotId] ||
+                                new Date(latestArgotMap[argotId].timestamp) < new Date(item.timestamp)
+                            ) {
+                                latestArgotMap[argotId] = {
+                                    timestamp: item.timestamp,
+                                };
+                            }
+                        });
+                    }
+                });
+
+                const entries = Object.entries(latestArgotMap)
+                    .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
+                    .slice(0, 5);
+
+                const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
+                    const res = await axios.get(`http://localhost:8080/argots/id/${argotId}`);
+                    return {
+                        name: res.data.name || res.data.argot || "알 수 없음",
+                        detail: new Date(meta.timestamp).toLocaleDateString(),
+                    };
+                }));
+
+                setNewArgotData(detailedData);
+            } catch (error) {
+                console.error("Error fetching recent argot data:", error);
+            }
+        };
+
         fetchArgotData();
         fetchDrugData();
         fetchDrugTypes();
+        fetchRecentArgotData();
     }, [drugTypeFilter]);
 
     const getColorByPercentage = (percentage) => {
@@ -330,7 +369,7 @@ const Statistics = () => {
 
                 <section className="tables">
                     <RankList title="신규 탐지 채널" items={newTelegramChannels} />
-                    <RankList title="신규 탐지 은어" items={newArgotData} />
+                    <RankList title="최근 탐지 은어" items={newArgotData} />
                 </section>
             </main>
         </div>

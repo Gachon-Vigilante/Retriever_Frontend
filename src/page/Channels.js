@@ -133,7 +133,7 @@ const Channels = () => {
                                             <p className="channel-username">@{channel.username || "unknown"}</p>
                                             <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
                                             <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
-                                            <p className="channel-updated"><strong>Updated:</strong> {channel.updatedAt}</p>
+                                            <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
                                         </div>
                                         <button
                                             className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}

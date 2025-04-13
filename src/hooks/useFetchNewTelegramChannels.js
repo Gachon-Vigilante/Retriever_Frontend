@@ -12,9 +12,11 @@ const useFetchNewTelegramChannels = (limit = 4) => {
                 const sortedData = response.data
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);
-                const formattedData = sortedData.map((channel) => ({
+                const formattedData = response.data.map(channel => ({
                     name: channel.title,
-                    detail: `${new Date(channel.updatedAt).toLocaleDateString()}`,
+                    detail: channel.createdAt && !isNaN(Date.parse(channel.createdAt))
+                        ? new Date(channel.createdAt).toLocaleDateString("ko-KR")
+                        : "날짜 없음",
                     createdAt: channel.createdAt,
                 }));
                 setChannels(formattedData);

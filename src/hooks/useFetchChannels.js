@@ -56,7 +56,7 @@ const useFetchChannels = () => {
                     return {
                         _id: channel._id,
                         name: channel.title || "제목 없음",
-                        updatedAt: channel.updatedAt,
+                        createdAt: channel.createdAt,
                         hasChatBot: Boolean(matchingBot),
                     };
                 });
