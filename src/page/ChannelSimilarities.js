@@ -91,7 +91,7 @@ const ChannelSimilarities = () => {
             ],
             lines: similarChannels.map((ch) => ({
                 from: selectedChannel.channelId,
-                to: ch.similarChannel,
+                to: ch.similarChannel, // channelId로 변경
                 text: `유사도 ${(ch.similarity * 100).toFixed(2)}%`,
                 width: 2 + ch.similarity * 5,
             })),

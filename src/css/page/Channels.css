@@ -128,12 +128,35 @@
     margin-bottom: 15px;
     color: #4a5568;
 }
+
 .channel-image {
-    max-width: 100%;
+    max-width: 300px;
+    max-height: 200px;
+    width: auto;
     height: auto;
-    border-radius: 8px;
     margin-top: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-image {
+    max-width: 90%;
+    max-height: 90%;
 }
 
 /* Chat-like Details Styling */
@@ -291,4 +314,54 @@
 
 .bookmark-button:not(.bookmarked) {
     color: #ccc;
+}
+
+/* New Layout for Active/Inactive Section Split */
+.section-heading {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 10px 0 5px 10px;
+    color: #2d3748;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    gap: 10px;
+}
+
+.pagination-controls button {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.pagination-controls button:hover {
+    background-color: #2b6cb0;
+}
+
+.pagination-controls span {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.status-filter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px 15px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.channel-section {
+    margin-bottom: 20px;
 }

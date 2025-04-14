@@ -72,7 +72,7 @@ const MainDashboard = () => {
 
     useEffect(() => {
         if (posts.length) {
-            const counts = getMonthlyPostCount(posts, 2024);
+            const counts = getMonthlyPostCount(posts, 2025);
             setMonthlyPostData(counts);
         }
     }, [posts]);
@@ -101,7 +101,7 @@ const MainDashboard = () => {
         const monthlyCounts = Array(12).fill(0);
         posts.forEach((post) => {
             const updatedAt = new Date(post.updatedAt);
-            if (updatedAt.getFullYear() === 2024) {
+            if (updatedAt.getFullYear() === 2025) {
                 const month = updatedAt.getMonth(); // 0~11
                 monthlyCounts[month]++;
             }

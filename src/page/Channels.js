@@ -10,6 +10,8 @@ import axios from "axios";
 const Channels = () => {
     const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } = useFetchChannelDetails();
     const [selectedChannelId, setSelectedChannelId] = useState(null);
+    // Removed expandedImages state
+    const [modalImage, setModalImage] = useState(null);
 
     const [searchName, setSearchName] = useState("");
     const [searchId, setSearchId] = useState("");
@@ -19,6 +21,17 @@ const Channels = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userId = "admin";
     const { bookmarks, setBookmarks } = useFetchBookmarks(userId);
+    const [showInactive, setShowInactive] = useState(false);
+
+    const [activePage, setActivePage] = useState(1);
+    const [inactivePage, setInactivePage] = useState(1);
+    const itemsPerPage = 5;
+    const totalActivePages = Math.ceil(
+        filteredChannels.filter((channel) => channel.status === "active").length / itemsPerPage
+    );
+    const totalInactivePages = Math.ceil(
+        filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
+    );
 
     const isBookmarked = (channelId) => bookmarks.some((b) => b.channelId === channelId);
 
@@ -77,6 +90,8 @@ const Channels = () => {
         fetchDetailsByChannelId(channelId); // 💡 int64 기반 _id 넘겨줌
     };
 
+    // Removed toggleImageSize function as image expansion is now handled via modal
+
     const closeModal = () => setIsModalOpen(false);
 
     return (
@@ -116,37 +131,141 @@ const Channels = () => {
                 <div className="channel-content">
                     <section className="channel-list">
                         <h3>채널 리스트</h3>
-                        {loading ? (
-                            <p>Loading...</p>
-                        ) : error ? (
-                            <p className="error-message">{error}</p>
-                        ) : (
-                            <ul>
-                                {filteredChannels.map((channel) => (
-                                    <li
-                                        key={channel._id}
-                                        className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
-                                        onClick={() => handleChannelClick(channel._id)}
+                        <label className="status-filter">
+                            <input
+                                type="checkbox"
+                                checked={showInactive}
+                                onChange={(e) => setShowInactive(e.target.checked)}
+                            />
+                            Inactive 채널도 보기
+                        </label>
+
+                        {!showInactive ? (
+                            <>
+                                <ul>
+                                    {filteredChannels
+                                        .filter((channel) => channel.status === "active")
+                                        .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
+                                        .map((channel) => (
+                                            <li
+                                                key={channel._id}
+                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel._id)}
+                                            >
+                                                <div>
+                                                    <p className="channel-name">{channel.title || "제목 없음"}</p>
+                                                    <p className="channel-username">@{channel.username || "unknown"}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
+                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                </div>
+                                                <button
+                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleBookmark(channel);
+                                                    }}
+                                                >
+                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                </button>
+                                            </li>
+                                        ))}
+                                </ul>
+                                <div className="pagination-controls">
+                                    <button onClick={() => setActivePage((p) => Math.max(1, p - 1))} disabled={activePage === 1}>이전</button>
+                                    <span>{activePage} / {totalActivePages}</span>
+                                    <button
+                                        onClick={() => setActivePage((p) => Math.min(totalActivePages, p + 1))}
+                                        disabled={activePage === totalActivePages}
                                     >
-                                        <div>
-                                            <p className="channel-name">{channel.title || "제목 없음"}</p>
-                                            <p className="channel-username">@{channel.username || "unknown"}</p>
-                                            <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
-                                            <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
-                                            <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
-                                        </div>
-                                        <button
-                                            className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleBookmark(channel);
-                                            }}
-                                        >
-                                            {isBookmarked(channel._id) ? "★" : "☆"}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
+                                        다음
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h4>🟢 Active 채널</h4>
+                                <ul>
+                                    {filteredChannels
+                                        .filter((channel) => channel.status === "active")
+                                        .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
+                                        .map((channel) => (
+                                            <li
+                                                key={channel._id}
+                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel._id)}
+                                            >
+                                                <div>
+                                                    <p className="channel-name">{channel.title || "제목 없음"}</p>
+                                                    <p className="channel-username">@{channel.username || "unknown"}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
+                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                </div>
+                                                <button
+                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleBookmark(channel);
+                                                    }}
+                                                >
+                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                </button>
+                                            </li>
+                                        ))}
+                                </ul>
+                                <div className="pagination-controls">
+                                    <button onClick={() => setActivePage((p) => Math.max(1, p - 1))} disabled={activePage === 1}>이전</button>
+                                    <span>{activePage} / {totalActivePages}</span>
+                                    <button
+                                        onClick={() => setActivePage((p) => Math.min(totalActivePages, p + 1))}
+                                        disabled={activePage === totalActivePages}
+                                    >
+                                        다음
+                                    </button>
+                                </div>
+
+                                <h4>🔴 Inactive 채널</h4>
+                                <ul>
+                                    {filteredChannels
+                                        .filter((channel) => channel.status === "inactive")
+                                        .slice((inactivePage - 1) * itemsPerPage, inactivePage * itemsPerPage)
+                                        .map((channel) => (
+                                            <li
+                                                key={channel._id}
+                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel._id)}
+                                            >
+                                                <div>
+                                                    <p className="channel-name">{channel.title || "제목 없음"}</p>
+                                                    <p className="channel-username">@{channel.username || "unknown"}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
+                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                </div>
+                                                <button
+                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleBookmark(channel);
+                                                    }}
+                                                >
+                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                </button>
+                                            </li>
+                                        ))}
+                                </ul>
+                                <div className="pagination-controls">
+                                    <button onClick={() => setInactivePage((p) => Math.max(1, p - 1))} disabled={inactivePage === 1}>이전</button>
+                                    <span>{inactivePage} / {totalInactivePages}</span>
+                                    <button
+                                        onClick={() => setInactivePage((p) => Math.min(totalInactivePages, p + 1))}
+                                        disabled={inactivePage === totalInactivePages}
+                                    >
+                                        다음
+                                    </button>
+                                </div>
+                            </>
                         )}
                     </section>
 
@@ -188,15 +307,17 @@ const Channels = () => {
                                             {detail.image && fileType !== "mp4" && (
                                                 isBase64 ? (
                                                     <img
-                                                        src={`data:image/${fileType};base64,${detail.image}`}
+                                                        src={isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image}
                                                         alt="img"
                                                         className="channel-image"
+                                                        onClick={() => setModalImage(isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image)}
                                                     />
                                                 ) : (
                                                     <img
                                                         src={detail.image}
                                                         alt="img"
                                                         className="channel-image"
+                                                        onClick={() => setModalImage(detail.image)}
                                                     />
                                                 )
                                             )}
@@ -227,12 +348,19 @@ const Channels = () => {
                                     );
                                 })}
                             </div>
+                        ) : selectedChannelId ? (
+                            <p>채팅 데이터가 없습니다.</p>
                         ) : (
                             <p>채널을 선택해 주세요.</p>
                         )}
                     </section>
                 </div>
             </main>
+        {modalImage && (
+          <div className="image-modal" onClick={() => setModalImage(null)}>
+            <img src={modalImage} alt="Full Size" className="modal-image" />
+          </div>
+        )}
         </div>
     );
 };
