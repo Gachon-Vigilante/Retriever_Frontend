@@ -28,8 +28,15 @@ const useFetchPostDetails = () => {
                     siteName: post.siteName,
                     promoSiteLink: post.promoSiteLink,
                     link: post.link,
-                    timestamp: parseDateTime(post.timestamp),
-                    updatedAt: parseDateTime(post.updatedAt),
+                    timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
+                        ? new Date(post.timestamp).toLocaleDateString("ko-KR")
+                        : "날짜 없음",
+                    updatedAt: post.updatedAt && !isNaN(Date.parse(post.updatedAt))
+                        ? new Date(post.updatedAt).toLocaleDateString("ko-KR")
+                        : "날짜 없음",
+                    createdAt: post.createdAt && !isNaN(Date.parse(post.createdAt))
+                        ? new Date(post.createdAt).toLocaleDateString("ko-KR")
+                        : "날짜 없음",
                 }));
                 setPosts(formattedData);
             } catch (err) {
@@ -56,7 +63,15 @@ const useFetchPostDetails = () => {
                 siteName: post.siteName,
                 promoSiteLink: post.promoSiteLink,
                 link: post.link,
-                timestamp: parseDateTime(post.timestamp),
+                timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
+                    ? new Date(post.timestamp).toLocaleDateString("ko-KR")
+                    : "날짜 없음",
+                updatedAt: post.updatedAt && !isNaN(Date.parse(post.updatedAt))
+                    ? new Date(post.updatedAt).toLocaleDateString("ko-KR")
+                    : "날짜 없음",
+                createdAt: post.createdAt && !isNaN(Date.parse(post.createdAt))
+                    ? new Date(post.createdAt).toLocaleDateString("ko-KR")
+                    : "날짜 없음",
             };
 
             setSelectedPost(formattedPost);

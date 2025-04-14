@@ -20,29 +20,20 @@ const Posts = () => {
         setFilteredPosts(posts);
     }, [posts]);
 
-    // ✅ 게시글 클릭 시 상세 정보 가져오기
-    const handlePostClick = (postId) => {
-        setSelectedPostId(postId);
-        fetchPostsDetail(postId);
-    };
-
-    // ✅ 검색 버튼 클릭 시 필터링
-    const handleSearch = () => {
+    // ✅ 검색 조건에 따라 필터링
+    useEffect(() => {
         let filtered = posts;
 
-        // 제목 검색 필터
         if (searchTitle.trim() !== "") {
             filtered = filtered.filter((post) =>
-                post.title.toLowerCase().includes(searchTitle.toLowerCase())
+                post.content && post.content.toLowerCase().includes(searchTitle.toLowerCase())
             );
         }
 
-        // ✅ 날짜 범위 필터
         if (startDate || endDate) {
             filtered = filtered.filter((post) => {
                 if (!post.timestamp) return false;
                 const postDate = new Date(post.timestamp);
-
                 return (
                     (!startDate || postDate.getTime() >= startDate.getTime()) &&
                     (!endDate || postDate.getTime() <= endDate.getTime())
@@ -51,6 +42,12 @@ const Posts = () => {
         }
 
         setFilteredPosts(filtered);
+    }, [searchTitle, startDate, endDate, posts]);
+
+    // ✅ 게시글 클릭 시 상세 정보 가져오기
+    const handlePostClick = (postId) => {
+        setSelectedPostId(postId);
+        fetchPostsDetail(postId);
     };
 
     return (
@@ -89,7 +86,7 @@ const Posts = () => {
                             />
                         {/*</div>*/}
 
-                        <button className="search-button" onClick={handleSearch}>
+                        <button className="search-button" onClick={() => {}}>
                             검색
                         </button>
                     </div>
@@ -122,7 +119,7 @@ const Posts = () => {
                                                 </p>
                                                 <p className="post-timestamp">
                                                     <strong>Posted Time:</strong>{" "}
-                                                    {new Date(post.timestamp).toLocaleString()}
+                                                    {new Date(post.createdAt).toLocaleString()}
                                                 </p>
                                             </div>
                                         </li>
@@ -148,16 +145,14 @@ const Posts = () => {
                                     </p>
                                     <p>
                                         <strong>게시일:</strong>{" "}
-                                        {new Date(selectedPost.timestamp).toLocaleString()}
+                                        {new Date(selectedPost.createdAt).toLocaleString()}
                                     </p>
                                     <p>
                                         <strong>게시글 내용:</strong> {selectedPost.content}
                                     </p>
                                     <p>
                                         <strong>Promo Link:</strong>{" "}
-                                        <a href={selectedPost.promoSiteLink} target="_blank" rel="noopener noreferrer">
-                                            {selectedPost.promoSiteLink}
-                                        </a>
+                                        {selectedPost.promoSiteLink}
                                     </p>
                                 </div>
 

@@ -3,30 +3,46 @@ import { Buffer } from "buffer";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Similarity.css";
 import axios from "axios";
+import useFetchPostDetails from "../hooks/useFetchPostDetails";
 
 const Similarity = () => {
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [, setSelectedItem] = useState(null);
+    const { posts, selectedPost, fetchPostsDetail, loading, error } = useFetchPostDetails();
+    const [selectedPostId, setSelectedPostId] = useState(null);
     const [similarities, setSimilarities] = useState([]);
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [searchTitle, setSearchTitle] = useState("");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [filteredPosts, setFilteredPosts] = useState([]);
+
+    const handlePostClick = (postId) => {
+        setSelectedPostId(postId);
+        fetchPostsDetail(postId);
+    };
+
+    useEffect(() => {
+        setFilteredPosts(posts);
+    }, [posts]);
+    // const [posts, setPosts] = useState([]);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState(null);
 
     // 게시글 불러오기
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const res = await axios.get("http://localhost:8080/posts/all");
-                setPosts(res.data);
-            } catch (err) {
-                console.error("게시글 로드 실패:", err);
-                setError("게시글 데이터를 불러오는 중 오류 발생");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPosts();
-    }, []);
+    // useEffect(() => {
+    //     const fetchPosts = async () => {
+    //         try {
+    //             const res = await axios.get("http://localhost:8080/posts/all");
+    //             setPosts(res.data);
+    //         } catch (err) {
+    //             console.error("게시글 로드 실패:", err);
+    //             setError("게시글 데이터를 불러오는 중 오류 발생");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //
+    //     fetchPosts();
+    // }, []);
 
     // 유사 게시글 조회
     const fetchSimilarities = async (id) => {
@@ -62,12 +78,12 @@ const Similarity = () => {
 
     // 네트워크 그래프 보기
     const openGraph = () => {
-        if (!selectedItem) return;
+        if (!selectedPost) return;
 
         const graphData = {
-            rootPost: selectedItem.id,
+            rootPost: selectedPost.id,
             nodes: [
-                { id: selectedItem.id, text: selectedItem.title, type: "main", color: "#ff5733" },
+                { id: selectedPost.id, text: selectedPost.title, type: "main", color: "#ff5733" },
                 ...similarities.map((post) => ({
                     id: post.similarPost,
                     text: post.title || post.similarPost,
@@ -76,7 +92,7 @@ const Similarity = () => {
                 })),
             ],
             lines: similarities.map((post) => ({
-                from: selectedItem.id,
+                from: selectedPost.id,
                 to: post.similarPost,
                 text: `유사도: ${(post.similarity * 100).toFixed(2)}%`,
                 width: 2 + post.similarity * 5,
@@ -109,34 +125,47 @@ const Similarity = () => {
                             <p>로딩 중...</p>
                         ) : (
                             <ul>
-                                {posts.map((item) => (
-                                    <li
-                                        key={item.id}
-                                        className={`item ${selectedItem?.id === item.id ? "selected" : ""}`}
-                                        onClick={() => handleItemClick(item)}
-                                    >
-                                        <p className="item-title">{item.title}</p>
-                                        <p className="item-site"><strong>사이트:</strong> {item.siteName || "N/A"}</p>
-                                        <p className="item-timestamp">
-                                            <strong>작성:</strong> {new Date(item.timestamp).toLocaleString()}
-                                        </p>
-                                    </li>
-                                ))}
+                                {filteredPosts.length > 0 ? (
+                                    filteredPosts.map((post) => (
+                                        <li
+                                            key={post.id}
+                                            className={`post-item ${
+                                                selectedPostId === post.id ? "active" : ""
+                                            }`}
+                                            onClick={() => handlePostClick(post.id)}
+                                        >
+                                            <div>
+                                                <p className="post-title">
+                                                    {post.content.length > 30 ? post.content.slice(0, 30) + "..." : post.content}
+                                                </p>
+                                                <p className="post-site">
+                                                    <strong>Site:</strong> {post.siteName}
+                                                </p>
+                                                <p className="post-timestamp">
+                                                    <strong>Posted Time:</strong>{" "}
+                                                    {new Date(post.createdAt).toLocaleString()}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <p>검색 결과가 없습니다.</p>
+                                )}
                             </ul>
                         )}
                     </aside>
 
                     <section className="similarity-details">
-                        {selectedItem ? (
+                        {selectedPost ? (
                             <>
                                 <iframe
-                                    src={selectedItem.link}
+                                    src={selectedPost.link}
                                     title="게시글 미리보기"
                                     width="100%"
                                     height="500"
                                     style={{ border: "none", marginBottom: "20px" }}
                                 />
-                                <h3>유사도 분석 결과: {selectedItem.title}</h3>
+                                <h3>유사도 분석 결과: {selectedPost.title}</h3>
                                 <button className="similarity-modal-button" onClick={openGraph}>
                                     유사도 보기 (새 창)
                                 </button>

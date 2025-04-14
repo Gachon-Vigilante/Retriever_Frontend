@@ -59,7 +59,7 @@ const Channels = () => {
         });
     };
 
-    const handleSearch = () => {
+    useEffect(() => {
         const filtered = channels.filter((channel) => {
             const name = channel.title || "";
             const id = channel._id?.toString() || "";
@@ -77,7 +77,7 @@ const Channels = () => {
         } else {
             setFilteredChannels(sortChannels(filtered));
         }
-    };
+    }, [searchName, searchId, searchLink, channels, bookmarks]);
 
     useEffect(() => {
         if (channels.length > 0) {
@@ -122,7 +122,7 @@ const Channels = () => {
                             value={searchLink}
                             onChange={(e) => setSearchLink(e.target.value)}
                         />
-                        <button className="search-button" onClick={handleSearch}>
+                        <button className="search-button" onClick={() => {}}>
                             검색
                         </button>
                     </div>
