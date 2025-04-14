@@ -7,6 +7,7 @@ import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
+import axios from "axios";
 
 const RankList = ({ title, items, link }) => {
     const isNew = (date) => {
@@ -46,7 +47,7 @@ const MainDashboard = () => {
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const { channels: newTelegramChannels } = useFetchNewTelegramChannels(4);
-    const { slangData: newSlangData } = useFetchNewSlangData(4);
+    const [newArgotData, setNewArgotData] = useState([]);
     const { posts: newPosts } = useFetchNewPosts(4);
     const { channelCount } = useFetchChannelCount();
 
@@ -93,6 +94,47 @@ const MainDashboard = () => {
 
         return monthlyCounts;
     };
+    useEffect(() => {
+        const fetchRecentArgotData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/chat/all");
+                const latestArgotMap = {};
+
+                response.data.forEach((item) => {
+                    if (item.argot && item.timestamp) {
+                        item.argot.forEach((argotId) => {
+                            if (
+                                !latestArgotMap[argotId] ||
+                                new Date(latestArgotMap[argotId].timestamp) < new Date(item.timestamp)
+                            ) {
+                                latestArgotMap[argotId] = {
+                                    timestamp: item.timestamp,
+                                };
+                            }
+                        });
+                    }
+                });
+
+                const entries = Object.entries(latestArgotMap)
+                    .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
+                    .slice(0, 5);
+
+                const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
+                    const res = await axios.get(`http://localhost:8080/argots/id/${argotId}`);
+                    return {
+                        name: res.data.name || res.data.argot || "알 수 없음",
+                        detail: new Date(meta.timestamp).toLocaleDateString(),
+                    };
+                }));
+
+                setNewArgotData(detailedData);
+            } catch (error) {
+                console.error("Error fetching recent argot data:", error);
+            }
+        };
+        fetchRecentArgotData();
+    }, []);
+
 
     useEffect(() => {
         if (!posts.length) return;
@@ -199,7 +241,7 @@ const MainDashboard = () => {
                 <section className="tables">
                     <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" />
                     <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" />
-                    <RankList title="신규 탐지 은어" items={newSlangData} link="/statistics" />
+                    <RankList title="최근 탐지 은어" items={newArgotData} link="/statistics" />
                 </section>
             </main>
         </div>

@@ -12,9 +12,11 @@ const useFetchNewPosts = (limit = 4) => {
                 const sortedData = response.data
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);
-                const formattedData = sortedData.map((post) => ({
-                    name: post.title,
-                    detail: `${new Date(post.createdAt).toLocaleDateString()}`,
+                const formattedData = sortedData.map(post => ({
+                    name: post.content?.length > 30 ? post.content.slice(0, 30) + "..." : post.content || "제목 없음",
+                    detail: post.createdAt && !isNaN(Date.parse(post.createdAt))
+                        ? new Date(post.createdAt).toLocaleDateString("ko-KR")
+                        : "날짜 없음",
                     createdAt: post.createdAt,
                 }));
                 setPosts(formattedData);
