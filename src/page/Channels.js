@@ -148,7 +148,6 @@ const Channels = () => {
                                         .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
                                         .map((channel) => (
                                             <li
-
                                                 key={channel._id}
                                                 className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
                                                 onClick={() => handleChannelClick(channel._id)}
