@@ -11,12 +11,14 @@ import Similarity from "./page/Similarity";
 import Posts from "./page/Posts";
 import ChannelSimilarities from "./page/ChannelSimilarities";
 import NetworkGraph from "./components/NetworkGraph";
+import GraphVisualizer from "./components/GraphVisualizer";
+import MainDashboard from "./page/MainDashboard";
 
 function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<MainDashboard />} />
                 <Route path="/channels" element={<Channels />} />
                 <Route path="/posts" element={<Posts />} />
                 <Route path="/aichat" element={<AiChat />} />
@@ -25,7 +27,8 @@ function AppRouter() {
                 <Route path="/guide" element={<Guide />} />
                 <Route path="/setting" element={<Settings />} />
                 <Route path="/channel-similarities" element={<ChannelSimilarities />} />
-                <Route path="/network-graph" element={<NetworkGraph />} />
+                {/*<Route path="/network-graph" element={<NetworkGraph />} />*/}
+                <Route path="/network-graph" element={<GraphVisualizer />} />
             </Routes>
         </BrowserRouter>
     );
