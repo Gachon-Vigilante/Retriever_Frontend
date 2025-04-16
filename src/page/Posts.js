@@ -4,10 +4,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
+import axios from "axios";
+import {Buffer} from "buffer";
 
 const Posts = () => {
     const { posts, selectedPost, fetchPostsDetail, loading, error } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [similarities, setSimilarities] = useState([]);
 
     // ✅ 검색 조건 상태
     const [searchTitle, setSearchTitle] = useState("");
@@ -48,6 +51,63 @@ const Posts = () => {
     const handlePostClick = (postId) => {
         setSelectedPostId(postId);
         fetchPostsDetail(postId);
+    };
+
+    const fetchSimilarities = async (id) => {
+        try {
+            const res = await axios.get(`http://localhost:8080/post-similarity/post/${id}`);
+            const fetched = res.data.similarPosts || [];
+
+            const detailed = await Promise.all(
+                fetched.map(async (item) => {
+                    try {
+                        const detail = await axios.get(`http://localhost:8080/posts/id/${item.similarPost}`);
+                        return {
+                            ...item,
+                            title: detail.data.title || "제목 없음",
+                            link: detail.data.link || "#",
+                        };
+                    } catch {
+                        return {
+                            ...item,
+                            title: `게시글 ${item.similarPost}`,
+                            link: "#",
+                        };
+                    }
+                })
+            );
+
+            setSimilarities(detailed.sort((a, b) => b.similarity - a.similarity));
+        } catch (err) {
+            console.error("유사 게시글 로드 실패:", err);
+            setSimilarities([]);
+        }
+    };
+
+    const openGraph = () => {
+        if (!selectedPost) return;
+
+        const graphData = {
+            rootPost: selectedPost.id,
+            nodes: [
+                { id: selectedPost.id, text: selectedPost.title, type: "main", color: "#ff5733" },
+                ...similarities.map((post) => ({
+                    id: post.similarPost,
+                    text: post.title || post.similarPost,
+                    type: "similar",
+                    color: "#3375ff",
+                })),
+            ],
+            lines: similarities.map((post) => ({
+                from: selectedPost.id,
+                to: post.similarPost,
+                text: `유사도: ${(post.similarity * 100).toFixed(2)}%`,
+                width: 2 + post.similarity * 5,
+            })),
+        };
+
+        const encoded = encodeURIComponent(Buffer.from(JSON.stringify(graphData)).toString("base64"));
+        window.open(`/network-graph?data=${encoded}`, "_blank");
     };
 
     return (
@@ -172,6 +232,33 @@ const Posts = () => {
                                         }}
                                     ></iframe>
                                 )}
+                                <h3>유사도 분석 결과: {selectedPost.title}</h3>
+                                <button className="similarity-modal-button" onClick={openGraph}>
+                                    유사도 보기 (새 창)
+                                </button>
+                                <div className="similarity-results">
+                                    {similarities.length > 0 ? (
+                                        <ul>
+                                            {similarities.map((similar, idx) => (
+                                                <li key={idx} className="similarity-box">
+                                                    <h4>
+                                                        <a
+                                                            href={similar.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="similarity-link"
+                                                        >
+                                                            {similar.title}
+                                                        </a>
+                                                    </h4>
+                                                    <p><strong>유사도:</strong> {(similar.similarity * 100).toFixed(2)}%</p>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p>유사한 게시글이 없습니다.</p>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <p>게시글을 선택해 주세요.</p>
