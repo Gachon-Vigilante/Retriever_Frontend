@@ -14,59 +14,124 @@ const GraphVisualizer = () => {
                 serverPassword: "kbs24rnrals.", // replace with your actual password
                 database: "neo4j"
             },
+            visConfig: {
+                physics: {
+                    enabled: true,
+                    solver: "forceAtlas2Based", // 또는 "repulsion", "barnesHut"
+                    forceAtlas2Based: {
+                        gravitationalConstant: -50,  // 노드 간 인력 (음수면 밀어냄)
+                        centralGravity: 0.01,        // 중심으로 끌리는 힘
+                        springLength: 150,           // 노드 사이 기본 거리
+                        springConstant: 0.05,
+                        damping: 0.4,
+                        avoidOverlap: 1
+                    },
+                    stabilization: {
+                        iterations: 100,
+                        fit: true
+                    }
+                },
+                nodes: {
+                    shape: "dot",
+                    size: 15,
+                    scaling: {
+                        min: 15,
+                        max: 50,
+                    },
+                    font: {
+                        // vadjust: 5,
+                        size: 20
+                    }
+                },
+                edges: {
+                    arrows: {
+                        to: {
+                            enabled: true,
+                            scaleFactor: 0.5,
+                            type: "arrow",
+                        }
+                    },
+                }
+            },
             labels: {
                 Channel: {
-                    caption: "title"
+                    label: "title",
+                    group: "id",
+                    value: "promotedCount",
+
                 },
                 Argot: {
-                    caption: "name"
+                    label: "name",
+                    group: "drugId",
+                    value: 10,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        static: {
+                            shape: "diamond", //
+                            // font: { vadjust: -20, size: 16 },
+                            // color: { background: "#E6F0FF", border: "#4D88FF" }
+                        }
+                    }
                 },
                 Drug: {
-                    caption: "name"
+                    label: "name",
+                    group: "id",
+                    value: 10,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        function: {
+                            shape: () => "star", //
+                            // font: { vadjust: -20, size: 16 },
+                            // color: { background: "#E6F0FF", border: "#4D88FF" }
+                        }
+                    }
                 },
-                Organization: {
-                    caption: "name"
+                Post: {
+                    label: "siteName",
+                    group: "channelId",
+                    value: 10,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        function: {
+                            shape: () => "square", // 원
+                            // font: { vadjust: -20, size: 16 },
+                            // color: { background: "#E6F0FF", border: "#4D88FF" }
+                        }
+                    }
                 },
-                Product: {
-                    caption: "name"
-                }
             },
             relationships: {
                 SELLS: {
-                    caption: "chatIds", // chat ID 숫자 보이게
-                    thickness: "chatIds",
-                    color: "blue"
+                    color: "BLUE",
+                    arrows: true,
+                    caption: "SELLS",
+                    id: (rel) => rel.properties.id
                 },
                 REFERS_TO: {
-                    caption: "chatIds",
-                    thickness: "chatIds",
-                    color: "orange"
+                    color: "RED",
+                    arrows: true,
+                    caption: "REFERS_TO",
+                    id: (rel) => rel.properties.id
                 },
                 PROMOTES: {
-                    caption: "chatIds",
-                    thickness: "chatIds",
-                    color: "green"
+                    color: "GREEN",
+                    arrows: true,
+                    caption: "PROMOTES",
+                    id: (rel) => rel.properties.id
                 },
-                PRODUCES: {
-                    caption: "chatIds",
-                    thickness: "chatIds",
-                    color: "purple"
-                }
             },
-            initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 1000"
+            initialCypher: "MATCH (a)-[r]->(b) RETURN a, b, r"
         };
 
         const viz = new NeoVis(config);
-        viz.render();
 
         viz.registerOnEvent("clickNode", (event) => {
             setSelectedNode(event.node);
-            // console.log("Node clicked:", event);
         });
 
         viz.registerOnEvent("clickEdge", (event) => {
             setSelectedEdge(event.edge);
         });
+
+        viz.render();
+
     }, []);
 
     return (
@@ -117,7 +182,7 @@ const GraphVisualizer = () => {
                 }}>
                     <h3>Edge Details</h3>
                     <div>
-                        <p><strong>Type:</strong> {selectedEdge.label}</p>
+                        <p><strong>Type:</strong> {selectedEdge.caption}</p>
                         <p><strong>From:</strong> {selectedEdge.from}</p>
                         <p><strong>To:</strong> {selectedEdge.to}</p>
                         <p><strong>Chat IDs:</strong> {selectedEdge.chatIds ? selectedEdge.chatIds.join(', ') : 'N/A'}</p>
