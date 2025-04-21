@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
 const Chat = ({ channelId }) => {
-    const apiEndpoint = "http://localhost:5000/watson/c"; // 일단은 로컬
+    const apiEndpoint = "http://localhost:5050/watson/c"; // 일단은 로컬
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
