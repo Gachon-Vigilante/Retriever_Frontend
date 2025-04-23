@@ -32,9 +32,9 @@ const ChannelSimilarities = () => {
                         try {
                             // /channels/id/{channelId}로 실제 channel_info 조회
                             const channelRes = await axios.get(
-                                `http://localhost:8080/channels/id/${entry.channelId}`
+                                `http://localhost:8080/channels/id/${Number(entry.channelId)}`
                             );
-                            const info = channelRes.data; // channel_info 문서
+                            const info = channelRes.data || {}; // channel_info 문서
 
                             return {
                                 ...entry,
@@ -63,37 +63,32 @@ const ChannelSimilarities = () => {
     }, []);
 
     // ==============================
-    // 2) 유사 채널 상세 정보 불러오기
+    // 2) 유사 채널 상세 정보 불러오기 (단순화: channel_similarity의 channelId만 사용)
     // ==============================
     const fetchDetailedSimilarChannels = async (similarChannelsArray) => {
-        // similarChannelsArray = [{ channelId, similarity }, ...]
-        // channelId가 channel_info 테이블의 _id와 같으면, /channels/id/{channelId} 로 조회
-        return await Promise.all(
+        const detailedChannels = await Promise.all(
             similarChannelsArray.map(async (sc) => {
                 try {
-                    const res = await axios.get(`http://localhost:8080/channels/id/${sc.channelId}`);
-                    const info = res.data; // channel_info 문서
-
-                    if (!info) {
-                        throw new Error("채널 정보 없음");
-                    }
-
+                    const res = await axios.get(`http://localhost:8080/channels/id/${String(sc.channelId)}`);
+                    const info = res.data || {};
                     return {
-                        ...sc,
-                        // channel_info에서 가져온 title
+                        channelId: sc.channelId,
+                        similarity: sc.similarity,
                         title: info.title || `채널 ${sc.channelId}`,
                         link: info.link || "#",
                     };
-                } catch (error) {
-                    console.error(`유사 채널 정보 조회 실패 (ID: ${sc.channelId}):`, error);
+                } catch (err) {
+                    console.error("유사 채널 정보 불러오기 실패:", err);
                     return {
-                        ...sc,
+                        channelId: sc.channelId,
+                        similarity: sc.similarity,
                         title: `채널 ${sc.channelId}`,
                         link: "#",
                     };
                 }
             })
         );
+        return detailedChannels;
     };
 
     // ==============================
@@ -110,7 +105,7 @@ const ChannelSimilarities = () => {
             // 3-1) 선택된 채널의 유사 채널들 불러오기
             //      -> /channel-similarity/chId/{channelId} 가정
             const response = await axios.get(
-                `http://localhost:8080/channel-similarity/chId/${channelItem.channelId}`
+                `http://localhost:8080/channel-similarity/chId/${Number(channelItem.channelId)}`
             );
             const similarityDoc = response.data; // { _id, channelId, similarChannels, ... }
 
@@ -123,7 +118,7 @@ const ChannelSimilarities = () => {
 
             // 3-4) 선택된 채널의 텔레그램 링크도 가져오기 (/channels/id/{channelId})
             const channelInfoResponse = await axios.get(
-                `http://localhost:8080/channels/id/${channelItem.channelId}`
+                `http://localhost:8080/channels/id/${Number(channelItem.channelId)}`
             );
             if (channelInfoResponse.data?.link) {
                 setIframeUrl(channelInfoResponse.data.link);
@@ -142,18 +137,18 @@ const ChannelSimilarities = () => {
         if (!selectedChannel) return;
 
         const graphData = {
-            rootChannel: selectedChannel.channelId,
+            rootChannel: Number(selectedChannel.channelId),
             // 메인 채널 노드
             nodes: [
                 {
-                    id: selectedChannel.channelId,
+                    id: Number(selectedChannel.channelId),
                     text: selectedChannel.title || String(selectedChannel.channelId),
                     type: "main",
                     color: "#ff5733",
                 },
                 // 유사 채널 노드
                 ...similarChannels.map((ch) => ({
-                    id: ch.channelId,
+                    id: Number(ch.channelId),
                     text: ch.title || String(ch.channelId),
                     type: "similar",
                     color: "#3375ff",
@@ -161,8 +156,8 @@ const ChannelSimilarities = () => {
             ],
             // 메인 채널과 유사 채널을 연결
             lines: similarChannels.map((ch) => ({
-                from: selectedChannel.channelId,
-                to: ch.channelId,
+                from: Number(selectedChannel.channelId),
+                to: Number(ch.channelId),
                 text: `유사도 ${(ch.similarity * 100).toFixed(2)}%`,
                 width: 2 + ch.similarity * 5,
             })),
@@ -238,7 +233,7 @@ const ChannelSimilarities = () => {
                                             <ul>
                                                 {similarChannels.map((similar, index) => (
                                                     <li key={index} className="similarity-box">
-                                                        <h4>{similar.title}</h4>
+                                                        <h4>채널 ID: {similar.title !== undefined ? similar.title : "채널 정보 없음"}</h4>
                                                         <p>
                                                             <strong>유사도:</strong>{" "}
                                                             {(similar.similarity * 100).toFixed(2)}%
