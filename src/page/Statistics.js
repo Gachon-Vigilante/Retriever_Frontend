@@ -304,10 +304,10 @@ const Statistics = () => {
     return (
         <div className="dashboard">
             <Sidebar />
-            <main className="main">
+            <main className="main with-sidebar">
                 <header className="header">
                     <h1>통계</h1>
-                    <button className="download">Download</button>
+                    {/*<button className="download">Download</button>*/}
                 </header>
 
                 <section className="statistics-chart">

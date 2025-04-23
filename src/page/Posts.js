@@ -113,12 +113,12 @@ const Posts = () => {
     return (
         <div className="posts-page">
             <Sidebar />
-            <main className="posts-main">
+            <main className="posts-main with-sidebar">
                 {/* 검색 조건 UI 추가 */}
                 <header className="posts-header">
-                    <div className="posts-title">
+                    {/*<div className="posts-title">*/}
                         <h1>거래 게시글</h1>
-                    </div>
+                    {/*</div>*/}
                     <div className="search-container">
                         <input
                             type="text"
@@ -145,7 +145,6 @@ const Posts = () => {
                                 showMonthYearDropdown
                             />
                         {/*</div>*/}
-
                         <button className="search-button" onClick={() => {}}>
                             검색
                         </button>

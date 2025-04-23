@@ -11,7 +11,7 @@ const AiChat = () => {
     return (
         <div className="ai-chat-page">
             <Sidebar />
-            <main className="ai-chat-main">
+            <main className="ai-chat-main with-sidebar">
                 <header className="ai-chat-header">
                     <h1>AI 관리</h1>
                 </header>

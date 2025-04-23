@@ -12,10 +12,14 @@
     background-color: #f3f4f6;
 }
 
+.channel-main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
 /* Header */
 .channel-header {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: center;
     margin-bottom: 20px;
 }
@@ -218,6 +222,7 @@
     gap: 10px;
     background-color: #fff;
     padding: 15px;
+    margin-left: 50px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex: 1; /* 가변 너비 설정 */

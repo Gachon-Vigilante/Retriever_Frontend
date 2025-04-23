@@ -9,6 +9,10 @@
     background-color: #f3f4f6;
 }
 
+.main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
 .header {
     display: flex;
     justify-content: space-between;

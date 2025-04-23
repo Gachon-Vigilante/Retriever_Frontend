@@ -198,12 +198,12 @@ const MainDashboard = () => {
     }, [posts]);
 
     return (
-        <div className="dashboard">
+        <div className="dashboard with-sidebar">
             <Sidebar />
             <main className="main">
                 <header className="header">
                     <h1>실시간 거래 현황</h1>
-                    <button className="download">Download</button>
+                    {/*<button className="download">Download</button>*/}
                 </header>
 
                 <section className="statistics-chart">

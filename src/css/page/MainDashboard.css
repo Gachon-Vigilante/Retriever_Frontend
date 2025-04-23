@@ -3,6 +3,10 @@
     display: flex;
 }
 
+.dashboard.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
 /* Sidebar Component Styling */
 /*.sidebar {*/
 /*    width: 250px;*/

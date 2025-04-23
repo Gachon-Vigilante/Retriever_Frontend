@@ -175,7 +175,7 @@ const ChannelSimilarities = () => {
     return (
         <div className="channel-similarities-page">
             <Sidebar />
-            <main className="channel-similarities-main">
+            <main className="channel-similarities-main with-sidebar">
                 <header className="channel-similarities-header">
                     <div className="channel-similarities-title">
                         <h1>채널 유사도 분석</h1>

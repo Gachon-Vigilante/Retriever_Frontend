@@ -12,6 +12,10 @@
     background-color: #f3f4f6;
 }
 
+.posts-main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
 /* Header */
 .posts-header {
     display: flex;
@@ -149,6 +153,7 @@
     align-items: center;
     gap: 10px; /* ✅ 간격을 고정 */
     background-color: #fff;
+    margin-left: 50px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

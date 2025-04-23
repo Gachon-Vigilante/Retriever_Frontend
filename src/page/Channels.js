@@ -97,7 +97,7 @@ const Channels = () => {
     return (
         <div className="channel-page">
             <Sidebar />
-            <main className="channel-main">
+            <main className="channel-main with-sidebar">
                 <header className="channel-header">
                     <h1>텔레그램 채널</h1>
                     <div className="search-container">

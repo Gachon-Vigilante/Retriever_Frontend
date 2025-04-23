@@ -10,6 +10,9 @@
     padding: 20px;
     background-color: #f3f4f6;
 }
+.channel-similarities-main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
 
 .channel-similarities-header {
     display: flex;

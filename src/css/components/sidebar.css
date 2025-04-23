@@ -3,59 +3,23 @@
     display: flex;
     flex-direction: column;
     width: 250px;
-    min-height: 100%;
     height: 100%;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.6); /* ✅ 전체 반투명 적용 */
+    background-color: white; /* ✅ 전체 반투명 적용 */
     backdrop-filter: blur(10px); /* ✅ 배경 흐림 효과로 더 자연스럽게 */
     color: #3f4d67;
     box-sizing: border-box;
     position: fixed;
     left: 0;
-    transition: transform 0.3s ease;
+    top: 0;
+    z-index: 1000;
 }
 
 /* 사이드바가 열렸을 때 */
-.sidebar.open {
-    transform: translateX(0);
-}
 
-.sidebar-toggle-btn.open-btn {
-    position: fixed;
-    top: 8px;
-    left: 0;
-    background-color: rgba(49, 130, 206, 0.5);
-    color: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 8px;
-    padding: 4px 8px;
-    cursor: pointer;
-    /*z-index: 10;*/
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
 
 /* 사이드바가 닫혔을 때 */
-.sidebar.closed {
-    transform: translateX(-100%);
-}
 
-.sidebar-toggle-btn.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: rgba(255, 77, 79, 0.8);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 2px 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar-toggle-btn:hover {
-    background-color: #2b6cb0;
-}
 
 .menu-item:hover,
 .submenu-item:hover {
@@ -170,4 +134,9 @@
     font-weight: bold;
     font-size: 16px;
     color: black;
+}
+
+.main-content {
+    margin-left: 250px; /* same width as sidebar */
+    transition: margin-left 0.3s ease;
 }

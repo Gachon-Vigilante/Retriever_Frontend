@@ -13,6 +13,10 @@
     flex-direction: column; /* Stack header and content vertically */
 }
 
+.ai-chat-main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
 /* Header */
 .ai-chat-header {
     display: flex;
