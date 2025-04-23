@@ -46,9 +46,9 @@ const MainDashboard = () => {
     const { posts } = useFetchPostDetails(); // 불러오기
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
-    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(4);
+    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(6);
     const [newArgotData, setNewArgotData] = useState([]);
-    const { posts: newPosts } = useFetchNewPosts(4);
+    const { posts: newPosts } = useFetchNewPosts(6);
     const { channelCount } = useFetchChannelCount();
 
     const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
@@ -117,7 +117,7 @@ const MainDashboard = () => {
 
                 const entries = Object.entries(latestArgotMap)
                     .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
-                    .slice(0, 5);
+                    .slice(0, 6);
 
                 const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
                     const res = await axios.get(`http://localhost:8080/argots/id/${argotId}`);

@@ -1,12 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Chart } from "chart.js/auto";
+import React, {useEffect, useRef, useState} from "react";
+import {Chart} from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Statistics.css";
 import axios from "axios";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
-import useFetchNewArgotData from "../hooks/useFetchNewArgotData";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 
 const ProgressBar = ({ label, percentage, value, color }) => (
@@ -56,7 +55,7 @@ const Statistics = () => {
     const [drugTypeFilter, setDrugTypeFilter] = useState("All");
     const [drugTypes, setDrugTypes] = useState([]);
 
-    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(5);
+    const {channels: newTelegramChannels} = useFetchNewTelegramChannels(10);
     const { posts: newPosts } = useFetchNewPosts(4);
     const { channelCount } = useFetchChannelCount();
 

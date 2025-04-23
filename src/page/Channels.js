@@ -6,6 +6,9 @@ import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
 import "../css/page/Channels.css";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 const Channels = () => {
     const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } = useFetchChannelDetails();
@@ -300,8 +303,13 @@ const Channels = () => {
                                                 </a>
                                             </p>
                                             <p>
-                                                <strong>Text:</strong> {detail.text}
+                                                <strong>Text:</strong>
                                             </p>
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                                rehypePlugins={[rehypeHighlight]}
+                                                children={detail.text}
+                                            />
 
                                             {/* 이미지 렌더링 */}
                                             {detail.image && fileType !== "mp4" && (

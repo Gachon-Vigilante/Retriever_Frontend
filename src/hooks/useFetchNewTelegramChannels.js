@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const useFetchNewTelegramChannels = (limit = 4) => {
+const useFetchNewTelegramChannels = (limit = 10) => {
     const [channels, setChannels] = useState([]);
     const [error, setError] = useState(null);
 
@@ -12,7 +12,7 @@ const useFetchNewTelegramChannels = (limit = 4) => {
                 const sortedData = response.data
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);
-                const formattedData = response.data.map(channel => ({
+                const formattedData = sortedData.map(channel => ({
                     name: channel.title,
                     detail: channel.createdAt && !isNaN(Date.parse(channel.createdAt))
                         ? new Date(channel.createdAt).toLocaleDateString("ko-KR")
