@@ -328,63 +328,56 @@ const GraphVisualizer = () => {
     return (
         <>
             {selectedNode && (
-                <div className="modal-overlay" onClick={() => setSelectedNode(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>노드 정보</h3>
-                        <div>
-                            <p>
-                                <strong>노드 ID:</strong> {selectedNode.id}
-                            </p>
-                            <p>
-                                <strong>분류:</strong> {selectedNode.group}
-                            </p>
-                            {selectedNode.group === "Channel" ? (
-                                <>
-                                    <p>
-                                        <strong>Username:</strong> {selectedNode.username || "N/A"}
-                                    </p>
-                                    <p>
-                                        <strong>PromotedCount:</strong> {selectedNode.promotedCount ?? 0}
-                                    </p>
-                                    <p>
-                                        <strong>Status:</strong> {selectedNode.status || "N/A"}
-                                    </p>
-                                </>
-                            ) : (
-                                <p>
-                                    <strong>{selectedNode.group === "Argot" ? "은어명" : "Caption"}:</strong> {selectedNode.caption}
-                                </p>
-                            )}
-                            {selectedNode.promotedChannelTitle && (
-                                <p>
-                                    <strong>홍보 채널명:</strong> {selectedNode.promotedChannelTitle}
-                                </p>
-                            )}
-                        </div>
-                        <button className="modal-button" onClick={() => {
-                            if (!selectedNode || !vizRef.current) return;
-                            const query = `
-                                    MATCH (n)-[r]-(m)
-                                    WHERE id(n) = ${selectedNode.id}
-                                    RETURN n, r, m
-                                `;
-                            vizRef.current.renderWithCypher(query);
-                            setShowRelatedOnly(true);
-                        }}>
-                            관련 노드만 보기
-                        </button>
-                        <button className="modal-button" onClick={() => {
-                            if (!vizRef.current) return;
-                            const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
-                            vizRef.current.renderWithCypher(initialQuery);
-                            setShowRelatedOnly(false);
-                        }}>
-                            모든 노드 보기
-                        </button>
-                        <button className="modal-button modal-button-gray" onClick={() => setSelectedNode(null)}>
-                            Close
-                        </button>
+                <div className="sidebar-backdrop" onClick={() => setSelectedNode(null)}>
+                  <div
+                    className="sidebar sidebar-open"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="sidebar-content">
+                      <h3>노드 정보</h3>
+                      <p><strong>노드 ID:</strong> {selectedNode.id}</p>
+                      <p><strong>분류:</strong> {selectedNode.group}</p>
+                      {selectedNode.group === "Channel" ? (
+                        <>
+                          <p><strong>Username:</strong> {selectedNode.username || "N/A"}</p>
+                          <p><strong>PromotedCount:</strong> {selectedNode.promotedCount ?? 0}</p>
+                          <p><strong>Status:</strong> {selectedNode.status || "N/A"}</p>
+                        </>
+                      ) : (
+                        <p><strong>{selectedNode.group === "Argot" ? "은어명" : "Caption"}:</strong> {selectedNode.caption}</p>
+                      )}
+                      {selectedNode.promotedChannelTitle && (
+                        <p><strong>홍보 채널명:</strong> {selectedNode.promotedChannelTitle}</p>
+                      )}
+                      <button className="modals-button" onClick={() => {
+                        if (!selectedNode || !vizRef.current) return;
+                        const query =
+                          selectedNode.group === "Drug"
+                            ? `
+                              MATCH (d)-[r1]-(a:Argot)
+                              WHERE id(d) = ${selectedNode.id}
+                              WITH d, r1, a
+                              OPTIONAL MATCH (a)-[r2]-(c:Channel)
+                              RETURN d AS n, r1 AS r, a AS m
+                              UNION
+                              MATCH (d)-[r1]-(a:Argot)
+                              WHERE id(d) = ${selectedNode.id}
+                              WITH a
+                              OPTIONAL MATCH (a)-[r2]-(c:Channel)
+                              RETURN a AS n, r2 AS r, c AS m
+                            `
+                            : `MATCH (n)-[r]-(m) WHERE id(n) = ${selectedNode.id} RETURN n, r, m`;
+                        vizRef.current.renderWithCypher(query);
+                        setShowRelatedOnly(true);
+                      }}>관련 노드만 보기</button>
+                      <button className="modals-button" onClick={() => {
+                        if (!vizRef.current) return;
+                        const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
+                        vizRef.current.renderWithCypher(initialQuery);
+                        setShowRelatedOnly(false);
+                      }}>모든 노드 보기</button>
                     </div>
+                  </div>
                 </div>
             )}
             {selectedEdge && (
@@ -402,7 +395,7 @@ const GraphVisualizer = () => {
                                 <strong>To:</strong> {selectedEdge.to}
                             </p>
                         </div>
-                        <button className="modal-button modal-button-gray" onClick={() => setSelectedEdge(null)}>
+                        <button className="modals-button" onClick={() => setSelectedEdge(null)}>
                             Close
                         </button>
                     </div>
@@ -414,3 +407,4 @@ const GraphVisualizer = () => {
 }
 
 export default GraphVisualizer
+
