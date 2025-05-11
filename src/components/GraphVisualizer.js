@@ -1,5 +1,5 @@
  "use client"
-import "../css/components/GraphVisualizer.css";
+import styles from "../css/components/GraphVisualizer.module.css";
 import {useEffect, useRef, useState} from "react"
 import NeoVis from "neovis.js"
 
@@ -328,12 +328,12 @@ const GraphVisualizer = () => {
     return (
         <>
             {selectedNode && (
-                <div className="sidebar-backdrop" onClick={() => setSelectedNode(null)}>
+                <div className={styles.sidebarBackdrop} onClick={() => setSelectedNode(null)}>
                   <div
-                    className="sidebar sidebar-open"
+                    className={`${styles.sidebar} ${styles.sidebarOpen}`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="sidebar-content">
+                    <div className={styles.sidebarContent}>
                       <h3>노드 정보</h3>
                       <p><strong>노드 ID:</strong> {selectedNode.id}</p>
                       <p><strong>분류:</strong> {selectedNode.group}</p>
@@ -349,7 +349,7 @@ const GraphVisualizer = () => {
                       {selectedNode.promotedChannelTitle && (
                         <p><strong>홍보 채널명:</strong> {selectedNode.promotedChannelTitle}</p>
                       )}
-                      <button className="modals-button" onClick={() => {
+                      <button className={styles.modalsButton} onClick={() => {
                         if (!selectedNode || !vizRef.current) return;
                         const query =
                           selectedNode.group === "Drug"
@@ -370,7 +370,7 @@ const GraphVisualizer = () => {
                         vizRef.current.renderWithCypher(query);
                         setShowRelatedOnly(true);
                       }}>관련 노드만 보기</button>
-                      <button className="modals-button" onClick={() => {
+                      <button className={styles.modalsButton} onClick={() => {
                         if (!vizRef.current) return;
                         const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
                         vizRef.current.renderWithCypher(initialQuery);
@@ -381,8 +381,8 @@ const GraphVisualizer = () => {
                 </div>
             )}
             {selectedEdge && (
-                <div className="modal-overlay" onClick={() => setSelectedEdge(null)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className={styles.modalOverlay} onClick={() => setSelectedEdge(null)}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                         <h3>관계 정보</h3>
                         <div>
                             <p>
@@ -395,7 +395,7 @@ const GraphVisualizer = () => {
                                 <strong>To:</strong> {selectedEdge.to}
                             </p>
                         </div>
-                        <button className="modals-button" onClick={() => setSelectedEdge(null)}>
+                        <button className={styles.modalsButton} onClick={() => setSelectedEdge(null)}>
                             Close
                         </button>
                     </div>

@@ -16,6 +16,9 @@ const Channels = () => {
     // Removed expandedImages state
     const [modalImage, setModalImage] = useState(null);
 
+    // Channel price ranges state
+    const [channelPriceRanges, setChannelPriceRanges] = useState({});
+
     const [searchName, setSearchName] = useState("");
     const [searchId, setSearchId] = useState("");
     const [searchLink, setSearchLink] = useState("");
@@ -97,6 +100,7 @@ const Channels = () => {
 
     const closeModal = () => setIsModalOpen(false);
 
+
     return (
         <div className="channel-page">
             <Sidebar />
@@ -161,6 +165,23 @@ const Channels = () => {
                                                     <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
                                                     <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                    <p className="channel_price">
+                                                      <strong>Price:</strong> {
+                                                        (() => {
+                                                          if (!channelPriceRanges[channel._id]) {
+                                                            const min = Math.floor(Math.random() * (500000 - 10000 + 1)) + 10000;
+                                                            const max = Math.floor(Math.random() * (1000000 - min + 1)) + min;
+                                                            const roundedMin = Math.round(min / 1000) * 1000;
+                                                            const roundedMax = Math.round(max / 1000) * 1000;
+                                                            setChannelPriceRanges(prev => ({
+                                                              ...prev,
+                                                              [channel._id]: `${roundedMin.toLocaleString()}원 ~ ${roundedMax.toLocaleString()}원`
+                                                            }));
+                                                          }
+                                                          return channelPriceRanges[channel._id] || '';
+                                                        })()
+                                                      }
+                                                    </p>
                                                 </div>
                                                 <button
                                                     className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}

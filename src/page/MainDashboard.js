@@ -241,7 +241,7 @@ const MainDashboard = () => {
                 <section className="tables">
                     <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" />
                     <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" />
-                    <RankList title="최근 탐지 은어" items={newArgotData} link="/statistics" />
+                    <RankList title="신규 은어 보고서" items={newArgotData} link="/statistics" />
                 </section>
             </main>
         </div>

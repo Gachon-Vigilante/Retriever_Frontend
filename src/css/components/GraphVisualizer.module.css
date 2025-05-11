@@ -1,4 +1,4 @@
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -9,7 +9,7 @@
   z-index: 999;
 }
 
-.modal-content {
+.modalContent {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -23,7 +23,7 @@
   font-family: sans-serif;
 }
 
-.modals-button {
+.modalsButton {
   /*background: linear-gradient(135deg, #4a90e2, #8ab4f8);*/
   background-color: #4a90e2;
   color: white;
@@ -39,13 +39,13 @@
   cursor: pointer;
 }
 
-.modals-button:hover {
+.modalsButton:hover {
   background: linear-gradient(135deg, #357abd, #669df6);
   transform: translateY(-1px);
 }
 
 /* --- Sidebar styles --- */
-.sidebar-backdrop {
+.sidebarBackdrop {
   position: fixed;
   top: 0;
   right: 0;
@@ -73,7 +73,7 @@
   opacity: 0;
 }
 
-.sidebar-open {
+.sidebarOpen {
   transform: translateX(0);
   opacity: 1;
 }
@@ -85,18 +85,18 @@
   padding-bottom: 8px;
 }
 
-.sidebar-content p {
+.sidebarContent p {
   margin: 8px 0;
   line-height: 1.5;
 }
 
-.sidebar-content strong {
+.sidebarContent strong {
   display: inline-block;
   width: 150px;
   color: #333;
 }
 
-.sidebar-content button {
+.sidebarContent button {
   margin-top: 12px;
   padding: 8px 14px;
   font-size: 14px;
@@ -108,6 +108,6 @@
   transition: background-color 0.2s ease;
 }
 
-.sidebar-content button:hover {
+.sidebarContent button:hover {
   background-color: #0056b3;
 }
