@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
@@ -6,6 +7,8 @@ import useFetchChannels from "../hooks/useFetchChannels";
 
 const AiChat = () => {
     const [selectedChannelId, setSelectedChannelId] = useState(null);
+    const [channelPage, setChannelPage] = useState(0);
+    const channelsPerPage = 10;
     const { channels, loading, error } = useFetchChannels();
 
     return (
@@ -20,12 +23,14 @@ const AiChat = () => {
                         <h3>텔레그램 채널</h3>
                         {loading && <p>Loading channels...</p>}
                         {error && <p>Error loading channels: {error}</p>}
-                        <ul>
-                            {channels.map((channel) => (
+                        <ul className="ai-channel-list">
+                            {channels
+                                .slice(channelPage * channelsPerPage, (channelPage + 1) * channelsPerPage)
+                                .map((channel) => (
                                 <li
-                                    key={channel._id}
-                                    className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
-                                    onClick={() => setSelectedChannelId(channel._id)}
+                                    key={channel.id}
+                                    className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
+                                    onClick={() => setSelectedChannelId(channel.id)}
                                 >
                                     <div className="channel-info">
                                         <p className="channel-name">{channel.name}</p>
@@ -36,13 +41,21 @@ const AiChat = () => {
                                 </li>
                             ))}
                         </ul>
+                        <ReactPaginate
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            pageCount={Math.ceil(channels.length / channelsPerPage)}
+                            onPageChange={({ selected }) => setChannelPage(selected)}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                        />
                     </div>
                     <div className="chat-window">
                         <h3>채널별 AI</h3>
                         {selectedChannelId && (
                             <p className="selected-channel-name">
                                 {
-                                    channels.find((ch) => ch._id === selectedChannelId)?.name
+                                    channels.find((ch) => ch.id === selectedChannelId)?.name
                                 }
                             </p>
                         )}
