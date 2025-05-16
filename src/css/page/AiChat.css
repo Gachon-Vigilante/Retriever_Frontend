@@ -138,64 +138,39 @@
     color: gray;
 }
 
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-
-.chat-message {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.ai-message {
-    background-color: #61dafb;
-    text-align: left;
-}
-
-.user-message {
-    background-color: #007bff;
-    color: white;
-    text-align: right;
-}
-
-.chat-input {
-    display: flex;
-    align-items: center;
-    border-top: 1px solid #ddd;
-    padding: 10px 0;
-}
-
-.chat-input input {
-    flex: 1;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    margin-right: 10px;
+/* Report List */
+.report-list {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    overflow-y: auto;
 }
 
-.chat-input input:focus {
-    outline: none;
+.report-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.chat-input button {
-    background: none;
-    border: none;
-    cursor: pointer;
+.report-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+    border-radius: 5px;
 }
 
-.chat-input img {
-    width: 24px;
-    height: 24px;
+.report-item:hover {
+    background-color: #f9f9f9;
 }
 
-.button-send {
-    padding: 10px;
+.report-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
 }
 
-.button-reset {
-    padding: 10px;
+.report-item strong {
+    color: #2d3748; /* Darker label color */
 }

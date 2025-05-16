@@ -13,6 +13,7 @@ import ChannelSimilarities from "./page/ChannelSimilarities";
 import NetworkGraph from "./components/NetworkGraph";
 import GraphVisualizer from "./components/GraphVisualizer";
 import MainDashboard from "./page/MainDashboard";
+import AIReports from "./page/AIReports";
 
 function AppRouter() {
     return (
@@ -29,6 +30,7 @@ function AppRouter() {
                 <Route path="/channel-similarities" element={<ChannelSimilarities />} />
                 {/*<Route path="/network-graph" element={<NetworkGraph />} />*/}
                 <Route path="/network-graph" element={<GraphVisualizer />} />
+                <Route path="/ai-reports" element={<AIReports />} />
             </Routes>
         </BrowserRouter>
     );

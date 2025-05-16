@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Sidebar from "../components/Sidebar";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
@@ -9,9 +9,10 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import ReactPaginate from "react-paginate";
 
 const Channels = () => {
-    const { channels, selectedDetails, fetchDetailsByChannelId, loading, error } = useFetchChannelDetails();
+    const {channels, selectedDetails, fetchDetailsByChannelId, loading, error} = useFetchChannelDetails();
     const [selectedChannelId, setSelectedChannelId] = useState(null);
     // Removed expandedImages state
     const [modalImage, setModalImage] = useState(null);
@@ -26,7 +27,7 @@ const Channels = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userId = "admin";
-    const { bookmarks, setBookmarks } = useFetchBookmarks(userId);
+    const {bookmarks, setBookmarks} = useFetchBookmarks(userId);
     const [showInactive, setShowInactive] = useState(false);
 
     const [activePage, setActivePage] = useState(1);
@@ -43,12 +44,12 @@ const Channels = () => {
 
     const toggleBookmark = async (channel) => {
         try {
-            if (isBookmarked(channel._id)) {
-                const bookmark = bookmarks.find((b) => b.channelId === channel._id);
+            if (isBookmarked(channel.id)) {
+                const bookmark = bookmarks.find((b) => b.channelId === channel.id);
                 await axios.delete(`http://localhost:8080/bookmarks/delete/${bookmark.id}`);
-                setBookmarks((prev) => prev.filter((b) => b.channelId !== channel._id));
+                setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
             } else {
-                const newBookmark = { channelId: channel._id, userId };
+                const newBookmark = {channelId: channel.id, userId};
                 await axios.post("http://localhost:8080/bookmarks/add", newBookmark);
                 setBookmarks((prev) => [...prev, newBookmark]);
             }
@@ -59,8 +60,8 @@ const Channels = () => {
 
     const sortChannels = (channels) => {
         return [...channels].sort((a, b) => {
-            const aBookmarked = isBookmarked(a._id);
-            const bBookmarked = isBookmarked(b._id);
+            const aBookmarked = isBookmarked(a.id);
+            const bBookmarked = isBookmarked(b.id);
             return bBookmarked - aBookmarked;
         });
     };
@@ -68,7 +69,7 @@ const Channels = () => {
     useEffect(() => {
         const filtered = channels.filter((channel) => {
             const name = channel.title || "";
-            const id = channel._id?.toString() || "";
+            const id = channel.id?.toString() || "";
             const link = channel.link || "";
 
             return (
@@ -103,7 +104,7 @@ const Channels = () => {
 
     return (
         <div className="channel-page">
-            <Sidebar />
+            <Sidebar/>
             <main className="channel-main with-sidebar">
                 <header className="channel-header">
                     <h1>텔레그램 채널</h1>
@@ -129,7 +130,8 @@ const Channels = () => {
                             value={searchLink}
                             onChange={(e) => setSearchLink(e.target.value)}
                         />
-                        <button className="search-button" onClick={() => {}}>
+                        <button className="search-button" onClick={() => {
+                        }}>
                             검색
                         </button>
                     </div>
@@ -155,56 +157,56 @@ const Channels = () => {
                                         .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
                                         .map((channel) => (
                                             <li
-                                                key={channel._id}
-                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel._id)}
+                                                key={channel.id}
+                                                className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel.id)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
-                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
-                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-status">
+                                                        <strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated">
+                                                        <strong>Updated:</strong> {channel.createdAt}</p>
                                                     <p className="channel_price">
-                                                      <strong>Price:</strong> {
+                                                        <strong>Price:</strong> {
                                                         (() => {
-                                                          if (!channelPriceRanges[channel._id]) {
-                                                            const min = Math.floor(Math.random() * (500000 - 10000 + 1)) + 10000;
-                                                            const max = Math.floor(Math.random() * (1000000 - min + 1)) + min;
-                                                            const roundedMin = Math.round(min / 1000) * 1000;
-                                                            const roundedMax = Math.round(max / 1000) * 1000;
-                                                            setChannelPriceRanges(prev => ({
-                                                              ...prev,
-                                                              [channel._id]: `${roundedMin.toLocaleString()}원 ~ ${roundedMax.toLocaleString()}원`
-                                                            }));
-                                                          }
-                                                          return channelPriceRanges[channel._id] || '';
+                                                            if (!channelPriceRanges[channel.id]) {
+                                                                const min = Math.floor(Math.random() * (500000 - 10000 + 1)) + 10000;
+                                                                const max = Math.floor(Math.random() * (1000000 - min + 1)) + min;
+                                                                const roundedMin = Math.round(min / 1000) * 1000;
+                                                                const roundedMax = Math.round(max / 1000) * 1000;
+                                                                setChannelPriceRanges(prev => ({
+                                                                    ...prev,
+                                                                    [channel.id]: `${roundedMin.toLocaleString()}원 ~ ${roundedMax.toLocaleString()}원`
+                                                                }));
+                                                            }
+                                                            return channelPriceRanges[channel.id] || '';
                                                         })()
-                                                      }
+                                                    }
                                                     </p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                    {isBookmarked(channel.id) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
                                 </ul>
-                                <div className="pagination-controls">
-                                    <button onClick={() => setActivePage((p) => Math.max(1, p - 1))} disabled={activePage === 1}>이전</button>
-                                    <span>{activePage} / {totalActivePages}</span>
-                                    <button
-                                        onClick={() => setActivePage((p) => Math.min(totalActivePages, p + 1))}
-                                        disabled={activePage === totalActivePages}
-                                    >
-                                        다음
-                                    </button>
-                                </div>
+                                <ReactPaginate
+                                    previousLabel={"<"}
+                                    nextLabel={">"}
+                                    pageCount={totalActivePages}
+                                    onPageChange={({selected}) => setActivePage(selected + 1)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                />
                             </>
                         ) : (
                             <>
@@ -215,39 +217,39 @@ const Channels = () => {
                                         .slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage)
                                         .map((channel) => (
                                             <li
-                                                key={channel._id}
-                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel._id)}
+                                                key={channel.id}
+                                                className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel.id)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
-                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
-                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-status">
+                                                        <strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated">
+                                                        <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                    {isBookmarked(channel.id) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
                                 </ul>
-                                <div className="pagination-controls">
-                                    <button onClick={() => setActivePage((p) => Math.max(1, p - 1))} disabled={activePage === 1}>이전</button>
-                                    <span>{activePage} / {totalActivePages}</span>
-                                    <button
-                                        onClick={() => setActivePage((p) => Math.min(totalActivePages, p + 1))}
-                                        disabled={activePage === totalActivePages}
-                                    >
-                                        다음
-                                    </button>
-                                </div>
+                                <ReactPaginate
+                                    previousLabel={"<"}
+                                    nextLabel={">"}
+                                    pageCount={totalActivePages}
+                                    onPageChange={({selected}) => setActivePage(selected + 1)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                />
 
                                 <h4>🔴 Inactive 채널</h4>
                                 <ul>
@@ -256,39 +258,39 @@ const Channels = () => {
                                         .slice((inactivePage - 1) * itemsPerPage, inactivePage * itemsPerPage)
                                         .map((channel) => (
                                             <li
-                                                key={channel._id}
-                                                className={`channel-item ${selectedChannelId === channel._id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel._id)}
+                                                key={channel.id}
+                                                className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
+                                                onClick={() => handleChannelClick(channel.id)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel._id}</p>
-                                                    <p className="channel-status"><strong>Status:</strong> {channel.status}</p>
-                                                    <p className="channel-updated"><strong>Updated:</strong> {channel.createdAt}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-status">
+                                                        <strong>Status:</strong> {channel.status}</p>
+                                                    <p className="channel-updated">
+                                                        <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel._id) ? "bookmarked" : ""}`}
+                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel._id) ? "★" : "☆"}
+                                                    {isBookmarked(channel.id) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
                                 </ul>
-                                <div className="pagination-controls">
-                                    <button onClick={() => setInactivePage((p) => Math.max(1, p - 1))} disabled={inactivePage === 1}>이전</button>
-                                    <span>{inactivePage} / {totalInactivePages}</span>
-                                    <button
-                                        onClick={() => setInactivePage((p) => Math.min(totalInactivePages, p + 1))}
-                                        disabled={inactivePage === totalInactivePages}
-                                    >
-                                        다음
-                                    </button>
-                                </div>
+                                <ReactPaginate
+                                    previousLabel={"<"}
+                                    nextLabel={">"}
+                                    pageCount={totalInactivePages}
+                                    onPageChange={({selected}) => setInactivePage(selected + 1)}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                />
                             </>
                         )}
                     </section>
@@ -385,11 +387,11 @@ const Channels = () => {
                     </section>
                 </div>
             </main>
-        {modalImage && (
-          <div className="image-modal" onClick={() => setModalImage(null)}>
-            <img src={modalImage} alt="Full Size" className="modal-image" />
-          </div>
-        )}
+            {modalImage && (
+                <div className="image-modal" onClick={() => setModalImage(null)}>
+                    <img src={modalImage} alt="Full Size" className="modal-image"/>
+                </div>
+            )}
         </div>
     );
 };

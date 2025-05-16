@@ -25,7 +25,7 @@ const useFetchChannelDetails = () => {
         try {
             const response = await axios.get("http://localhost:8080/channels/all");
             const formatted = response.data.map((ch) => ({
-                _id: ch._id, // Int64 기반 ID
+                id: ch.id, // Int64 기반 ID
                 title: ch.title || "제목 없음",
                 username: ch.username || "",
                 status: ch.status || "unknown",

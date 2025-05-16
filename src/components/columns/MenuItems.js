@@ -9,7 +9,10 @@ export const menuItems = [
     },
     {
         name: "AI 관리",
-        path: "/aichat",
+        subItems: [
+            { name: "AI 챗봇", path: "/aichat" },
+            { name: "AI 리포트", path: "/ai-reports" },
+        ]
     },
     {
         name: "통계",
