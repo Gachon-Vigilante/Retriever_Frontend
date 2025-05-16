@@ -26,7 +26,13 @@ const RankList = ({ title, items, link }) => {
                     <li key={index} className="rank-item">
                         <span className="rank-number">{index + 1}</span>
                         <div className="rank-content">
-                            <p className="rank-title">{item.name}</p>
+                            {item.channelId ? (
+                                <a href={`/ai-reports?channelId=${item.channelId}`}>
+                                    <p className="rank-title">{item.name}</p>
+                                </a>
+                            ) : (
+                                <p className="rank-title">{item.name}</p>
+                            )}
                             <p className="rank-detail">{item.detail}</p>
                         </div>
                         {isNew(item.createdAt) && <span className="rank-new">NEW</span>}
@@ -47,7 +53,7 @@ const MainDashboard = () => {
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const { channels: newTelegramChannels } = useFetchNewTelegramChannels(6);
-    const [newArgotData, setNewArgotData] = useState([]);
+    const [newReportData, setNewReportData] = useState([]);
     const { posts: newPosts } = useFetchNewPosts(6);
     const { channelCount } = useFetchChannelCount();
 
@@ -95,44 +101,50 @@ const MainDashboard = () => {
         return monthlyCounts;
     };
     useEffect(() => {
-        const fetchRecentArgotData = async () => {
+        const fetchRecentReports = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/chat/all");
-                const latestArgotMap = {};
+                const [reportsRes, channelsRes] = await Promise.all([
+                    axios.get("http://localhost:8080/report/all"),
+                    axios.get("http://localhost:8080/channels/all"),
+                ]);
 
-                response.data.forEach((item) => {
-                    if (item.argot && item.timestamp) {
-                        item.argot.forEach((argotId) => {
-                            if (
-                                !latestArgotMap[argotId] ||
-                                new Date(latestArgotMap[argotId].timestamp) < new Date(item.timestamp)
-                            ) {
-                                latestArgotMap[argotId] = {
-                                    timestamp: item.timestamp,
-                                };
-                            }
-                        });
+                const reportList = reportsRes.data;
+                const channels = channelsRes.data;
+
+                // 채널 ID → 이름 매핑
+                const channelMap = {};
+                channels.forEach((channel) => {
+                    channelMap[channel.id] = channel.title || "제목 없음";
+                });
+
+                // 채널별 최신 리포트만 남기기
+                const latestReportPerChannel = {};
+                reportList.forEach((report) => {
+                    if (!report.channelId || !report.timestamp) return;
+                    const existing = latestReportPerChannel[report.channelId];
+                    if (!existing || new Date(report.timestamp) > new Date(existing.timestamp)) {
+                        latestReportPerChannel[report.channelId] = report;
                     }
                 });
 
-                const entries = Object.entries(latestArgotMap)
-                    .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
-                    .slice(0, 6);
+                // 최신 리포트들을 timestamp 기준으로 정렬
+                const sorted = Object.values(latestReportPerChannel)
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .slice(0, 6)
+                    .map((report) => ({
+                        name: channelMap[report.channelId] || `채널 ID: ${report.channelId}`,
+                        detail: new Date(report.timestamp).toLocaleDateString(),
+                        createdAt: report.timestamp,
+                        channelId: report.channelId
+                    }));
 
-                const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
-                    const res = await axios.get(`http://localhost:8080/argots/id/${argotId}`);
-                    return {
-                        name: res.data.name || res.data.argot || "알 수 없음",
-                        detail: new Date(meta.timestamp).toLocaleDateString(),
-                    };
-                }));
-
-                setNewArgotData(detailedData);
-            } catch (error) {
-                console.error("Error fetching recent argot data:", error);
+                setNewReportData(sorted);
+            } catch (err) {
+                console.error("실시간 리포트 조회 실패:", err);
             }
         };
-        fetchRecentArgotData();
+
+        fetchRecentReports();
     }, []);
 
 
@@ -241,7 +253,7 @@ const MainDashboard = () => {
                 <section className="tables">
                     <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" />
                     <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" />
-                    <RankList title="실시간 AI 리포트" items={newArgotData} link="/ai-reports" />
+                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports" />
                 </section>
             </main>
         </div>

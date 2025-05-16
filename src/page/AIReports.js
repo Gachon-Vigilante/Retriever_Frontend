@@ -2,6 +2,7 @@ import Sidebar from "../components/Sidebar";
 import "../css/page/AiChat.css";
 import useFetchChannels from "../hooks/useFetchChannels";
 import React, {useEffect, useState} from "react";
+import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../css/components/Pagination.css";
 import axios from "axios";
@@ -14,6 +15,15 @@ const AIReports = () => {
     const [reportPage, setReportPage] = useState(0);
     const channelsPerPage = 10;
     const reportsPerPage = 5;
+
+    const [searchParams] = useSearchParams();
+    const selectedChannelIdFromQuery = searchParams.get("channelId");
+
+    useEffect(() => {
+        if (selectedChannelIdFromQuery) {
+            setSelectedChannelId(Number(selectedChannelIdFromQuery));
+        }
+    }, [selectedChannelIdFromQuery]);
 
     useEffect(() => {
         setReportPage(0);
