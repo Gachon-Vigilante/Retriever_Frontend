@@ -1,20 +1,65 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Chart } from "chart.js/auto";
+import React, {useEffect, useRef, useState} from "react";
+import {Chart} from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/MainDashboard.css";
-import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
-import useFetchNewSlangData from "../hooks/useFetchNewSlangData";
+import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import axios from "axios";
 
-const RankList = ({ title, items, link }) => {
+const calculateMonthlyPostGrowth = (posts) => {
+    const monthlyCounts = Array(12).fill(0);
+    posts.forEach(post => {
+        if (post.updatedAt) {
+            const date = new Date(post.updatedAt);
+            if (!isNaN(date) && date.getFullYear() === 2025) {
+                monthlyCounts[date.getMonth()]++;
+            }
+        }
+    });
+
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const thisMonthCount = monthlyCounts[currentMonth];
+    const lastMonthCount = monthlyCounts[lastMonth];
+
+    if (lastMonthCount === 0) return null;
+    const growthRate = ((thisMonthCount - lastMonthCount) / lastMonthCount) * 100;
+    return Math.round(growthRate);
+};
+
+const calculateMonthlyChannelGrowth = (channels) => {
+    const monthlyCounts = Array(12).fill(0);
+    channels.forEach(channel => {
+        if (channel.createdAt) {
+            const date = new Date(channel.createdAt);
+            if (date.getFullYear() === 2025) {
+                const month = date.getMonth();
+                monthlyCounts[month]++;
+            }
+        }
+    });
+
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const thisMonthCount = monthlyCounts[currentMonth];
+    const lastMonthCount = monthlyCounts[lastMonth];
+
+    if (lastMonthCount === 0) return null;
+
+    const growthRate = ((thisMonthCount - lastMonthCount) / lastMonthCount) * 100;
+    return Math.round(growthRate);
+};
+
+const RankList = ({title, items, link}) => {
     const isNew = (date) => {
         const today = new Date();
         const createdDate = new Date(date);
         const diffTime = Math.abs(today - createdDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Difference in days
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays <= 3;
     };
 
@@ -49,13 +94,16 @@ const RankList = ({ title, items, link }) => {
 const MainDashboard = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-    const { posts } = useFetchPostDetails(); // 불러오기
+    const {posts} = useFetchPostDetails(); // 불러오기
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
-    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(6);
+    const {channels: allChannels} = useFetchChannels(); // fetch all channels
+    const monthlyChannelGrowth = calculateMonthlyChannelGrowth(allChannels);
+    const monthlyPostGrowth = calculateMonthlyPostGrowth(posts);
+    const newTelegramChannels = allChannels.slice(0, 6);
     const [newReportData, setNewReportData] = useState([]);
-    const { posts: newPosts } = useFetchNewPosts(6);
-    const { channelCount } = useFetchChannelCount();
+    const {posts: newPosts} = useFetchNewPosts(6);
+    const {channelCount} = useFetchChannelCount();
 
     const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
     const [weeklyPostCount, setWeeklyPostCount] = useState(0);
@@ -85,13 +133,13 @@ const MainDashboard = () => {
     }, [posts]);
 
     const getMonthlyPostCount = (posts, year) => {
-        const monthlyCounts = Array(12).fill(0); // 12개월 초기화
+        const monthlyCounts = Array(12).fill(0);
 
         posts.forEach((post) => {
             if (!post.updatedAt) return;
             const date = new Date(post.updatedAt);
             const postYear = date.getFullYear();
-            const month = date.getMonth(); // 0부터 시작 (0 = 1월)
+            const month = date.getMonth();
 
             if (postYear === year) {
                 monthlyCounts[month]++;
@@ -127,7 +175,6 @@ const MainDashboard = () => {
                     }
                 });
 
-                // 최신 리포트들을 timestamp 기준으로 정렬
                 const sorted = Object.values(latestReportPerChannel)
                     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
                     .slice(0, 6)
@@ -149,14 +196,13 @@ const MainDashboard = () => {
 
 
     useEffect(() => {
-        if (!posts.length) return;
+        if (!allChannels.length) return;
 
-        // 월별 개수 계산
         const monthlyCounts = Array(12).fill(0);
-        posts.forEach((post) => {
-            const updatedAt = new Date(post.updatedAt);
-            if (updatedAt.getFullYear() === 2025) {
-                const month = updatedAt.getMonth(); // 0~11
+        allChannels.forEach((channel) => {
+            const date = new Date(channel.createdAt);
+            if (date.getFullYear() === 2025) {
+                const month = date.getMonth();
                 monthlyCounts[month]++;
             }
         });
@@ -207,15 +253,14 @@ const MainDashboard = () => {
                 chartInstance.current.destroy();
             }
         };
-    }, [posts]);
+    }, [allChannels]);
 
     return (
         <div className="dashboard with-sidebar">
-            <Sidebar />
+            <Sidebar/>
             <main className="main">
                 <header className="header">
                     <h1>실시간 거래 현황</h1>
-                    {/*<button className="download">Download</button>*/}
                 </header>
 
                 <section className="statistics-chart">
@@ -233,12 +278,12 @@ const MainDashboard = () => {
                             <p>{channelCount}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 홍보 게시글 증가율</h3>
-                            <p>+64%</p>
+                            <h3>전월 대비 홍보 게시글 증감율</h3>
+                            <p>{monthlyPostGrowth !== null ? `${monthlyPostGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 거래 채널 증가율</h3>
-                            <p>86%</p>
+                            <h3>전월 대비 거래 채널 증감율</h3>
+                            <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card">
                             <h3>월간 최다 거래 지역</h3>
@@ -251,9 +296,9 @@ const MainDashboard = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" />
-                    <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" />
-                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports" />
+                    <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels"/>
+                    <RankList title="신규 탐지 게시글" items={newPosts} link="/posts"/>
+                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports"/>
                 </section>
             </main>
         </div>
