@@ -7,8 +7,9 @@ import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
+import useFetchChannels from "../hooks/useFetchChannels";
 
-const ProgressBar = ({ label, percentage, value, color }) => (
+const ProgressBar = ({label, percentage, value, color}) => (
     <div className="progress-bar-container">
         <div className="progress-bar-label">
             <span>{label}</span>
@@ -26,7 +27,53 @@ const ProgressBar = ({ label, percentage, value, color }) => (
     </div>
 );
 
-const RankList = ({ title, items }) => (
+const calculateMonthlyPostGrowth = (posts) => {
+    const monthlyCounts = Array(12).fill(0);
+    posts.forEach(post => {
+        if (post.updatedAt) {
+            const date = new Date(post.updatedAt);
+            if (!isNaN(date) && date.getFullYear() === 2025) {
+                monthlyCounts[date.getMonth()]++;
+            }
+        }
+    });
+
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const thisMonthCount = monthlyCounts[currentMonth];
+    const lastMonthCount = monthlyCounts[lastMonth];
+
+    if (lastMonthCount === 0) return null;
+    const growthRate = ((thisMonthCount - lastMonthCount) / lastMonthCount) * 100;
+    return Math.round(growthRate);
+};
+
+const calculateMonthlyChannelGrowth = (channels) => {
+    const monthlyCounts = Array(12).fill(0);
+    channels.forEach(channel => {
+        if (channel.createdAt) {
+            const date = new Date(channel.createdAt);
+            if (date.getFullYear() === 2025) {
+                const month = date.getMonth();
+                monthlyCounts[month]++;
+            }
+        }
+    });
+
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const thisMonthCount = monthlyCounts[currentMonth];
+    const lastMonthCount = monthlyCounts[lastMonth];
+
+    if (lastMonthCount === 0) return null;
+
+    const growthRate = ((thisMonthCount - lastMonthCount) / lastMonthCount) * 100;
+    return Math.round(growthRate);
+};
+
+const RankList = ({title, items}) => (
     <div className="rank-card">
         <h3>{title}</h3>
         <ul>
@@ -46,7 +93,7 @@ const RankList = ({ title, items }) => (
 const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-    const { posts } = useFetchPostDetails(); // 불러오기
+    const {posts} = useFetchPostDetails(); // 불러오기
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const [argotData, setArgotData] = useState([]);
@@ -56,8 +103,12 @@ const Statistics = () => {
     const [drugTypes, setDrugTypes] = useState([]);
 
     const {channels: newTelegramChannels} = useFetchNewTelegramChannels(10);
-    const { posts: newPosts } = useFetchNewPosts(4);
-    const { channelCount } = useFetchChannelCount();
+    const {posts: newPosts} = useFetchNewPosts(4);
+    const {channelCount} = useFetchChannelCount();
+
+    const {channels: allChannels} = useFetchChannels();
+    const monthlyChannelGrowth = calculateMonthlyChannelGrowth(allChannels);
+    const monthlyPostGrowth = calculateMonthlyPostGrowth(posts);
 
     const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
     const [weeklyPostCount, setWeeklyPostCount] = useState(0);
@@ -70,10 +121,10 @@ const Statistics = () => {
     };
 
     useEffect(() => {
-    if (newTelegramChannels.length) {
-        const activeChannels = newTelegramChannels.filter(channel => channel.status === "active");
-        setWeeklyChannelCount(getWeeklyCount(activeChannels));
-    }
+        if (newTelegramChannels.length) {
+            const activeChannels = newTelegramChannels.filter(channel => channel.status === "active");
+            setWeeklyChannelCount(getWeeklyCount(activeChannels));
+        }
         if (newPosts.length) {
             setWeeklyPostCount(getWeeklyCount(newPosts));
         }
@@ -104,14 +155,13 @@ const Statistics = () => {
     };
 
     useEffect(() => {
-        if (!posts.length) return;
+        if (!allChannels.length) return;
 
-        // 월별 개수 계산
         const monthlyCounts = Array(12).fill(0);
-        posts.forEach((post) => {
-            const updatedAt = new Date(post.updatedAt);
-            if (updatedAt.getFullYear() === 2025) {
-                const month = updatedAt.getMonth(); // 0~11
+        allChannels.forEach((channel) => {
+            const date = new Date(channel.createdAt);
+            if (date.getFullYear() === 2025) {
+                const month = date.getMonth();
                 monthlyCounts[month]++;
             }
         });
@@ -162,7 +212,7 @@ const Statistics = () => {
                 chartInstance.current.destroy();
             }
         };
-    }, [posts]);
+    }, [allChannels]);
 
     useEffect(() => {
         const fetchArgotData = async () => {
@@ -302,7 +352,7 @@ const Statistics = () => {
     };
     return (
         <div className="dashboard">
-            <Sidebar />
+            <Sidebar/>
             <main className="main with-sidebar">
                 <header className="header">
                     <h1>통계</h1>
@@ -324,16 +374,16 @@ const Statistics = () => {
                             <p>{channelCount}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 홍보글 증가율</h3>
-                            <p>+64%</p>
+                            <h3>전월 대비 홍보 게시글 증감율</h3>
+                            <p>{monthlyPostGrowth !== null ? `${monthlyPostGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card">
-                            <h3>전월 대비 거래 채널 증가율</h3>
-                            <p>86%</p>
+                            <h3>전월 대비 거래 채널 증감율</h3>
+                            <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card">
-                            <h3>월간 최다 거래 지역</h3>
-                            <p className="p">서울시 강남구</p>
+                            <h3>월간 최다 거래 마약류</h3>
+                            <p className="p">메스암페타민</p>
                         </div>
                     </div>
                     <div className="chart">
@@ -368,8 +418,9 @@ const Statistics = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 탐지 채널" items={newTelegramChannels.filter(channel => channel.status === "active")} />
-                    <RankList title="최근 탐지 은어" items={newArgotData} />
+                    <RankList title="신규 탐지 채널"
+                              items={newTelegramChannels.filter(channel => channel.status === "active")}/>
+                    <RankList title="최근 탐지 은어" items={newArgotData}/>
                 </section>
             </main>
         </div>

@@ -286,8 +286,8 @@ const MainDashboard = () => {
                             <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card">
-                            <h3>월간 최다 거래 지역</h3>
-                            <p className="p">서울시 강남구</p>
+                            <h3>월간 최다 거래 마약류</h3>
+                            <p className="p">메스암페타민</p>
                         </div>
                     </div>
                     <div className="chart">

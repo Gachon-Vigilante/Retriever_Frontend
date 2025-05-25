@@ -29,21 +29,26 @@ const AIReports = () => {
         setReportPage(0);
     }, [selectedChannelId]);
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            if (!selectedChannelId) return;
-            try {
-                const response = await axios.get(`http://localhost:8080/report/channelId`, {
-                    params: {channelId: Number(selectedChannelId)},  // 👈 숫자형으로 보냄
+useEffect(() => {
+    const fetchReports = async () => {
+        try {
+            let response;
+            if (selectedChannelId) {
+                response = await axios.get(`http://localhost:8080/report/channelId`, {
+                    params: { channelId: Number(selectedChannelId) },
                 });
-                setReports(response.data);
-            } catch (err) {
-                console.error("Error fetching reports:", err);
-                setReports([]);
+            } else {
+                response = await axios.get(`http://localhost:8080/report/all`);
             }
-        };
-        fetchReports();
-    }, [selectedChannelId]);
+            const sortedReports = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            setReports(sortedReports);
+        } catch (err) {
+            console.error("Error fetching reports:", err);
+            setReports([]);
+        }
+    };
+    fetchReports();
+}, [selectedChannelId]);
 
     return (
         <div className="ai-chat-page">
@@ -64,7 +69,13 @@ const AIReports = () => {
                                     <li
                                         key={channel.id}
                                         className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                        onClick={() => setSelectedChannelId(channel.id)}
+                                        onClick={() => {
+                                            if (selectedChannelId === channel.id) {
+                                                setSelectedChannelId(null); // 클릭된 항목이 이미 선택된 경우 전체 보기로 전환
+                                            } else {
+                                                setSelectedChannelId(channel.id);
+                                            }
+                                        }}
                                     >
                                         <div className="channel-info">
                                             <p className="channel-name">{channel.name}</p>
@@ -86,13 +97,11 @@ const AIReports = () => {
                     </div>
                     <div className="chat-window">
                         <h3>AI 분석 보고서</h3>
-                        {selectedChannelId && (
-                            <p className="selected-channel-name">
-                                {
-                                    channels.find((ch) => ch.id === selectedChannelId)?.name
-                                }
-                            </p>
-                        )}
+                        <p className="selected-channel-name">
+                            {selectedChannelId
+                                ? channels.find((ch) => ch.id === selectedChannelId)?.name
+                                : "전체 채널 분석 리포트"}
+                        </p>
                         <div className="report-list">
                             {reports.length > 0 ? (
                                 <ul>
