@@ -30,6 +30,8 @@ const Channels = () => {
     const {bookmarks, setBookmarks} = useFetchBookmarks(userId);
     const [showInactive, setShowInactive] = useState(false);
 
+    const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
+
     const [activePage, setActivePage] = useState(1);
     const [inactivePage, setInactivePage] = useState(1);
     const itemsPerPage = 5;
@@ -95,6 +97,8 @@ const Channels = () => {
     const handleChannelClick = (channelId) => {
         setSelectedChannelId(channelId);
         fetchDetailsByChannelId(channelId); // 💡 int64 기반 _id 넘겨줌
+        const selected = channels.find((ch) => ch.id === channelId);
+        setSelectedChannelDescription(selected?.description || "가격 정보 없음");
     };
 
     // Removed toggleImageSize function as image expansion is now handled via modal
@@ -169,23 +173,6 @@ const Channels = () => {
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
-                                                    <p className="channel_price">
-                                                        <strong>Price:</strong> {
-                                                        (() => {
-                                                            if (!channelPriceRanges[channel.id]) {
-                                                                const min = Math.floor(Math.random() * (500000 - 10000 + 1)) + 10000;
-                                                                const max = Math.floor(Math.random() * (1000000 - min + 1)) + min;
-                                                                const roundedMin = Math.round(min / 1000) * 1000;
-                                                                const roundedMax = Math.round(max / 1000) * 1000;
-                                                                setChannelPriceRanges(prev => ({
-                                                                    ...prev,
-                                                                    [channel.id]: `${roundedMin.toLocaleString()}원 ~ ${roundedMax.toLocaleString()}원`
-                                                                }));
-                                                            }
-                                                            return channelPriceRanges[channel.id] || '';
-                                                        })()
-                                                    }
-                                                    </p>
                                                 </div>
                                                 <button
                                                     className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
@@ -199,6 +186,10 @@ const Channels = () => {
                                             </li>
                                         ))}
                                 </ul>
+                                <div className="channel-description-box">
+                                    <strong>선택한 채널 가격 정보:</strong>
+                                    <pre>{selectedChannelDescription}</pre>
+                                </div>
                                 <ReactPaginate
                                     previousLabel={"<"}
                                     nextLabel={">"}

@@ -31,6 +31,7 @@ const useFetchChannelDetails = () => {
                 status: ch.status || "unknown",
                 link: ch.link || "",
                 createdAt: parseDateTime(ch.createdAt),
+                description: ch.catalog?.description || "", // 추가된 필드
             }));
             setChannels(formatted);
         } catch (err) {
