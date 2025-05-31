@@ -1,7 +1,8 @@
-"use client"
+// "use client"
 import styles from "../css/components/GraphVisualizer.module.css";
 import {useEffect, useRef, useState} from "react"
 import NeoVis from "neovis.js"
+import axios from "axios";
 
 const GraphVisualizer = () => {
     const [selectedNode, setSelectedNode] = useState(null)
@@ -9,6 +10,7 @@ const GraphVisualizer = () => {
     const [showRelatedOnly, setShowRelatedOnly] = useState(false)
     const showRelatedOnlyRef = useRef(showRelatedOnly)
     const vizRef = useRef(null)
+    const [mongoChannels, setMongoChannels] = useState([]);
 
     // 필터링 함수를 별도로 분리
     const filterRelatedNodes = (nodeId) => {
@@ -69,6 +71,19 @@ const GraphVisualizer = () => {
     }, [showRelatedOnly, selectedNode])
 
     useEffect(() => {
+        // Fetch mongo channels once on mount
+        axios.get("http://localhost:8080/channels/all")
+          .then((res) => {
+            const result = res.data.map((ch) => ({
+              title: ch.title,
+              description: ch.catalog?.description || "가격 정보 없음"
+            }));
+            setMongoChannels(result);
+          })
+          .catch((err) => {
+            console.error("Mongo fetch failed", err);
+          });
+
         const config = {
             containerId: "viz",
             neo4j: {
@@ -251,6 +266,9 @@ const GraphVisualizer = () => {
                 nodeInfo.status = properties.status
                 nodeInfo.labels = labels.join(", ")
                 nodeInfo.title = properties.title || "Unknown"
+                // Try to match mongo channel by title for price info
+                const matched = mongoChannels.find((ch) => ch.title === nodeInfo.title?.trim());
+                nodeInfo.description = matched?.description || "가격 정보 없음";
             } else if (label === "Post") {
                 nodeInfo.clusterd = properties.cluster
                 nodeInfo.createdAt = properties.createdAt
@@ -382,6 +400,10 @@ const GraphVisualizer = () => {
                                       <tr><td><strong>Username</strong></td><td>{selectedNode.username || "N/A"}</td></tr>
                                       <tr><td><strong>PromotedCount</strong></td><td>{selectedNode.promotedCount ?? 0}</td></tr>
                                       <tr><td><strong>Status</strong></td><td>{selectedNode.status || "N/A"}</td></tr>
+                                      <tr>
+                                        <td><strong>가격 정보</strong></td>
+                                        <td>{selectedNode.description || "가격 정보 없음"}</td>
+                                      </tr>
                                     </>
                                   ) : selectedNode.group === "Post" ? (
                                     <>

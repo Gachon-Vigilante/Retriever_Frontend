@@ -18,6 +18,10 @@ export const menuItems = [
     {
         name: "인터넷 게시글",
         path: "/posts",
+    },
+    {
+        name: "유사도 그래프",
+        path: "/network-graph",
     }
     // {
     //     name: "유사도 분석",
