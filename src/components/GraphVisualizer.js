@@ -1,4 +1,4 @@
- "use client"
+"use client"
 import styles from "../css/components/GraphVisualizer.module.css";
 import {useEffect, useRef, useState} from "react"
 import NeoVis from "neovis.js"
@@ -82,12 +82,11 @@ const GraphVisualizer = () => {
                     enabled: true,
                     solver: "forceAtlas2Based", // 또는 "repulsion", "barnesHut"
                     forceAtlas2Based: {
-                        gravitationalConstant: -50, // 노드 간 인력 (음수면 밀어냄)
-                        centralGravity: 0.01, // 중심으로 끌리는 힘
-                        springLength: 150, // 노드 사이 기본 거리
-                        springConstant: 0.05,
-                        damping: 0.4,
-                        avoidOverlap: 1,
+                        gravitationalConstant: -100,
+                        centralGravity: 0.005,
+                        springLength: 430,
+                        springConstant: 0.18,
+                        avoidOverlap: 1.5
                     },
                     stabilization: {
                         iterations: 100,
@@ -96,24 +95,17 @@ const GraphVisualizer = () => {
                 },
                 nodes: {
                     shape: "dot",
-                    size: 15,
-                    scaling: {
-                        min: 15,
-                        max: 50,
-                    },
+                    // size: 20,
+                    // scaling: {
+                    //     min: 30,
+                    //     max: 150,
+                    // },
                     font: {
                         // vadjust: 5,
                         size: 20,
                     },
                 },
                 edges: {
-                    arrows: {
-                        to: {
-                            enabled: true,
-                            scaleFactor: 0.5,
-                            type: "arrow",
-                        },
-                    },
                     font: {
                         size: 20,
                         align: "middle",
@@ -128,14 +120,27 @@ const GraphVisualizer = () => {
                     label: "title",
                     group: "id",
                     value: "promotedCount",
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        static: {
+                            size: 50,
+                            scaling: {
+                                min: 50,
+                                max: 150,
+                            }
+                            // font: { vadjust: -20, size: 16 },
+                            // color: { background: "#E6F0FF", border: "#4D88FF" }
+                        },
+                    },
                 },
                 Argot: {
                     label: "name",
                     group: "drugId",
-                    value: 10,
+                    // value: 150,
                     [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
                         static: {
-                            shape: "diamond", //
+                            shape: "diamond",
+                            color: "#000000",
+                            // size: 150,
                             // font: { vadjust: -20, size: 16 },
                             // color: { background: "#E6F0FF", border: "#4D88FF" }
                         },
@@ -155,7 +160,7 @@ const GraphVisualizer = () => {
                 },
                 Post: {
                     label: "siteName",
-                    group: "channelId",
+                    group: "cluster",
                     value: 10,
                     [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
                         function: {
@@ -169,28 +174,57 @@ const GraphVisualizer = () => {
             relationships: {
                 SELLS: {
                     color: "BLUE",
-                    arrows: true,
                     label: "SELLS",
                     id: (rel) => rel.properties.id,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        static: {
+                            arrows: "to",
+                        },
+                    },
                 },
                 REFERS_TO: {
                     color: "RED",
-                    arrows: true,
                     label: "REFERS_TO",
                     id: (rel) => rel.properties.id,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        static: {
+                            arrows: "to",
+                        },
+                    },
                 },
                 PROMOTES: {
                     color: "GREEN",
-                    arrows: true,
                     label: "PROMOTES",
                     id: (rel) => rel.properties.id,
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        static: {
+                            arrows: "to",
+                        },
+                    },
                 },
-            SIMILAR: {
-                color: "gray",
-                arrows: true,
-                label: "SIMILAR",
-                id: (rel) => rel.properties.id,
-            },
+                SIMILAR: {
+                    color: "gray",
+                    // arrows: {
+                    //     to: {
+                    //         enabled: false,
+                    //     },
+                    // },
+                    label: "SIMILAR",
+                    score: "score",
+                    [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+                        // static: {
+                        //     color: "grey",
+                        //     arrow: true,
+                        // },
+                        function: {
+                            value: (rel) => {
+                                const score = rel.properties?.score || 0;
+                                return 1 + score;
+                            }
+                        }
+                    },
+                    id: (rel) => rel.properties.id,
+                },
             },
             initialCypher: "MATCH (a)-[r]->(b) RETURN a, b, r",
         }
@@ -208,7 +242,7 @@ const GraphVisualizer = () => {
                 id: node.id,
                 label: label,
                 group: label,
-                caption: node.caption,
+                name: node.name,
             }
 
             if (label === "Channel") {
@@ -216,11 +250,12 @@ const GraphVisualizer = () => {
                 nodeInfo.promotedCount = properties.promotedCount
                 nodeInfo.status = properties.status
                 nodeInfo.labels = labels.join(", ")
+                nodeInfo.title = properties.title || "Unknown"
             } else if (label === "Post") {
-                nodeInfo.siteName = properties.siteName
+                nodeInfo.clusterd = properties.cluster
                 nodeInfo.createdAt = properties.createdAt
-                nodeInfo.link = properties.link
-                nodeInfo.channelId = properties.channelId
+                nodeInfo.content = properties.content
+                nodeInfo.siteName_post = properties.siteName
 
                 const allNodes = vizRef.current?._network?.body?.data?.nodes?.get?.() || []
                 const allEdges = vizRef.current?._network?.body?.data?.edges?.get?.() || []
@@ -278,7 +313,7 @@ const GraphVisualizer = () => {
                             e.label === "SIMILAR" &&
                             e.from === node.id &&
                             e.to !== node.id &&
-                            e?.raw?.properties?.similarityScore > 0.7,
+                            e?.raw?.properties?.score > 0.7,
                     )
                     .map((e) => allNodes.find((n) => n.id === e.to && n.raw?.labels?.includes("Post")))
                     .filter((n) => n)
@@ -319,6 +354,7 @@ const GraphVisualizer = () => {
                 to: event.edge.to,
                 label: event.edge.raw?.type || event.edge.label || "Unknown",
                 chatIds: event.edge?.raw?.properties?.chatIds || [],
+                score: event.edge?.raw?.properties?.score || 0,
             })
         })
 
@@ -329,31 +365,44 @@ const GraphVisualizer = () => {
         <>
             {selectedNode && (
                 <div className={styles.sidebarBackdrop} onClick={() => setSelectedNode(null)}>
-                  <div
-                    className={`${styles.sidebar} ${styles.sidebarOpen}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className={styles.sidebarContent}>
-                      <h3>노드 정보</h3>
-                      <p><strong>노드 ID:</strong> {selectedNode.id}</p>
-                      <p><strong>분류:</strong> {selectedNode.group}</p>
-                      {selectedNode.group === "Channel" ? (
-                        <>
-                          <p><strong>Username:</strong> {selectedNode.username || "N/A"}</p>
-                          <p><strong>PromotedCount:</strong> {selectedNode.promotedCount ?? 0}</p>
-                          <p><strong>Status:</strong> {selectedNode.status || "N/A"}</p>
-                        </>
-                      ) : (
-                        <p><strong>{selectedNode.group === "Argot" ? "은어명" : "Caption"}:</strong> {selectedNode.caption}</p>
-                      )}
-                      {selectedNode.promotedChannelTitle && (
-                        <p><strong>홍보 채널명:</strong> {selectedNode.promotedChannelTitle}</p>
-                      )}
-                      <button className={styles.modalsButton} onClick={() => {
-                        if (!selectedNode || !vizRef.current) return;
-                        const query =
-                          selectedNode.group === "Drug"
-                            ? `
+                    <div
+                        className={`${styles.sidebar} ${styles.sidebarOpen}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className={styles.sidebarContent}>
+                            <h3>노드 정보</h3>
+
+                              <table>
+                                <tbody>
+                                  <tr><td><strong>노드 ID</strong></td><td>{selectedNode.id}</td></tr>
+                                  <tr><td><strong>분류</strong></td><td>{selectedNode.group}</td></tr>
+                                  {selectedNode.group === "Channel" ? (
+                                    <>
+                                      <tr><td><strong>Title</strong></td><td>{selectedNode.title || "Unknown"}</td></tr>
+                                      <tr><td><strong>Username</strong></td><td>{selectedNode.username || "N/A"}</td></tr>
+                                      <tr><td><strong>PromotedCount</strong></td><td>{selectedNode.promotedCount ?? 0}</td></tr>
+                                      <tr><td><strong>Status</strong></td><td>{selectedNode.status || "N/A"}</td></tr>
+                                    </>
+                                  ) : selectedNode.group === "Post" ? (
+                                    <>
+                                      <tr><td><strong>Cluster</strong></td><td>{selectedNode.clusterd || "N/A"}</td></tr>
+                                      <tr><td><strong>Content</strong></td><td>{selectedNode.content || "N/A"}</td></tr>
+                                      <tr><td><strong>SiteName</strong></td><td>{selectedNode.siteName_post || "N/A"}</td></tr>
+                                    </>
+                                  ) : (
+                                    <tr>
+                                      <td><strong>{selectedNode.group === "Argot" ? "은어명" : "Name"}</strong></td>
+                                      <td>{selectedNode.name}</td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
+
+                            <button className={styles.modalsButton} onClick={() => {
+                                if (!selectedNode || !vizRef.current) return;
+                                const query =
+                                    selectedNode.group === "Drug"
+                                        ? `
                               MATCH (d)-[r1]-(a:Argot)
                               WHERE id(d) = ${selectedNode.id}
                               WITH d, r1, a
@@ -366,18 +415,30 @@ const GraphVisualizer = () => {
                               OPTIONAL MATCH (a)-[r2]-(c:Channel)
                               RETURN a AS n, r2 AS r, c AS m
                             `
-                            : `MATCH (n)-[r]-(m) WHERE id(n) = ${selectedNode.id} RETURN n, r, m`;
-                        vizRef.current.renderWithCypher(query);
-                        setShowRelatedOnly(true);
-                      }}>관련 노드만 보기</button>
-                      <button className={styles.modalsButton} onClick={() => {
-                        if (!vizRef.current) return;
-                        const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
-                        vizRef.current.renderWithCypher(initialQuery);
-                        setShowRelatedOnly(false);
-                      }}>모든 노드 보기</button>
+                                        : `MATCH (n)-[r]-(m) WHERE id(n) = ${selectedNode.id} RETURN n, r, m`;
+                                vizRef.current.renderWithCypher(query);
+                                setShowRelatedOnly(true);
+                            }}>관련 노드만 보기
+                            </button>
+                            <button className={styles.modalsButton} onClick={() => {
+                                if (!vizRef.current) return;
+                                const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
+                                vizRef.current.renderWithCypher(initialQuery);
+                                setShowRelatedOnly(false);
+                            }}>모든 노드 보기
+                            </button>
+                            {selectedNode.group === "Channel" && (
+                                <a
+                                    href={`/channels?title=${selectedNode.title}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.modalsButton}
+                                >
+                                    채널 상세
+                                </a>
+                            )}
+                        </div>
                     </div>
-                  </div>
                 </div>
             )}
             {selectedEdge && (
@@ -394,6 +455,9 @@ const GraphVisualizer = () => {
                             <p>
                                 <strong>To:</strong> {selectedEdge.to}
                             </p>
+                            <p>
+                                <strong>Score:</strong> {selectedEdge.score}
+                            </p>
                         </div>
                         <button className={styles.modalsButton} onClick={() => setSelectedEdge(null)}>
                             Close
@@ -407,4 +471,3 @@ const GraphVisualizer = () => {
 }
 
 export default GraphVisualizer
-

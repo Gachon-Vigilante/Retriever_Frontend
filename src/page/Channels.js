@@ -1,6 +1,8 @@
+/* eslint-disable */
 "use client";
 
 import {useEffect, useState} from "react";
+import { useSearchParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
@@ -12,7 +14,20 @@ import rehypeHighlight from "rehype-highlight";
 import ReactPaginate from "react-paginate";
 
 const Channels = () => {
+    const [searchParams] = useSearchParams();
+    const initialTitle = searchParams.get("title");
+
     const {channels, selectedDetails, fetchDetailsByChannelId, loading, error} = useFetchChannelDetails();
+    useEffect(() => {
+        if (channels.length > 0 && initialTitle) {
+            const matched = channels.find(c => (c.title || "").trim() === decodeURIComponent(initialTitle).trim());
+            if (matched) {
+                setSelectedChannelId(matched.id);
+                fetchDetailsByChannelId(matched.id);
+                setSelectedChannelDescription(matched.description || "가격 정보 없음");
+            }
+        }
+    }, [channels, initialTitle]);
     const [selectedChannelId, setSelectedChannelId] = useState(null);
     // Removed expandedImages state
     const [modalImage, setModalImage] = useState(null);
