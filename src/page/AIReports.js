@@ -80,7 +80,7 @@ useEffect(() => {
                                         <div className="channel-info">
                                             <p className="channel-name">{channel.name}</p>
                                             <p className="channel-chatSendTime">
-                                                {new Date(channel.timestamp).toLocaleString()}
+                                                {channel.createdAt}
                                             </p>
                                         </div>
                                     </li>
