@@ -158,6 +158,20 @@ const Channels = () => {
 
                 <div className="channel-content">
                     <section className="channel-list">
+                        <div
+                            className="channel-price-summary"
+                            style={{
+                                position: "sticky",
+                                top: 0,
+                                zIndex: 10,
+                                backgroundColor: "#f9f9f9",
+                                padding: "10px",
+                                borderBottom: "1px solid #ccc"
+                            }}
+                        >
+                            <strong>선택한 채널 가격 정보:</strong>
+                            <pre style={{ margin: 0 }}>{selectedChannelDescription}</pre>
+                        </div>
                         <h3>채널 리스트</h3>
                         <label className="status-filter">
                             <input
@@ -201,10 +215,6 @@ const Channels = () => {
                                             </li>
                                         ))}
                                 </ul>
-                                <div className="channel-description-box">
-                                    <strong>선택한 채널 가격 정보:</strong>
-                                    <pre>{selectedChannelDescription}</pre>
-                                </div>
                                 <ReactPaginate
                                     previousLabel={"<"}
                                     nextLabel={">"}
@@ -300,6 +310,7 @@ const Channels = () => {
                             </>
                         )}
                     </section>
+
 
                     <section className="channel-details">
                         <h3>채널 상세 정보</h3>

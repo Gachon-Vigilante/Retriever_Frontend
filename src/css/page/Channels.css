@@ -10,6 +10,7 @@
     flex: 1;
     padding: 20px;
     background-color: #f3f4f6;
+    height: max-content;
 }
 
 .channel-main.with-sidebar {
@@ -62,7 +63,8 @@
 .channel-content {
     display: flex;
     gap: 20px;
-    height: 100%;
+    height: calc(100vh - 120px); /* adjust for header height */
+    overflow: hidden;
 }
 
 /* Channel List */
@@ -72,6 +74,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     overflow-y: auto;
+    max-height: 100%;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -123,7 +126,7 @@
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
-    /*max-height: 80vh;*/
+    max-height: 100%;
 }
 
 .channel-details h3 {
