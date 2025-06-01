@@ -266,8 +266,11 @@ const GraphVisualizer = () => {
                 nodeInfo.status = properties.status
                 nodeInfo.labels = labels.join(", ")
                 nodeInfo.title = properties.title || "Unknown"
-                // Try to match mongo channel by title for price info
-                const matched = mongoChannels.find((ch) => ch.title === nodeInfo.title?.trim());
+                // Try to match mongo channel by title for price info, with normalization
+                const normalize = (str) => (str || "").trim().normalize("NFC");
+                const matched = mongoChannels.find(
+                  (ch) => normalize(ch.title) === normalize(nodeInfo.title)
+                );
                 nodeInfo.description = matched?.description || "가격 정보 없음";
             } else if (label === "Post") {
                 nodeInfo.clusterd = properties.cluster
