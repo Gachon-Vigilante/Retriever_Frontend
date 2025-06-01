@@ -6,6 +6,7 @@ import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
 import axios from "axios";
 import {Buffer} from "buffer";
+import ReactPaginate from "react-paginate";
 
 const Posts = () => {
     const { posts, selectedPost, fetchPostsDetail, loading, error } = useFetchPostDetails();
@@ -17,6 +18,9 @@ const Posts = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [filteredPosts, setFilteredPosts] = useState([]);
+
+    const [postPage, setPostPage] = useState(0);
+    const itemsPerPage = 10;
 
     // ✅ posts 데이터가 변경되면 filteredPosts를 초기화
     useEffect(() => {
@@ -46,6 +50,9 @@ const Posts = () => {
 
         setFilteredPosts(filtered);
     }, [searchTitle, startDate, endDate, posts]);
+
+    const paginatedPosts = filteredPosts.slice(postPage * itemsPerPage, (postPage + 1) * itemsPerPage);
+    const pageCount = Math.ceil(filteredPosts.length / itemsPerPage);
 
     // ✅ 게시글 클릭 시 상세 정보 가져오기
     const handlePostClick = (postId) => {
@@ -161,7 +168,7 @@ const Posts = () => {
                         ) : (
                             <ul>
                                 {filteredPosts.length > 0 ? (
-                                    filteredPosts.map((post) => (
+                                    paginatedPosts.map((post) => (
                                         <li
                                             key={post.id}
                                             className={`post-item ${
@@ -188,6 +195,17 @@ const Posts = () => {
                                 )}
                             </ul>
                         )}
+                        <ReactPaginate
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            pageCount={pageCount}
+                            onPageChange={({ selected }) => setPostPage(selected)}
+                            pageRangeDisplayed={5}
+                            marginPagesDisplayed={0}
+                            breakLabel={null}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                        />
                     </section>
 
                     {/* Post Details */}
