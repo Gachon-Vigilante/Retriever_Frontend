@@ -55,7 +55,7 @@ useEffect(() => {
             <Sidebar/>
             <main className="ai-chat-main with-sidebar">
                 <header className="ai-chat-header">
-                    <h1>AI 관리</h1>
+                    <h1>AI 리포트</h1>
                 </header>
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
@@ -109,6 +109,9 @@ useEffect(() => {
                                         .slice(reportPage * reportsPerPage, (reportPage + 1) * reportsPerPage)
                                         .map((report) => (
                                             <li key={report.id} className="report-item">
+                                                <p><strong>Channel:</strong> {
+                                                    channels.find((ch) => ch.id === report.channelId)?.name || `ID: ${report.channelId}`
+                                                }</p>
                                                 <p><strong>Type:</strong> {report.type}</p>
                                                 <p><strong>Content:</strong> {report.content}</p>
                                                 <p><strong>Description:</strong> {report.description}</p>
