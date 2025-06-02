@@ -12,12 +12,14 @@ import Posts from "./page/Posts";
 import ChannelSimilarities from "./page/ChannelSimilarities";
 import GraphVisualizer from "./components/GraphVisualizer";
 import AIReports from "./page/AIReports";
+import Login from "./page/Login";
 
 function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<MainDashboard/>}/>
+                <Route path="/" element={<Login/>}/>
+                <Route path="/dashboard" element={<MainDashboard/>}/>
                 <Route path="/channels" element={<Channels/>}/>
                 <Route path="/posts" element={<Posts/>}/>
                 <Route path="/aichat" element={<AiChat/>}/>

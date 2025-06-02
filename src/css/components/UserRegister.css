@@ -1,0 +1,41 @@
+/*.wrapper {*/
+/*    padding: 32px;*/
+/*    max-width: 480px;*/
+/*    margin: 0 auto;*/
+/*}*/
+
+.register-title {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background-color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    padding: 32px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modalTitle {
+    color: #1976d2;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.modalMessage {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modalButton {
+    padding: 8px 32px;
+}
