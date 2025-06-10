@@ -102,7 +102,7 @@ const MainDashboard = () => {
     const monthlyPostGrowth = calculateMonthlyPostGrowth(posts);
     const newTelegramChannels = allChannels.slice(0, 6);
     const [newReportData, setNewReportData] = useState([]);
-    const {posts: newPosts} = useFetchNewPosts(6);
+    const {posts: newPosts} = useFetchNewPosts(5);
     const {channelCount} = useFetchChannelCount();
 
     const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);

@@ -4,7 +4,6 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import MainDashboard from "./page/MainDashboard";
 import AiChat from "./page/AiChat";
 import Statistics from "./page/Statistics";
-import {Guide} from "./page/Guide";
 import {Settings} from "./page/Setting";
 import Channels from "./page/Channels";
 import Similarity from "./page/Similarity";
@@ -28,7 +27,6 @@ function AppRouter() {
                 <Route path="/guide" element={<Guide/>}/>
                 <Route path="/setting" element={<Settings/>}/>
                 <Route path="/channel-similarities" element={<ChannelSimilarities/>}/>
-                {/*<Route path="/network-graph" element={<NetworkGraph />} />*/}
                 <Route path="/network-graph" element={<GraphVisualizer/>}/>
                 <Route path="/ai-reports" element={<AIReports/>}/>
             </Routes>

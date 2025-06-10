@@ -22,7 +22,7 @@ const Sidebar = () => {
 
     return (
         <aside className="sidebar open">
-            <Link to="/">
+            <Link to="/dashboard">
                 <img
                     src={`${process.env.PUBLIC_URL}/retriever_logo.png`}
                     alt="Retriever 로고"
