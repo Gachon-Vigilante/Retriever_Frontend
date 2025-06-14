@@ -14,7 +14,7 @@ const AIReports = () => {
     const [channelPage, setChannelPage] = useState(0);
     const [reportPage, setReportPage] = useState(0);
     const channelsPerPage = 10;
-    const reportsPerPage = 5;
+    const reportsPerPage = 7;
 
     const [searchParams] = useSearchParams();
     const selectedChannelIdFromQuery = searchParams.get("channelId");

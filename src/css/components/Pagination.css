@@ -7,7 +7,7 @@
     gap: 8px;
 }
 
-.pagination li {
+.pagination li a{
     cursor: pointer;
     padding: 6px 12px;
     border: 1px solid #ddd;
@@ -17,11 +17,42 @@
     transition: background-color 0.2s ease;
 }
 
-.pagination li:hover {
+.pagination li a:hover {
     background-color: #f0f0f0;
 }
 
-.pagination li.active {
+.pagination li a.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination li.selected a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-page {
+    list-style: none;
+}
+/* a.pageLinkClassName */
+.pagination-link {
+    cursor: pointer;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.pagination-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* li.activeClassName + a */
+.pagination .active .pagination-link {
     background-color: #007bff;
     color: white;
     border-color: #007bff;

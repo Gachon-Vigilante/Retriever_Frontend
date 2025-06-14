@@ -12,6 +12,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import ReactPaginate from "react-paginate";
+import "../css/components/Pagination.css";
 
 const Channels = () => {
     const [searchParams] = useSearchParams();
@@ -222,6 +223,8 @@ const Channels = () => {
                                     onPageChange={({selected}) => setActivePage(selected + 1)}
                                     containerClassName={"pagination"}
                                     activeClassName={"active"}
+                                    pageLinkClassName={"pagination-link"}
+                                    pageClassName={"pagination-page"}
                                 />
                             </>
                         ) : (
@@ -265,6 +268,8 @@ const Channels = () => {
                                     onPageChange={({selected}) => setActivePage(selected + 1)}
                                     containerClassName={"pagination"}
                                     activeClassName={"active"}
+                                    pageLinkClassName={"pagination-link"}
+                                    pageClassName={"pagination-page"}
                                 />
 
                                 <h4>🔴 Inactive 채널</h4>
@@ -306,6 +311,8 @@ const Channels = () => {
                                     onPageChange={({selected}) => setInactivePage(selected + 1)}
                                     containerClassName={"pagination"}
                                     activeClassName={"active"}
+                                    pageLinkClassName={"pagination-link"}
+                                    pageClassName={"pagination-page"}
                                 />
                             </>
                         )}
