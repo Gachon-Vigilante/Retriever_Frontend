@@ -495,4 +495,4 @@ const GraphVisualizer = () => {
     )
 }
 
-export default GraphVisualizer
+export default GraphVisualizer;

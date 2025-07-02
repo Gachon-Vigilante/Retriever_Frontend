@@ -1,0 +1,118 @@
+/* MigrationTest.module.css */
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+}
+
+.modalContent {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    font-family: sans-serif;
+}
+
+.modalsButton {
+    background: linear-gradient(135deg, #4a90e2, #8ab4f8);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 10px 16px;
+    margin-right: 8px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    text-shadow: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalsButton:hover {
+    background: linear-gradient(135deg, #357abd, #669df6);
+    transform: translateY(-1px);
+}
+
+.sidebarBackdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 998;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 480px;
+    height: 100%;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    overflow-y: auto;
+    padding: 24px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.sidebarOpen {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.sidebar h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.sidebarContent table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.sidebarContent table td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    max-height: 300px;
+    max-width: 800px;
+    word-break: break-word;
+}
+
+.sidebarContent table td:first-child {
+    font-weight: bold;
+    background-color: #f9f9f9;
+    max-width: 180px;
+}
+
+.sidebarContent strong {
+    display: inline-block;
+    width: 150px;
+    color: #333;
+}

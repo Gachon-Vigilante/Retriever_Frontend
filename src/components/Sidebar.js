@@ -74,14 +74,27 @@ const Sidebar = () => {
                                 </div>
                             </>
                         ) : (
-                            <Link
-                                to={menuItem.path}
-                                className={`menu-item ${
-                                    location.pathname === menuItem.path ? "active" : ""
-                                }`}
-                            >
-                                {menuItem.name}
-                            </Link>
+                            menuItem.name === "테스트 페이지" ? (
+                                <a
+                                    href={menuItem.path}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`menu-item ${
+                                        location.pathname === menuItem.path ? "active" : ""
+                                    }`}
+                                >
+                                    {menuItem.name}
+                                </a>
+                            ) : (
+                                <Link
+                                    to={menuItem.path}
+                                    className={`menu-item ${
+                                        location.pathname === menuItem.path ? "active" : ""
+                                    }`}
+                                >
+                                    {menuItem.name}
+                                </Link>
+                            )
                         )}
                     </div>
                 ))}

@@ -22,6 +22,10 @@ export const menuItems = [
     {
         name: "유사도 그래프",
         path: "/network-graph",
+    },
+    {
+        name: "테스트 페이지",
+        path: "/test",
     }
     // {
     //     name: "유사도 분석",

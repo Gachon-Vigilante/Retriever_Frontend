@@ -11,6 +11,7 @@ import ChannelSimilarities from "./page/ChannelSimilarities";
 import GraphVisualizer from "./components/GraphVisualizer";
 import AIReports from "./page/AIReports";
 import Login from "./page/Login";
+import MigrationTest from "./components/MigrationTest";
 
 function AppRouter() {
     return (
@@ -25,6 +26,7 @@ function AppRouter() {
                 <Route path="/similarity" element={<Similarity/>}/>
                 <Route path="/channel-similarities" element={<ChannelSimilarities/>}/>
                 <Route path="/network-graph" element={<GraphVisualizer/>}/>
+                <Route path="/test" element={<MigrationTest/>}/>
                 <Route path="/ai-reports" element={<AIReports/>}/>
             </Routes>
         </BrowserRouter>

@@ -1,0 +1,4866 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "group": "Argot",
+      "name": "Argot_06ad72"
+    },
+    {
+      "id": 1,
+      "group": "Post",
+      "siteName": "Site_1",
+      "content": "Content snippet 7df22cd4",
+      "cluster": 2
+    },
+    {
+      "id": 2,
+      "group": "Channel",
+      "title": "Channel_209f02",
+      "username": "user_851",
+      "promotedCount": 143,
+      "status": "inactive"
+    },
+    {
+      "id": 3,
+      "group": "Post",
+      "siteName": "Site_4",
+      "content": "Content snippet feb0bffe",
+      "cluster": 2
+    },
+    {
+      "id": 4,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet 03b55fec",
+      "cluster": 3
+    },
+    {
+      "id": 5,
+      "group": "Drug",
+      "name": "Drug_003cbe",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 6,
+      "group": "Drug",
+      "name": "Drug_f2c9f8",
+      "type": "depressant"
+    },
+    {
+      "id": 7,
+      "group": "Argot",
+      "name": "Argot_88ce2e"
+    },
+    {
+      "id": 8,
+      "group": "Channel",
+      "title": "Channel_b6e337",
+      "username": "user_174",
+      "promotedCount": 156,
+      "status": "inactive"
+    },
+    {
+      "id": 9,
+      "group": "Channel",
+      "title": "Channel_a8a04c",
+      "username": "user_460",
+      "promotedCount": 161,
+      "status": "active"
+    },
+    {
+      "id": 10,
+      "group": "Channel",
+      "title": "Channel_3f947c",
+      "username": "user_560",
+      "promotedCount": 603,
+      "status": "inactive"
+    },
+    {
+      "id": 11,
+      "group": "Argot",
+      "name": "Argot_a0fe09"
+    },
+    {
+      "id": 12,
+      "group": "Channel",
+      "title": "Channel_101c21",
+      "username": "user_444",
+      "promotedCount": 991,
+      "status": "inactive"
+    },
+    {
+      "id": 13,
+      "group": "Post",
+      "siteName": "Site_3",
+      "content": "Content snippet efc21bd8",
+      "cluster": 5
+    },
+    {
+      "id": 14,
+      "group": "Drug",
+      "name": "Drug_ff6f5a",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 15,
+      "group": "Argot",
+      "name": "Argot_a26763"
+    },
+    {
+      "id": 16,
+      "group": "Channel",
+      "title": "Channel_d80aef",
+      "username": "user_325",
+      "promotedCount": 98,
+      "status": "active"
+    },
+    {
+      "id": 17,
+      "group": "Argot",
+      "name": "Argot_95fcb9"
+    },
+    {
+      "id": 18,
+      "group": "Channel",
+      "title": "Channel_58d5a0",
+      "username": "user_424",
+      "promotedCount": 155,
+      "status": "active"
+    },
+    {
+      "id": 19,
+      "group": "Drug",
+      "name": "Drug_7d70e9",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 20,
+      "group": "Argot",
+      "name": "Argot_54282e"
+    },
+    {
+      "id": 21,
+      "group": "Channel",
+      "title": "Channel_aa7b8b",
+      "username": "user_501",
+      "promotedCount": 245,
+      "status": "inactive"
+    },
+    {
+      "id": 22,
+      "group": "Channel",
+      "title": "Channel_230d6e",
+      "username": "user_582",
+      "promotedCount": 956,
+      "status": "active"
+    },
+    {
+      "id": 23,
+      "group": "Channel",
+      "title": "Channel_3f9820",
+      "username": "user_207",
+      "promotedCount": 88,
+      "status": "inactive"
+    },
+    {
+      "id": 24,
+      "group": "Argot",
+      "name": "Argot_95e147"
+    },
+    {
+      "id": 25,
+      "group": "Channel",
+      "title": "Channel_998025",
+      "username": "user_568",
+      "promotedCount": 243,
+      "status": "inactive"
+    },
+    {
+      "id": 26,
+      "group": "Post",
+      "siteName": "Site_9",
+      "content": "Content snippet 269a333f",
+      "cluster": 3
+    },
+    {
+      "id": 27,
+      "group": "Argot",
+      "name": "Argot_5f5556"
+    },
+    {
+      "id": 28,
+      "group": "Drug",
+      "name": "Drug_986393",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 29,
+      "group": "Argot",
+      "name": "Argot_7b135c"
+    },
+    {
+      "id": 30,
+      "group": "Drug",
+      "name": "Drug_a3b867",
+      "type": "stimulant"
+    },
+    {
+      "id": 31,
+      "group": "Argot",
+      "name": "Argot_37c582"
+    },
+    {
+      "id": 32,
+      "group": "Drug",
+      "name": "Drug_d7c854",
+      "type": "depressant"
+    },
+    {
+      "id": 33,
+      "group": "Argot",
+      "name": "Argot_e6bd46"
+    },
+    {
+      "id": 34,
+      "group": "Post",
+      "siteName": "Site_8",
+      "content": "Content snippet 5db84afc",
+      "cluster": 4
+    },
+    {
+      "id": 35,
+      "group": "Drug",
+      "name": "Drug_55544a",
+      "type": "stimulant"
+    },
+    {
+      "id": 36,
+      "group": "Argot",
+      "name": "Argot_bf8def"
+    },
+    {
+      "id": 37,
+      "group": "Argot",
+      "name": "Argot_206b9b"
+    },
+    {
+      "id": 38,
+      "group": "Post",
+      "siteName": "Site_4",
+      "content": "Content snippet c88b633d",
+      "cluster": 5
+    },
+    {
+      "id": 39,
+      "group": "Post",
+      "siteName": "Site_8",
+      "content": "Content snippet 0e6546ce",
+      "cluster": 2
+    },
+    {
+      "id": 40,
+      "group": "Drug",
+      "name": "Drug_822c62",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 41,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet 7d82d52f",
+      "cluster": 2
+    },
+    {
+      "id": 42,
+      "group": "Argot",
+      "name": "Argot_fde62f"
+    },
+    {
+      "id": 43,
+      "group": "Argot",
+      "name": "Argot_ac5bd9"
+    },
+    {
+      "id": 44,
+      "group": "Channel",
+      "title": "Channel_76304f",
+      "username": "user_971",
+      "promotedCount": 900,
+      "status": "active"
+    },
+    {
+      "id": 45,
+      "group": "Channel",
+      "title": "Channel_3350e1",
+      "username": "user_702",
+      "promotedCount": 451,
+      "status": "active"
+    },
+    {
+      "id": 46,
+      "group": "Argot",
+      "name": "Argot_f2c5f2"
+    },
+    {
+      "id": 47,
+      "group": "Drug",
+      "name": "Drug_82f158",
+      "type": "depressant"
+    },
+    {
+      "id": 48,
+      "group": "Post",
+      "siteName": "Site_9",
+      "content": "Content snippet 3740107c",
+      "cluster": 5
+    },
+    {
+      "id": 49,
+      "group": "Argot",
+      "name": "Argot_7ea283"
+    },
+    {
+      "id": 50,
+      "group": "Drug",
+      "name": "Drug_ebb2b1",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 51,
+      "group": "Channel",
+      "title": "Channel_240be0",
+      "username": "user_611",
+      "promotedCount": 240,
+      "status": "inactive"
+    },
+    {
+      "id": 52,
+      "group": "Post",
+      "siteName": "Site_5",
+      "content": "Content snippet 2bb748ec",
+      "cluster": 1
+    },
+    {
+      "id": 53,
+      "group": "Post",
+      "siteName": "Site_8",
+      "content": "Content snippet 11e499f8",
+      "cluster": 2
+    },
+    {
+      "id": 54,
+      "group": "Argot",
+      "name": "Argot_016726"
+    },
+    {
+      "id": 55,
+      "group": "Argot",
+      "name": "Argot_7d77ee"
+    },
+    {
+      "id": 56,
+      "group": "Drug",
+      "name": "Drug_93c7ac",
+      "type": "depressant"
+    },
+    {
+      "id": 57,
+      "group": "Post",
+      "siteName": "Site_5",
+      "content": "Content snippet 3b926985",
+      "cluster": 3
+    },
+    {
+      "id": 58,
+      "group": "Drug",
+      "name": "Drug_bc3d48",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 59,
+      "group": "Channel",
+      "title": "Channel_2136c2",
+      "username": "user_784",
+      "promotedCount": 517,
+      "status": "active"
+    },
+    {
+      "id": 60,
+      "group": "Post",
+      "siteName": "Site_7",
+      "content": "Content snippet f9a016aa",
+      "cluster": 4
+    },
+    {
+      "id": 61,
+      "group": "Channel",
+      "title": "Channel_7c7d35",
+      "username": "user_846",
+      "promotedCount": 819,
+      "status": "inactive"
+    },
+    {
+      "id": 62,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet 1f69509b",
+      "cluster": 1
+    },
+    {
+      "id": 63,
+      "group": "Channel",
+      "title": "Channel_1bb9a8",
+      "username": "user_646",
+      "promotedCount": 158,
+      "status": "inactive"
+    },
+    {
+      "id": 64,
+      "group": "Channel",
+      "title": "Channel_c42ebf",
+      "username": "user_651",
+      "promotedCount": 378,
+      "status": "active"
+    },
+    {
+      "id": 65,
+      "group": "Drug",
+      "name": "Drug_ba5a9b",
+      "type": "stimulant"
+    },
+    {
+      "id": 66,
+      "group": "Argot",
+      "name": "Argot_e3f574"
+    },
+    {
+      "id": 67,
+      "group": "Drug",
+      "name": "Drug_e333b9",
+      "type": "depressant"
+    },
+    {
+      "id": 68,
+      "group": "Channel",
+      "title": "Channel_5ce7fd",
+      "username": "user_747",
+      "promotedCount": 848,
+      "status": "inactive"
+    },
+    {
+      "id": 69,
+      "group": "Argot",
+      "name": "Argot_b7efe1"
+    },
+    {
+      "id": 70,
+      "group": "Argot",
+      "name": "Argot_433c92"
+    },
+    {
+      "id": 71,
+      "group": "Argot",
+      "name": "Argot_2c7057"
+    },
+    {
+      "id": 72,
+      "group": "Channel",
+      "title": "Channel_23a616",
+      "username": "user_641",
+      "promotedCount": 225,
+      "status": "active"
+    },
+    {
+      "id": 73,
+      "group": "Channel",
+      "title": "Channel_92fca4",
+      "username": "user_988",
+      "promotedCount": 56,
+      "status": "active"
+    },
+    {
+      "id": 74,
+      "group": "Drug",
+      "name": "Drug_4edcb4",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 75,
+      "group": "Channel",
+      "title": "Channel_600b63",
+      "username": "user_807",
+      "promotedCount": 443,
+      "status": "active"
+    },
+    {
+      "id": 76,
+      "group": "Argot",
+      "name": "Argot_a2246e"
+    },
+    {
+      "id": 77,
+      "group": "Post",
+      "siteName": "Site_5",
+      "content": "Content snippet 45c1a864",
+      "cluster": 4
+    },
+    {
+      "id": 78,
+      "group": "Argot",
+      "name": "Argot_844899"
+    },
+    {
+      "id": 79,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet f468aed1",
+      "cluster": 5
+    },
+    {
+      "id": 80,
+      "group": "Argot",
+      "name": "Argot_7ef4f2"
+    },
+    {
+      "id": 81,
+      "group": "Channel",
+      "title": "Channel_3cae94",
+      "username": "user_188",
+      "promotedCount": 322,
+      "status": "active"
+    },
+    {
+      "id": 82,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet 15d300a6",
+      "cluster": 4
+    },
+    {
+      "id": 83,
+      "group": "Post",
+      "siteName": "Site_3",
+      "content": "Content snippet c8988bac",
+      "cluster": 3
+    },
+    {
+      "id": 84,
+      "group": "Post",
+      "siteName": "Site_9",
+      "content": "Content snippet b8372d74",
+      "cluster": 2
+    },
+    {
+      "id": 85,
+      "group": "Post",
+      "siteName": "Site_8",
+      "content": "Content snippet 8672a168",
+      "cluster": 2
+    },
+    {
+      "id": 86,
+      "group": "Channel",
+      "title": "Channel_b1bed4",
+      "username": "user_579",
+      "promotedCount": 334,
+      "status": "active"
+    },
+    {
+      "id": 87,
+      "group": "Argot",
+      "name": "Argot_ff70cd"
+    },
+    {
+      "id": 88,
+      "group": "Argot",
+      "name": "Argot_d09f6b"
+    },
+    {
+      "id": 89,
+      "group": "Post",
+      "siteName": "Site_4",
+      "content": "Content snippet b98889cb",
+      "cluster": 5
+    },
+    {
+      "id": 90,
+      "group": "Post",
+      "siteName": "Site_10",
+      "content": "Content snippet ab67ae1d",
+      "cluster": 2
+    },
+    {
+      "id": 91,
+      "group": "Channel",
+      "title": "Channel_4ad047",
+      "username": "user_707",
+      "promotedCount": 439,
+      "status": "inactive"
+    },
+    {
+      "id": 92,
+      "group": "Channel",
+      "title": "Channel_700413",
+      "username": "user_297",
+      "promotedCount": 229,
+      "status": "inactive"
+    },
+    {
+      "id": 93,
+      "group": "Argot",
+      "name": "Argot_cb413f"
+    },
+    {
+      "id": 94,
+      "group": "Drug",
+      "name": "Drug_41792b",
+      "type": "depressant"
+    },
+    {
+      "id": 95,
+      "group": "Drug",
+      "name": "Drug_3709c3",
+      "type": "depressant"
+    },
+    {
+      "id": 96,
+      "group": "Drug",
+      "name": "Drug_8b46f2",
+      "type": "hallucinogen"
+    },
+    {
+      "id": 97,
+      "group": "Post",
+      "siteName": "Site_7",
+      "content": "Content snippet 3a24371d",
+      "cluster": 1
+    },
+    {
+      "id": 98,
+      "group": "Argot",
+      "name": "Argot_507fb5"
+    },
+    {
+      "id": 99,
+      "group": "Post",
+      "siteName": "Site_8",
+      "content": "Content snippet 03f3133f",
+      "cluster": 1
+    }
+  ],
+  "links": [
+    {
+      "source": 32,
+      "target": 56,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 1,
+      "target": 11,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 32,
+      "target": 91,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 5,
+      "target": 53,
+      "label": "SELLS"
+    },
+    {
+      "source": 90,
+      "target": 55,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 27,
+      "target": 68,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 40,
+      "target": 29,
+      "label": "SELLS"
+    },
+    {
+      "source": 36,
+      "target": 31,
+      "label": "SELLS"
+    },
+    {
+      "source": 95,
+      "target": 78,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 46,
+      "target": 0,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 27,
+      "target": 85,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 66,
+      "target": 93,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 40,
+      "target": 1,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 34,
+      "target": 76,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 11,
+      "target": 60,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 3,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 26,
+      "target": 20,
+      "label": "SELLS"
+    },
+    {
+      "source": 91,
+      "target": 14,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 26,
+      "target": 72,
+      "label": "SELLS"
+    },
+    {
+      "source": 99,
+      "target": 40,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 68,
+      "target": 44,
+      "label": "SELLS"
+    },
+    {
+      "source": 49,
+      "target": 15,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 14,
+      "target": 5,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 87,
+      "target": 20,
+      "label": "SELLS"
+    },
+    {
+      "source": 13,
+      "target": 98,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 69,
+      "target": 14,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 7,
+      "target": 79,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 57,
+      "target": 7,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 61,
+      "target": 97,
+      "label": "SELLS"
+    },
+    {
+      "source": 71,
+      "target": 27,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 79,
+      "target": 55,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 76,
+      "target": 32,
+      "label": "SELLS"
+    },
+    {
+      "source": 68,
+      "target": 63,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 68,
+      "target": 99,
+      "label": "SELLS"
+    },
+    {
+      "source": 8,
+      "target": 24,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 4,
+      "target": 5,
+      "label": "SELLS"
+    },
+    {
+      "source": 47,
+      "target": 79,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 36,
+      "target": 62,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 61,
+      "target": 13,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 18,
+      "target": 13,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 26,
+      "target": 25,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 70,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 58,
+      "target": 3,
+      "label": "SELLS"
+    },
+    {
+      "source": 94,
+      "target": 29,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 88,
+      "target": 36,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 37,
+      "target": 15,
+      "label": "SELLS"
+    },
+    {
+      "source": 47,
+      "target": 55,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 40,
+      "target": 64,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 7,
+      "target": 13,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 68,
+      "target": 83,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 56,
+      "target": 97,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 33,
+      "target": 25,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 26,
+      "target": 0,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 47,
+      "target": 7,
+      "label": "SELLS"
+    },
+    {
+      "source": 93,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 10,
+      "target": 2,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 47,
+      "target": 16,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 7,
+      "target": 21,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 57,
+      "target": 80,
+      "label": "SELLS"
+    },
+    {
+      "source": 48,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 72,
+      "target": 86,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 98,
+      "target": 79,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 93,
+      "target": 4,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 8,
+      "target": 9,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 49,
+      "target": 44,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 39,
+      "target": 22,
+      "label": "SELLS"
+    },
+    {
+      "source": 59,
+      "target": 0,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 91,
+      "target": 70,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 23,
+      "target": 40,
+      "label": "SELLS"
+    },
+    {
+      "source": 54,
+      "target": 20,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 38,
+      "target": 62,
+      "label": "SELLS"
+    },
+    {
+      "source": 95,
+      "target": 63,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 7,
+      "target": 23,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 78,
+      "target": 83,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 63,
+      "target": 15,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 30,
+      "target": 57,
+      "label": "SELLS"
+    },
+    {
+      "source": 7,
+      "target": 41,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 84,
+      "target": 35,
+      "label": "SELLS"
+    },
+    {
+      "source": 76,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 34,
+      "target": 7,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 10,
+      "target": 56,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 13,
+      "target": 87,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 34,
+      "target": 70,
+      "label": "SIMILAR",
+      "score": 0.87
+    },
+    {
+      "source": 82,
+      "target": 87,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 15,
+      "target": 28,
+      "label": "SIMILAR",
+      "score": 0.78
+    },
+    {
+      "source": 53,
+      "target": 79,
+      "label": "SELLS"
+    },
+    {
+      "source": 58,
+      "target": 56,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 13,
+      "target": 44,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 84,
+      "target": 13,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 85,
+      "target": 84,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 48,
+      "target": 99,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 54,
+      "target": 23,
+      "label": "SELLS"
+    },
+    {
+      "source": 69,
+      "target": 91,
+      "label": "SELLS"
+    },
+    {
+      "source": 64,
+      "target": 17,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 7,
+      "target": 11,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 50,
+      "target": 88,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 28,
+      "target": 36,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 3,
+      "target": 45,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 20,
+      "target": 81,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 43,
+      "target": 10,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 11,
+      "target": 22,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 70,
+      "target": 21,
+      "label": "SELLS"
+    },
+    {
+      "source": 11,
+      "target": 70,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 80,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 60,
+      "target": 7,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 16,
+      "target": 52,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 5,
+      "target": 48,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 9,
+      "target": 44,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 11,
+      "target": 10,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 31,
+      "target": 82,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 40,
+      "target": 92,
+      "label": "SELLS"
+    },
+    {
+      "source": 8,
+      "target": 68,
+      "label": "SELLS"
+    },
+    {
+      "source": 31,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.87
+    },
+    {
+      "source": 10,
+      "target": 58,
+      "label": "SELLS"
+    },
+    {
+      "source": 10,
+      "target": 52,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 25,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 14,
+      "target": 42,
+      "label": "SELLS"
+    },
+    {
+      "source": 58,
+      "target": 63,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 50,
+      "target": 32,
+      "label": "SELLS"
+    },
+    {
+      "source": 71,
+      "target": 67,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 58,
+      "target": 19,
+      "label": "SELLS"
+    },
+    {
+      "source": 87,
+      "target": 97,
+      "label": "SELLS"
+    },
+    {
+      "source": 60,
+      "target": 71,
+      "label": "SIMILAR",
+      "score": 0.93
+    },
+    {
+      "source": 22,
+      "target": 76,
+      "label": "SELLS"
+    },
+    {
+      "source": 86,
+      "target": 26,
+      "label": "SIMILAR",
+      "score": 0.75
+    },
+    {
+      "source": 54,
+      "target": 84,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 75,
+      "target": 0,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 66,
+      "target": 49,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 83,
+      "target": 1,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 87,
+      "target": 70,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 19,
+      "target": 45,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 97,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 8,
+      "target": 72,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 1,
+      "target": 25,
+      "label": "SIMILAR",
+      "score": 1.0
+    },
+    {
+      "source": 14,
+      "target": 56,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 68,
+      "target": 37,
+      "label": "SELLS"
+    },
+    {
+      "source": 34,
+      "target": 75,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 44,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 98,
+      "target": 47,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 16,
+      "target": 53,
+      "label": "SELLS"
+    },
+    {
+      "source": 41,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 77,
+      "target": 84,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 73,
+      "target": 43,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 64,
+      "target": 63,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 7,
+      "target": 98,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 56,
+      "target": 96,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 87,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 96,
+      "target": 83,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 23,
+      "target": 46,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 1,
+      "target": 49,
+      "label": "SELLS"
+    },
+    {
+      "source": 81,
+      "target": 34,
+      "label": "SELLS"
+    },
+    {
+      "source": 17,
+      "target": 69,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 47,
+      "target": 4,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 77,
+      "target": 39,
+      "label": "SELLS"
+    },
+    {
+      "source": 97,
+      "target": 34,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 59,
+      "target": 51,
+      "label": "SELLS"
+    },
+    {
+      "source": 73,
+      "target": 68,
+      "label": "SELLS"
+    },
+    {
+      "source": 64,
+      "target": 92,
+      "label": "SELLS"
+    },
+    {
+      "source": 96,
+      "target": 26,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 62,
+      "target": 18,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 82,
+      "target": 88,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 54,
+      "target": 77,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 61,
+      "target": 33,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 61,
+      "target": 84,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 68,
+      "target": 17,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 62,
+      "target": 8,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 72,
+      "target": 10,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 67,
+      "target": 32,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 2,
+      "target": 90,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 15,
+      "target": 7,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 26,
+      "target": 83,
+      "label": "SELLS"
+    },
+    {
+      "source": 16,
+      "target": 25,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 90,
+      "target": 57,
+      "label": "SELLS"
+    },
+    {
+      "source": 62,
+      "target": 32,
+      "label": "SELLS"
+    },
+    {
+      "source": 36,
+      "target": 67,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 11,
+      "target": 40,
+      "label": "SELLS"
+    },
+    {
+      "source": 22,
+      "target": 84,
+      "label": "SELLS"
+    },
+    {
+      "source": 98,
+      "target": 22,
+      "label": "SELLS"
+    },
+    {
+      "source": 99,
+      "target": 66,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 97,
+      "target": 4,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 9,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 40,
+      "target": 22,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 4,
+      "target": 17,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 32,
+      "target": 27,
+      "label": "SIMILAR",
+      "score": 1.0
+    },
+    {
+      "source": 6,
+      "target": 35,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 33,
+      "target": 15,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 91,
+      "target": 44,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 35,
+      "target": 23,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 40,
+      "target": 44,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 99,
+      "target": 15,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 5,
+      "target": 10,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 81,
+      "target": 74,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 50,
+      "target": 94,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 91,
+      "target": 39,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 48,
+      "target": 31,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 36,
+      "target": 73,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 25,
+      "target": 64,
+      "label": "SELLS"
+    },
+    {
+      "source": 99,
+      "target": 80,
+      "label": "SELLS"
+    },
+    {
+      "source": 3,
+      "target": 72,
+      "label": "SIMILAR",
+      "score": 0.87
+    },
+    {
+      "source": 85,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 72,
+      "target": 30,
+      "label": "SELLS"
+    },
+    {
+      "source": 69,
+      "target": 15,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 34,
+      "target": 13,
+      "label": "SELLS"
+    },
+    {
+      "source": 74,
+      "target": 32,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 17,
+      "target": 31,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 55,
+      "target": 96,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 49,
+      "target": 36,
+      "label": "SELLS"
+    },
+    {
+      "source": 0,
+      "target": 17,
+      "label": "SELLS"
+    },
+    {
+      "source": 16,
+      "target": 29,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 48,
+      "target": 89,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 65,
+      "target": 31,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 16,
+      "target": 95,
+      "label": "SELLS"
+    },
+    {
+      "source": 81,
+      "target": 55,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 15,
+      "target": 82,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 33,
+      "target": 14,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 73,
+      "target": 31,
+      "label": "SELLS"
+    },
+    {
+      "source": 72,
+      "target": 95,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 18,
+      "target": 12,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 92,
+      "target": 26,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 82,
+      "target": 8,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 73,
+      "target": 99,
+      "label": "SIMILAR",
+      "score": 0.9
+    },
+    {
+      "source": 9,
+      "target": 14,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 23,
+      "target": 31,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 78,
+      "target": 12,
+      "label": "SELLS"
+    },
+    {
+      "source": 69,
+      "target": 86,
+      "label": "SELLS"
+    },
+    {
+      "source": 33,
+      "target": 26,
+      "label": "SELLS"
+    },
+    {
+      "source": 49,
+      "target": 43,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 52,
+      "target": 55,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 93,
+      "target": 69,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 99,
+      "target": 55,
+      "label": "SIMILAR",
+      "score": 0.91
+    },
+    {
+      "source": 86,
+      "target": 21,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 10,
+      "target": 13,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 63,
+      "target": 40,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 34,
+      "target": 20,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 28,
+      "target": 4,
+      "label": "SELLS"
+    },
+    {
+      "source": 47,
+      "target": 64,
+      "label": "SELLS"
+    },
+    {
+      "source": 17,
+      "target": 47,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 44,
+      "target": 75,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 59,
+      "target": 26,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 22,
+      "target": 94,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 78,
+      "target": 13,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 51,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 10,
+      "target": 24,
+      "label": "SELLS"
+    },
+    {
+      "source": 43,
+      "target": 14,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 98,
+      "target": 69,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 81,
+      "target": 76,
+      "label": "SELLS"
+    },
+    {
+      "source": 33,
+      "target": 22,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 80,
+      "target": 5,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 6,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 65,
+      "target": 30,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 44,
+      "target": 76,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 67,
+      "target": 88,
+      "label": "SIMILAR",
+      "score": 0.73
+    },
+    {
+      "source": 64,
+      "target": 9,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 62,
+      "target": 61,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 41,
+      "target": 3,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 74,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 91,
+      "target": 82,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 40,
+      "target": 79,
+      "label": "SELLS"
+    },
+    {
+      "source": 10,
+      "target": 80,
+      "label": "SELLS"
+    },
+    {
+      "source": 98,
+      "target": 6,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 46,
+      "target": 24,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 91,
+      "target": 63,
+      "label": "SELLS"
+    },
+    {
+      "source": 26,
+      "target": 80,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 77,
+      "target": 2,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 34,
+      "target": 68,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 95,
+      "target": 43,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 54,
+      "target": 25,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 26,
+      "target": 19,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 75,
+      "target": 20,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 83,
+      "target": 3,
+      "label": "SELLS"
+    },
+    {
+      "source": 38,
+      "target": 74,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 86,
+      "target": 57,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 34,
+      "target": 35,
+      "label": "SELLS"
+    },
+    {
+      "source": 16,
+      "target": 2,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 79,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 37,
+      "target": 3,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 63,
+      "target": 35,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 34,
+      "target": 39,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 41,
+      "target": 55,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 28,
+      "target": 93,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 80,
+      "target": 1,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 86,
+      "target": 92,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 47,
+      "target": 73,
+      "label": "SELLS"
+    },
+    {
+      "source": 2,
+      "target": 54,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 65,
+      "target": 50,
+      "label": "SELLS"
+    },
+    {
+      "source": 25,
+      "target": 63,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 20,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 75,
+      "target": 42,
+      "label": "SELLS"
+    },
+    {
+      "source": 87,
+      "target": 9,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 66,
+      "target": 11,
+      "label": "SELLS"
+    },
+    {
+      "source": 7,
+      "target": 74,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 99,
+      "target": 79,
+      "label": "SELLS"
+    },
+    {
+      "source": 17,
+      "target": 73,
+      "label": "SELLS"
+    },
+    {
+      "source": 77,
+      "target": 81,
+      "label": "SELLS"
+    },
+    {
+      "source": 82,
+      "target": 51,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 23,
+      "target": 15,
+      "label": "SELLS"
+    },
+    {
+      "source": 57,
+      "target": 27,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 2,
+      "target": 21,
+      "label": "SELLS"
+    },
+    {
+      "source": 76,
+      "target": 94,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 94,
+      "target": 49,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 18,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 69,
+      "target": 6,
+      "label": "SELLS"
+    },
+    {
+      "source": 72,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.91
+    },
+    {
+      "source": 30,
+      "target": 36,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 71,
+      "target": 62,
+      "label": "SELLS"
+    },
+    {
+      "source": 20,
+      "target": 11,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 0,
+      "target": 82,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 27,
+      "target": 96,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 53,
+      "target": 6,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 66,
+      "target": 79,
+      "label": "SELLS"
+    },
+    {
+      "source": 26,
+      "target": 6,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 10,
+      "target": 95,
+      "label": "SELLS"
+    },
+    {
+      "source": 62,
+      "target": 87,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 69,
+      "target": 37,
+      "label": "SELLS"
+    },
+    {
+      "source": 67,
+      "target": 24,
+      "label": "SELLS"
+    },
+    {
+      "source": 13,
+      "target": 67,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 52,
+      "target": 29,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 11,
+      "target": 43,
+      "label": "SIMILAR",
+      "score": 0.93
+    },
+    {
+      "source": 98,
+      "target": 68,
+      "label": "SIMILAR",
+      "score": 0.93
+    },
+    {
+      "source": 86,
+      "target": 99,
+      "label": "SIMILAR",
+      "score": 0.73
+    },
+    {
+      "source": 55,
+      "target": 85,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 92,
+      "target": 78,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 69,
+      "label": "SELLS"
+    },
+    {
+      "source": 63,
+      "target": 75,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 21,
+      "target": 74,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 58,
+      "target": 1,
+      "label": "SELLS"
+    },
+    {
+      "source": 96,
+      "target": 52,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 2,
+      "target": 19,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 92,
+      "target": 94,
+      "label": "SELLS"
+    },
+    {
+      "source": 7,
+      "target": 8,
+      "label": "SIMILAR",
+      "score": 0.75
+    },
+    {
+      "source": 58,
+      "target": 52,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 71,
+      "target": 59,
+      "label": "SELLS"
+    },
+    {
+      "source": 60,
+      "target": 5,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 67,
+      "target": 14,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 21,
+      "target": 66,
+      "label": "SELLS"
+    },
+    {
+      "source": 30,
+      "target": 9,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 92,
+      "target": 16,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 30,
+      "target": 49,
+      "label": "SELLS"
+    },
+    {
+      "source": 12,
+      "target": 3,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 36,
+      "target": 94,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 92,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 55,
+      "target": 10,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 10,
+      "target": 37,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 38,
+      "target": 21,
+      "label": "SELLS"
+    },
+    {
+      "source": 12,
+      "target": 36,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 88,
+      "target": 93,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 69,
+      "target": 66,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 69,
+      "target": 99,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 98,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 21,
+      "target": 55,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 39,
+      "target": 55,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 41,
+      "target": 82,
+      "label": "SELLS"
+    },
+    {
+      "source": 86,
+      "target": 50,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 41,
+      "target": 56,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 43,
+      "target": 72,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 18,
+      "target": 16,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 65,
+      "target": 95,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 23,
+      "target": 32,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 69,
+      "target": 53,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 23,
+      "target": 12,
+      "label": "SELLS"
+    },
+    {
+      "source": 34,
+      "target": 95,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 0,
+      "target": 96,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 20,
+      "target": 16,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 96,
+      "target": 63,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 28,
+      "target": 35,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 74,
+      "target": 86,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 82,
+      "target": 54,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 43,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 88,
+      "target": 14,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 66,
+      "target": 89,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 67,
+      "target": 98,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 6,
+      "target": 20,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 99,
+      "target": 5,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 2,
+      "target": 68,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 97,
+      "target": 3,
+      "label": "SIMILAR",
+      "score": 0.87
+    },
+    {
+      "source": 92,
+      "target": 36,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 30,
+      "target": 11,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 54,
+      "target": 8,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 46,
+      "target": 26,
+      "label": "SELLS"
+    },
+    {
+      "source": 85,
+      "target": 25,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 63,
+      "target": 82,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 9,
+      "target": 48,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 77,
+      "target": 97,
+      "label": "SELLS"
+    },
+    {
+      "source": 82,
+      "target": 89,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 26,
+      "target": 13,
+      "label": "SELLS"
+    },
+    {
+      "source": 50,
+      "target": 30,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 72,
+      "target": 25,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 10,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 2,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 43,
+      "target": 50,
+      "label": "SELLS"
+    },
+    {
+      "source": 44,
+      "target": 42,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 7,
+      "target": 27,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 82,
+      "target": 44,
+      "label": "SELLS"
+    },
+    {
+      "source": 93,
+      "target": 61,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 49,
+      "target": 40,
+      "label": "SIMILAR",
+      "score": 1.0
+    },
+    {
+      "source": 93,
+      "target": 49,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 19,
+      "target": 66,
+      "label": "SELLS"
+    },
+    {
+      "source": 46,
+      "target": 17,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 79,
+      "target": 60,
+      "label": "SELLS"
+    },
+    {
+      "source": 56,
+      "target": 61,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 58,
+      "target": 50,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 68,
+      "target": 45,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 93,
+      "target": 39,
+      "label": "SELLS"
+    },
+    {
+      "source": 35,
+      "target": 94,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 72,
+      "target": 91,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 92,
+      "target": 24,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 14,
+      "target": 36,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 35,
+      "target": 20,
+      "label": "SELLS"
+    },
+    {
+      "source": 26,
+      "target": 71,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 86,
+      "target": 75,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 89,
+      "target": 32,
+      "label": "SELLS"
+    },
+    {
+      "source": 47,
+      "target": 72,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 48,
+      "target": 53,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 69,
+      "target": 45,
+      "label": "SELLS"
+    },
+    {
+      "source": 46,
+      "target": 35,
+      "label": "SELLS"
+    },
+    {
+      "source": 83,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 22,
+      "target": 43,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 79,
+      "target": 75,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 62,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 21,
+      "target": 49,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 27,
+      "target": 35,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 96,
+      "target": 31,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 66,
+      "target": 41,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 67,
+      "target": 38,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 4,
+      "target": 74,
+      "label": "SELLS"
+    },
+    {
+      "source": 11,
+      "target": 33,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 39,
+      "target": 32,
+      "label": "SELLS"
+    },
+    {
+      "source": 38,
+      "target": 55,
+      "label": "SIMILAR",
+      "score": 0.78
+    },
+    {
+      "source": 46,
+      "target": 98,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 55,
+      "target": 4,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 87,
+      "target": 47,
+      "label": "SELLS"
+    },
+    {
+      "source": 68,
+      "target": 94,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 39,
+      "target": 87,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 82,
+      "target": 72,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 92,
+      "target": 37,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 24,
+      "target": 90,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 92,
+      "target": 53,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 20,
+      "target": 49,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 61,
+      "target": 18,
+      "label": "SELLS"
+    },
+    {
+      "source": 40,
+      "target": 4,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 79,
+      "target": 88,
+      "label": "SELLS"
+    },
+    {
+      "source": 2,
+      "target": 5,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 52,
+      "target": 80,
+      "label": "SELLS"
+    },
+    {
+      "source": 13,
+      "target": 69,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 0,
+      "target": 33,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 75,
+      "target": 97,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 22,
+      "target": 55,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 66,
+      "target": 55,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 80,
+      "target": 14,
+      "label": "SIMILAR",
+      "score": 0.77
+    },
+    {
+      "source": 71,
+      "target": 37,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 75,
+      "target": 96,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 6,
+      "target": 61,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 60,
+      "target": 73,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 59,
+      "target": 47,
+      "label": "SELLS"
+    },
+    {
+      "source": 75,
+      "target": 83,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 44,
+      "target": 5,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 57,
+      "target": 32,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 97,
+      "target": 74,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 25,
+      "target": 82,
+      "label": "SELLS"
+    },
+    {
+      "source": 6,
+      "target": 17,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 11,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 45,
+      "target": 80,
+      "label": "SIMILAR",
+      "score": 0.9
+    },
+    {
+      "source": 11,
+      "target": 45,
+      "label": "SELLS"
+    },
+    {
+      "source": 97,
+      "target": 7,
+      "label": "SELLS"
+    },
+    {
+      "source": 86,
+      "target": 8,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 21,
+      "target": 35,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 8,
+      "target": 64,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 43,
+      "target": 34,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 57,
+      "target": 94,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 46,
+      "target": 90,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 91,
+      "target": 35,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 30,
+      "target": 82,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 2,
+      "target": 85,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 85,
+      "target": 53,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 98,
+      "target": 85,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 2,
+      "target": 87,
+      "label": "SELLS"
+    },
+    {
+      "source": 58,
+      "target": 48,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 7,
+      "target": 1,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 5,
+      "target": 54,
+      "label": "SIMILAR",
+      "score": 0.78
+    },
+    {
+      "source": 10,
+      "target": 67,
+      "label": "SELLS"
+    },
+    {
+      "source": 7,
+      "target": 30,
+      "label": "SELLS"
+    },
+    {
+      "source": 79,
+      "target": 33,
+      "label": "SELLS"
+    },
+    {
+      "source": 91,
+      "target": 85,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 74,
+      "target": 12,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 32,
+      "target": 28,
+      "label": "SELLS"
+    },
+    {
+      "source": 0,
+      "target": 54,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 5,
+      "target": 37,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 92,
+      "target": 63,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 69,
+      "target": 56,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 75,
+      "target": 62,
+      "label": "SELLS"
+    },
+    {
+      "source": 57,
+      "target": 87,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 48,
+      "target": 79,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 43,
+      "target": 97,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 11,
+      "target": 29,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 89,
+      "target": 44,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 1,
+      "target": 75,
+      "label": "SELLS"
+    },
+    {
+      "source": 24,
+      "target": 98,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 84,
+      "target": 58,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 83,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 29,
+      "target": 22,
+      "label": "SELLS"
+    },
+    {
+      "source": 68,
+      "target": 90,
+      "label": "SELLS"
+    },
+    {
+      "source": 13,
+      "target": 23,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 47,
+      "target": 78,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 86,
+      "target": 41,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 95,
+      "target": 23,
+      "label": "SELLS"
+    },
+    {
+      "source": 66,
+      "target": 26,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 93,
+      "target": 62,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 46,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.73
+    },
+    {
+      "source": 28,
+      "target": 86,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 41,
+      "target": 8,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 19,
+      "target": 61,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 81,
+      "target": 92,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 68,
+      "target": 32,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 45,
+      "target": 90,
+      "label": "SELLS"
+    },
+    {
+      "source": 2,
+      "target": 91,
+      "label": "SELLS"
+    },
+    {
+      "source": 94,
+      "target": 93,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 1,
+      "target": 84,
+      "label": "SELLS"
+    },
+    {
+      "source": 12,
+      "target": 91,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 86,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 40,
+      "target": 66,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 13,
+      "target": 29,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 95,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 22,
+      "target": 26,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 15,
+      "target": 76,
+      "label": "SELLS"
+    },
+    {
+      "source": 74,
+      "target": 77,
+      "label": "SELLS"
+    },
+    {
+      "source": 2,
+      "target": 51,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 83,
+      "target": 5,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 67,
+      "target": 25,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 32,
+      "target": 25,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 16,
+      "target": 98,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 62,
+      "target": 76,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 19,
+      "target": 84,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 62,
+      "target": 83,
+      "label": "SIMILAR",
+      "score": 0.9
+    },
+    {
+      "source": 0,
+      "target": 97,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 60,
+      "target": 50,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 55,
+      "target": 84,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 88,
+      "target": 80,
+      "label": "SELLS"
+    },
+    {
+      "source": 79,
+      "target": 25,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 42,
+      "target": 78,
+      "label": "SELLS"
+    },
+    {
+      "source": 40,
+      "target": 38,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 91,
+      "target": 23,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 35,
+      "target": 65,
+      "label": "SELLS"
+    },
+    {
+      "source": 67,
+      "target": 6,
+      "label": "SELLS"
+    },
+    {
+      "source": 33,
+      "target": 43,
+      "label": "SELLS"
+    },
+    {
+      "source": 58,
+      "target": 90,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 97,
+      "target": 57,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 7,
+      "target": 52,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 17,
+      "target": 11,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 51,
+      "target": 41,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 48,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 40,
+      "target": 69,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 43,
+      "target": 96,
+      "label": "SELLS"
+    },
+    {
+      "source": 78,
+      "target": 96,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 89,
+      "target": 74,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 97,
+      "target": 40,
+      "label": "SIMILAR",
+      "score": 0.93
+    },
+    {
+      "source": 89,
+      "target": 57,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 99,
+      "target": 38,
+      "label": "SELLS"
+    },
+    {
+      "source": 14,
+      "target": 60,
+      "label": "SELLS"
+    },
+    {
+      "source": 45,
+      "target": 31,
+      "label": "SIMILAR",
+      "score": 0.9
+    },
+    {
+      "source": 70,
+      "target": 30,
+      "label": "SELLS"
+    },
+    {
+      "source": 25,
+      "target": 17,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 30,
+      "target": 69,
+      "label": "SELLS"
+    },
+    {
+      "source": 64,
+      "target": 44,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 22,
+      "target": 19,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 50,
+      "target": 1,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 30,
+      "target": 86,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 45,
+      "target": 52,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 90,
+      "target": 22,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 26,
+      "target": 55,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 91,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.86
+    },
+    {
+      "source": 49,
+      "target": 91,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 92,
+      "target": 68,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 9,
+      "target": 68,
+      "label": "SELLS"
+    },
+    {
+      "source": 94,
+      "target": 64,
+      "label": "SIMILAR",
+      "score": 0.84
+    },
+    {
+      "source": 29,
+      "target": 72,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 99,
+      "target": 71,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 32,
+      "target": 49,
+      "label": "SELLS"
+    },
+    {
+      "source": 3,
+      "target": 52,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 73,
+      "target": 94,
+      "label": "SIMILAR",
+      "score": 0.73
+    },
+    {
+      "source": 60,
+      "target": 98,
+      "label": "SELLS"
+    },
+    {
+      "source": 20,
+      "target": 50,
+      "label": "SELLS"
+    },
+    {
+      "source": 49,
+      "target": 14,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 24,
+      "target": 95,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 45,
+      "target": 2,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 23,
+      "target": 70,
+      "label": "SELLS"
+    },
+    {
+      "source": 50,
+      "target": 49,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 70,
+      "target": 99,
+      "label": "SELLS"
+    },
+    {
+      "source": 69,
+      "target": 82,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 35,
+      "target": 33,
+      "label": "SELLS"
+    },
+    {
+      "source": 42,
+      "target": 52,
+      "label": "SELLS"
+    },
+    {
+      "source": 38,
+      "target": 8,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 67,
+      "target": 39,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 42,
+      "target": 10,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 94,
+      "target": 82,
+      "label": "SELLS"
+    },
+    {
+      "source": 73,
+      "target": 78,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 29,
+      "target": 61,
+      "label": "SELLS"
+    },
+    {
+      "source": 17,
+      "target": 70,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 39,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 68,
+      "target": 4,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 85,
+      "target": 50,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 28,
+      "target": 3,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 97,
+      "target": 90,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 87,
+      "target": 40,
+      "label": "SIMILAR",
+      "score": 0.96
+    },
+    {
+      "source": 20,
+      "target": 85,
+      "label": "SELLS"
+    },
+    {
+      "source": 34,
+      "target": 72,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 42,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 12,
+      "target": 68,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 95,
+      "target": 71,
+      "label": "SELLS"
+    },
+    {
+      "source": 98,
+      "target": 89,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 49,
+      "target": 28,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 53,
+      "target": 39,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 34,
+      "target": 55,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 74,
+      "target": 52,
+      "label": "SELLS"
+    },
+    {
+      "source": 96,
+      "target": 77,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 26,
+      "target": 16,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 36,
+      "target": 93,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 17,
+      "target": 65,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 62,
+      "target": 54,
+      "label": "SIMILAR",
+      "score": 0.76
+    },
+    {
+      "source": 19,
+      "target": 70,
+      "label": "SELLS"
+    },
+    {
+      "source": 6,
+      "target": 12,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 71,
+      "target": 9,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 80,
+      "target": 54,
+      "label": "SIMILAR",
+      "score": 0.81
+    },
+    {
+      "source": 62,
+      "target": 45,
+      "label": "SELLS"
+    },
+    {
+      "source": 46,
+      "target": 11,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 10,
+      "target": 8,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 2,
+      "target": 40,
+      "label": "SELLS"
+    },
+    {
+      "source": 93,
+      "target": 56,
+      "label": "SIMILAR",
+      "score": 0.94
+    },
+    {
+      "source": 70,
+      "target": 71,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 18,
+      "target": 90,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 14,
+      "target": 84,
+      "label": "SELLS"
+    },
+    {
+      "source": 44,
+      "target": 10,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 41,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 40,
+      "target": 93,
+      "label": "SIMILAR",
+      "score": 0.75
+    },
+    {
+      "source": 94,
+      "target": 18,
+      "label": "SIMILAR",
+      "score": 0.74
+    },
+    {
+      "source": 24,
+      "target": 29,
+      "label": "SELLS"
+    },
+    {
+      "source": 54,
+      "target": 16,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 69,
+      "target": 57,
+      "label": "SELLS"
+    },
+    {
+      "source": 98,
+      "target": 23,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 43,
+      "target": 36,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 49,
+      "target": 27,
+      "label": "SIMILAR",
+      "score": 0.78
+    },
+    {
+      "source": 99,
+      "target": 21,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 32,
+      "target": 75,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 53,
+      "target": 57,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 46,
+      "target": 84,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 70,
+      "target": 78,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 83,
+      "target": 61,
+      "label": "SELLS"
+    },
+    {
+      "source": 52,
+      "target": 78,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 30,
+      "target": 16,
+      "label": "SIMILAR",
+      "score": 0.9
+    },
+    {
+      "source": 46,
+      "target": 30,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 60,
+      "target": 88,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 67,
+      "target": 54,
+      "label": "SELLS"
+    },
+    {
+      "source": 54,
+      "target": 13,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 22,
+      "target": 73,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 69,
+      "target": 44,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 0,
+      "target": 35,
+      "label": "SELLS"
+    },
+    {
+      "source": 9,
+      "target": 69,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 84,
+      "target": 70,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 23,
+      "target": 64,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 10,
+      "target": 45,
+      "label": "SELLS"
+    },
+    {
+      "source": 49,
+      "target": 97,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 4,
+      "target": 12,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 80,
+      "target": 25,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 72,
+      "target": 20,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 55,
+      "target": 80,
+      "label": "SIMILAR",
+      "score": 0.91
+    },
+    {
+      "source": 2,
+      "target": 95,
+      "label": "SELLS"
+    },
+    {
+      "source": 87,
+      "target": 8,
+      "label": "SELLS"
+    },
+    {
+      "source": 54,
+      "target": 34,
+      "label": "SIMILAR",
+      "score": 0.7
+    },
+    {
+      "source": 76,
+      "target": 46,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 43,
+      "target": 1,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 43,
+      "target": 78,
+      "label": "SIMILAR",
+      "score": 0.91
+    },
+    {
+      "source": 93,
+      "target": 51,
+      "label": "SELLS"
+    },
+    {
+      "source": 43,
+      "target": 8,
+      "label": "SELLS"
+    },
+    {
+      "source": 92,
+      "target": 30,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 58,
+      "target": 80,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 57,
+      "target": 47,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 13,
+      "target": 15,
+      "label": "SELLS"
+    },
+    {
+      "source": 46,
+      "target": 93,
+      "label": "SIMILAR",
+      "score": 0.95
+    },
+    {
+      "source": 42,
+      "target": 7,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 95,
+      "target": 22,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 53,
+      "target": 87,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 56,
+      "target": 94,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 16,
+      "target": 66,
+      "label": "SELLS"
+    },
+    {
+      "source": 34,
+      "target": 25,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 40,
+      "target": 46,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 11,
+      "target": 92,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 47,
+      "target": 54,
+      "label": "SELLS"
+    },
+    {
+      "source": 59,
+      "target": 4,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 72,
+      "target": 9,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 71,
+      "target": 78,
+      "label": "SELLS"
+    },
+    {
+      "source": 11,
+      "target": 97,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 36,
+      "target": 58,
+      "label": "SELLS"
+    },
+    {
+      "source": 68,
+      "target": 5,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 22,
+      "target": 63,
+      "label": "SIMILAR",
+      "score": 0.83
+    },
+    {
+      "source": 48,
+      "target": 4,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 31,
+      "target": 88,
+      "label": "SIMILAR",
+      "score": 0.8
+    },
+    {
+      "source": 53,
+      "target": 24,
+      "label": "SIMILAR",
+      "score": 0.85
+    },
+    {
+      "source": 32,
+      "target": 63,
+      "label": "SELLS"
+    },
+    {
+      "source": 11,
+      "target": 79,
+      "label": "SIMILAR",
+      "score": 1.0
+    },
+    {
+      "source": 69,
+      "target": 8,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 98,
+      "target": 94,
+      "label": "SIMILAR",
+      "score": 0.98
+    },
+    {
+      "source": 51,
+      "target": 20,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 89,
+      "target": 35,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 90,
+      "target": 93,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 91,
+      "target": 99,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 99,
+      "target": 46,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 6,
+      "target": 36,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 9,
+      "target": 31,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 61,
+      "target": 64,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 47,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.91
+    },
+    {
+      "source": 56,
+      "target": 83,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 90,
+      "target": 21,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 56,
+      "target": 17,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 42,
+      "target": 83,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 19,
+      "target": 35,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 56,
+      "target": 35,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 88,
+      "target": 90,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 28,
+      "target": 27,
+      "label": "SIMILAR",
+      "score": 0.88
+    },
+    {
+      "source": 95,
+      "target": 48,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 55,
+      "target": 95,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 25,
+      "target": 50,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 12,
+      "target": 61,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 5,
+      "target": 71,
+      "label": "SELLS"
+    },
+    {
+      "source": 28,
+      "target": 25,
+      "label": "SELLS"
+    },
+    {
+      "source": 37,
+      "target": 84,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 6,
+      "target": 66,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 80,
+      "target": 95,
+      "label": "SIMILAR",
+      "score": 0.78
+    },
+    {
+      "source": 71,
+      "target": 76,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 99,
+      "target": 84,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 51,
+      "target": 95,
+      "label": "SIMILAR",
+      "score": 0.79
+    },
+    {
+      "source": 42,
+      "target": 55,
+      "label": "SELLS"
+    },
+    {
+      "source": 32,
+      "target": 54,
+      "label": "SELLS"
+    },
+    {
+      "source": 72,
+      "target": 57,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 76,
+      "target": 85,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 29,
+      "target": 57,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 60,
+      "target": 84,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 95,
+      "target": 9,
+      "label": "SELLS"
+    },
+    {
+      "source": 99,
+      "target": 37,
+      "label": "SIMILAR",
+      "score": 0.89
+    },
+    {
+      "source": 2,
+      "target": 18,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 90,
+      "target": 69,
+      "label": "SELLS"
+    },
+    {
+      "source": 70,
+      "target": 59,
+      "label": "SELLS"
+    },
+    {
+      "source": 75,
+      "target": 80,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 41,
+      "target": 52,
+      "label": "SELLS"
+    },
+    {
+      "source": 31,
+      "target": 22,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 59,
+      "target": 10,
+      "label": "SELLS"
+    },
+    {
+      "source": 37,
+      "target": 91,
+      "label": "SIMILAR",
+      "score": 0.97
+    },
+    {
+      "source": 21,
+      "target": 48,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 39,
+      "target": 23,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 32,
+      "target": 40,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 98,
+      "target": 10,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 41,
+      "target": 67,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 82,
+      "target": 29,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 19,
+      "target": 7,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 48,
+      "target": 19,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 71,
+      "target": 34,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 62,
+      "target": 63,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 86,
+      "target": 14,
+      "label": "SELLS"
+    },
+    {
+      "source": 45,
+      "target": 95,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 30,
+      "target": 59,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 34,
+      "target": 93,
+      "label": "SIMILAR",
+      "score": 0.72
+    },
+    {
+      "source": 73,
+      "target": 39,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 24,
+      "target": 41,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 17,
+      "target": 62,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 35,
+      "target": 85,
+      "label": "SELLS"
+    },
+    {
+      "source": 75,
+      "target": 38,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 80,
+      "target": 63,
+      "label": "SELLS"
+    },
+    {
+      "source": 75,
+      "target": 31,
+      "label": "SELLS"
+    },
+    {
+      "source": 61,
+      "target": 28,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 11,
+      "target": 77,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 31,
+      "target": 53,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 42,
+      "target": 20,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 24,
+      "target": 19,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 57,
+      "target": 93,
+      "label": "SIMILAR",
+      "score": 0.82
+    },
+    {
+      "source": 16,
+      "target": 17,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 70,
+      "target": 6,
+      "label": "SIMILAR",
+      "score": 1.0
+    },
+    {
+      "source": 21,
+      "target": 1,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 49,
+      "target": 87,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 61,
+      "target": 63,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 73,
+      "target": 45,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 43,
+      "target": 29,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 40,
+      "target": 27,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 98,
+      "target": 88,
+      "label": "SELLS"
+    },
+    {
+      "source": 80,
+      "target": 9,
+      "label": "SELLS"
+    },
+    {
+      "source": 72,
+      "target": 14,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 1,
+      "target": 66,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 9,
+      "target": 54,
+      "label": "SELLS"
+    },
+    {
+      "source": 62,
+      "target": 19,
+      "label": "SELLS"
+    },
+    {
+      "source": 40,
+      "target": 91,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 18,
+      "target": 73,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 53,
+      "target": 96,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 25,
+      "target": 20,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 17,
+      "target": 61,
+      "label": "SELLS"
+    },
+    {
+      "source": 42,
+      "target": 33,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 43,
+      "target": 21,
+      "label": "SIMILAR",
+      "score": 0.92
+    },
+    {
+      "source": 10,
+      "target": 7,
+      "label": "PROMOTES"
+    },
+    {
+      "source": 99,
+      "target": 39,
+      "label": "SIMILAR",
+      "score": 0.99
+    },
+    {
+      "source": 30,
+      "target": 35,
+      "label": "SELLS"
+    },
+    {
+      "source": 26,
+      "target": 58,
+      "label": "SIMILAR",
+      "score": 0.71
+    },
+    {
+      "source": 85,
+      "target": 56,
+      "label": "REFERS_TO"
+    },
+    {
+      "source": 35,
+      "target": 41,
+      "label": "SIMILAR",
+      "score": 0.8
+    }
+  ]
+}
