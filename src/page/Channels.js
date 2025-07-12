@@ -64,11 +64,11 @@ const Channels = () => {
         try {
             if (isBookmarked(channel.id)) {
                 const bookmark = bookmarks.find((b) => b.channelId === channel.id);
-                await axios.delete(`http://localhost:8080/bookmarks/delete/${bookmark.id}`);
+                await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/bookmarks/delete/${bookmark.id}`);
                 setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
             } else {
                 const newBookmark = {channelId: channel.id, userId};
-                await axios.post("http://localhost:8080/bookmarks/add", newBookmark);
+                await axios.post(`${process.env.REACT_APP_API_BASE_URL}/bookmarks/add`, newBookmark);
                 setBookmarks((prev) => [...prev, newBookmark]);
             }
         } catch (err) {

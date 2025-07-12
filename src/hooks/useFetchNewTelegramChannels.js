@@ -8,7 +8,7 @@ const useFetchNewTelegramChannels = (limit = 10) => {
     useEffect(() => {
         const fetchNewChannels = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/channels/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`);
                 const sortedData = response.data
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);

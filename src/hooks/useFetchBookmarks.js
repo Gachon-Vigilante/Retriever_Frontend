@@ -10,7 +10,7 @@ const useFetchBookmarks = (userId) => {
         const fetchBookmarks = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8080/bookmarks/user/${userId}`
+                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/user/${userId}`
                 );
                 setBookmarks(response.data);
                 setLoading(false);

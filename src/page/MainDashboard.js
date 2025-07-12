@@ -152,8 +152,8 @@ const MainDashboard = () => {
         const fetchRecentReports = async () => {
             try {
                 const [reportsRes, channelsRes] = await Promise.all([
-                    axios.get("http://localhost:8080/report/all"),
-                    axios.get("http://localhost:8080/channels/all"),
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`),
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`),
                 ]);
 
                 const reportList = reportsRes.data;

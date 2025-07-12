@@ -217,7 +217,7 @@ const Statistics = () => {
     useEffect(() => {
         const fetchArgotData = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/chat/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/all`);
                 const argotCounts = {};
                 response.data.forEach((item) => {
                     if (item.argot) item.argot.forEach((argotId) => {
@@ -231,7 +231,7 @@ const Statistics = () => {
 
                 const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
                 const argotNamesPromises = sorted.map(([argotId]) =>
-                    axios.get(`http://localhost:8080/argots/id/${argotId}`).then(res => {
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/argots/id/${argotId}`).then(res => {
                         const data = res.data;
                         return data.name || data.slang || data.argot || "알 수 없음";
                     })
@@ -252,7 +252,7 @@ const Statistics = () => {
 
         const fetchDrugData = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/chat/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/all`);
                 const drugCounts = {};
                 response.data.forEach((item) => {
                     if (item.drugs) item.drugs.forEach((drugId) => {
@@ -266,7 +266,7 @@ const Statistics = () => {
 
                 const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
                 const drugNamesPromises = sorted.map(([drugId]) =>
-                    axios.get(`http://localhost:8080/drugs/id/${drugId}`).then(res => res.data.drugName)
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/id/${drugId}`).then(res => res.data.drugName)
                 );
 
                 const drugNames = await Promise.all(drugNamesPromises);
@@ -285,7 +285,7 @@ const Statistics = () => {
 
         const fetchDrugTypes = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/drugs/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/all`);
                 const types = [...new Set(response.data.map((drug) => drug.drugType))];
                 setDrugTypes(["All", ...types]);
             } catch (error) {
@@ -295,7 +295,7 @@ const Statistics = () => {
 
         const fetchRecentArgotData = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/chat/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/all`);
                 const latestArgotMap = {};
 
                 response.data.forEach((item) => {
@@ -318,7 +318,7 @@ const Statistics = () => {
                     .slice(0, 5);
 
                 const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
-                    const res = await axios.get(`http://localhost:8080/argots/id/${argotId}`);
+                    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/argots/id/${argotId}`);
                     return {
                         name: res.data.name || res.data.argot || "알 수 없음",
                         detail: new Date(meta.timestamp).toLocaleDateString(),

@@ -22,7 +22,7 @@ const ChannelSimilarities = () => {
         const fetchChannels = async () => {
             try {
                 // channel-similarity 테이블 전체 목록
-                const response = await axios.get("http://localhost:8080/channel-similarity/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel-similarity/all`);
                 const data = response.data; // [{_id, channelId, similarChannels, ...}, ...]
 
                 // 각 entry의 channelId를 가지고 channel_info에서 title, updatedAt 등을 얻어온 뒤 합치기
@@ -32,7 +32,7 @@ const ChannelSimilarities = () => {
                         try {
                             // /channels/id/{channelId}로 실제 channel_info 조회
                             const channelRes = await axios.get(
-                                `http://localhost:8080/channels/id/${Number(entry.channelId)}`
+                                `${process.env.REACT_APP_API_BASE_URL}/channels/id/${Number(entry.channelId)}`
                             );
                             const info = channelRes.data || {}; // channel_info 문서
 
@@ -69,7 +69,7 @@ const ChannelSimilarities = () => {
         const detailedChannels = await Promise.all(
             similarChannelsArray.map(async (sc) => {
                 try {
-                    const res = await axios.get(`http://localhost:8080/channels/id/${String(sc.channelId)}`);
+                    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/id/${String(sc.channelId)}`);
                     const info = res.data || {};
                     return {
                         channelId: sc.channelId,
@@ -105,7 +105,7 @@ const ChannelSimilarities = () => {
             // 3-1) 선택된 채널의 유사 채널들 불러오기
             //      -> /channel-similarity/chId/{channelId} 가정
             const response = await axios.get(
-                `http://localhost:8080/channel-similarity/chId/${Number(channelItem.channelId)}`
+                `${process.env.REACT_APP_API_BASE_URL}/channel-similarity/chId/${Number(channelItem.channelId)}`
             );
             const similarityDoc = response.data; // { _id, channelId, similarChannels, ... }
 
@@ -118,7 +118,7 @@ const ChannelSimilarities = () => {
 
             // 3-4) 선택된 채널의 텔레그램 링크도 가져오기 (/channels/id/{channelId})
             const channelInfoResponse = await axios.get(
-                `http://localhost:8080/channels/id/${Number(channelItem.channelId)}`
+                `${process.env.REACT_APP_API_BASE_URL}/channels/id/${Number(channelItem.channelId)}`
             );
             if (channelInfoResponse.data?.link) {
                 setIframeUrl(channelInfoResponse.data.link);

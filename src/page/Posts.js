@@ -62,13 +62,13 @@ const Posts = () => {
 
     const fetchSimilarities = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:8080/post-similarity/post/${id}`);
+            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/post/${id}`);
             const fetched = res.data.similarPosts || [];
 
             const detailed = await Promise.all(
                 fetched.map(async (item) => {
                     try {
-                        const detail = await axios.get(`http://localhost:8080/posts/id/${item.similarPost}`);
+                        const detail = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${item.similarPost}`);
                         return {
                             ...item,
                             title: detail.data.title || "제목 없음",

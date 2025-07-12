@@ -8,7 +8,7 @@ const useFetchNewPosts = (limit = 4) => {
     useEffect(() => {
         const fetchNewPosts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/posts/all");
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/all`);
                 const sortedData = response.data
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);

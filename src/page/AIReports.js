@@ -34,11 +34,11 @@ useEffect(() => {
         try {
             let response;
             if (selectedChannelId) {
-                response = await axios.get(`http://localhost:8080/report/channelId`, {
+                response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/channelId`, {
                     params: { channelId: Number(selectedChannelId) },
                 });
             } else {
-                response = await axios.get(`http://localhost:8080/report/all`);
+                response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`);
             }
             const sortedReports = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             setReports(sortedReports);

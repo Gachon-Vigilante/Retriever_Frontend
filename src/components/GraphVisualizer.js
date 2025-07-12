@@ -72,7 +72,7 @@ const GraphVisualizer = () => {
 
     useEffect(() => {
         // Fetch mongo channels once on mount
-        axios.get("http://localhost:8080/channels/all")
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`)
           .then((res) => {
             const result = res.data.map((ch) => ({
               title: ch.title,

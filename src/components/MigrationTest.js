@@ -1,21 +1,47 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as d3 from "d3-force";
 import ForceGraph2D from "react-force-graph-2d";
 import styles from "../css/components/MigrationTest.module.css";
-import dummyData from "../components/columns/similarity_filtered_100nodes.json";
+import dummyData from "../components/columns/similarity_filtered_100nodes_modified.json";
 
-const colorByGroup = {
-    Channel: "#4a90e2",
-    Post: "#50e3c2",
-    Drug: "#e94e77",
-    Argot: "#f5a623",
+
+const getNodeColor = (node) => {
+    if (typeof node.cluster !== "undefined") {
+        // cluster 번호를 기반으로 색상을 생성
+        const clusterNum = parseInt(node.cluster, 10);
+        const colors = [
+            "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
+            "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
+            "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
+            "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
+        ];
+        return colors[clusterNum % colors.length];
+    }
+    return "#999"; // fallback
 };
 
 const MigrationTest = () => {
-    const [graphData, setGraphData] = useState(dummyData);
+    // Only keep SIMILAR links with score >= 0.7 and nodes connected by them
+    const filteredLinks = dummyData.links.filter(
+        (link) => link.label === "SIMILAR" && link.score >= 0.7
+    );
+    const connectedNodeIds = new Set();
+    filteredLinks.forEach(link => {
+        connectedNodeIds.add(typeof link.source === "object" ? link.source.id : link.source);
+        connectedNodeIds.add(typeof link.target === "object" ? link.target.id : link.target);
+    });
+    const filteredNodes = dummyData.nodes
+        .filter(n => connectedNodeIds.has(n.id))
+        .map(n => ({
+            ...n,
+            cluster: n.cluster ?? -1
+        }));
+
+    const [graphData, setGraphData] = useState({ nodes: filteredNodes, links: filteredLinks });
     const [selectedNode, setSelectedNode] = useState(null);
     const [selectedLink, setSelectedLink] = useState(null);
     const [showRelatedOnly, setShowRelatedOnly] = useState(false);
-    const [originalData] = useState(dummyData);
+    const [originalData] = useState({ nodes: filteredNodes, links: filteredLinks });
     const fgRef = useRef();
 
     const filterRelatedNodes = (nodeId) => {
@@ -52,16 +78,16 @@ const MigrationTest = () => {
 
     useEffect(() => {
         if (fgRef.current) {
-            fgRef.current.d3Force("charge")?.strength(-300);
-            fgRef.current.d3Force("collide")?.radius(30);
-            fgRef.current.d3Force("link")?.distance((link) => {
-                return link.label === "SIMILAR"
-                    ? 300 * (1 - (link.score || 0)) + 50
-                    : 250;
-            });
-            fgRef.current.d3Force("link")?.strength((link) => {
-                return link.label === "SIMILAR" ? 0.7 : 0.1;
-            });
+            fgRef.current.d3Force("charge")?.strength(-350);
+            fgRef.current.d3Force("collide")?.radius(20);
+            fgRef.current.d3Force("link")?.distance((link) =>
+                link.label === "SIMILAR" ? 300 * (1 - (link.score || 0)) + 50 : 200
+            );
+            fgRef.current.d3Force("link")?.strength((link) =>
+                link.label === "SIMILAR" ? 1.5 : 0.1
+            );
+            fgRef.current.d3Force("x", d3.forceX().strength(0.05));
+            fgRef.current.d3Force("y", d3.forceY().strength(0.05));
         }
     }, []);
 
@@ -83,7 +109,7 @@ const MigrationTest = () => {
                 nodeCanvasObject={(node, ctx, globalScale) => {
                     const label = node.title || node.name || node.siteName;
                     const fontSize = 12 / globalScale;
-                    const color = colorByGroup[node.group] || "#999";
+                    const color = getNodeColor(node);
 
                     ctx.beginPath();
 

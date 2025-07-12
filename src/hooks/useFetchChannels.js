@@ -42,8 +42,8 @@ const useFetchChannels = () => {
         const fetch = async () => {
             try {
                 const [channelsRes, botsRes] = await Promise.all([
-                    axios.get("http://localhost:8080/channels/all"),         // channel_info
-                    axios.get("http://localhost:8080/chatbots/all"),         // chat_bots
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`),         // channel_info
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/chatbots/all`),         // chat_bots
                 ]);
 
                 const chatBots = botsRes.data;
