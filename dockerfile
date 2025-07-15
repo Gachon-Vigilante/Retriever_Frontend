@@ -1,6 +1,9 @@
 # base image
 FROM node:24-alpine AS build
 
+# 시간대 설정
+RUN ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
 # 작업 디렉토리 생성
 WORKDIR /app
 
@@ -10,10 +13,8 @@ RUN npm install
 
 # 소스 복사 및 빌드
 COPY . .
-RUN npm run build
 
-# 실제 실행용 이미지
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+# react 실행
 EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD [ "npm", "start" ]
