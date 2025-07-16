@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../css/components/Pagination.css";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const AIReports = () => {
     const [selectedChannelId, setSelectedChannelId] = useState(null);
@@ -36,9 +37,10 @@ useEffect(() => {
             if (selectedChannelId) {
                 response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/channelId`, {
                     params: { channelId: Number(selectedChannelId) },
+                    withCredentials: true,
                 });
             } else {
-                response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`);
+                response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true });
             }
             const sortedReports = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             setReports(sortedReports);

@@ -3,6 +3,7 @@ import styles from "../css/components/GraphVisualizer.module.css";
 import {useEffect, useRef, useState} from "react"
 import NeoVis from "neovis.js"
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const GraphVisualizer = () => {
     const [selectedNode, setSelectedNode] = useState(null)
@@ -72,7 +73,7 @@ const GraphVisualizer = () => {
 
     useEffect(() => {
         // Fetch mongo channels once on mount
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true })
           .then((res) => {
             const result = res.data.map((ch) => ({
               title: ch.title,
@@ -241,7 +242,7 @@ const GraphVisualizer = () => {
                     id: (rel) => rel.properties.id,
                 },
             },
-            initialCypher: "MATCH (a)-[r]->(b) RETURN a, b, r",
+            initialCypher: "MATCH (a)-[r]->(b) RETURN a, b, r LIMIT 3000",
         }
 
         vizRef.current = new NeoVis(config)
@@ -447,7 +448,7 @@ const GraphVisualizer = () => {
                             </button>
                             <button className={styles.modalsButton} onClick={() => {
                                 if (!vizRef.current) return;
-                                const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r";
+                                const initialQuery = "MATCH (a)-[r]->(b) RETURN a, b, r LIMIT 3000";
                                 vizRef.current.renderWithCypher(initialQuery);
                                 setShowRelatedOnly(false);
                             }}>모든 노드 보기

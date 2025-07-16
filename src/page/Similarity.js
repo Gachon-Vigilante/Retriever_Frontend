@@ -53,7 +53,10 @@ const Similarity = () => {
             const detailed = await Promise.all(
                 fetched.map(async (item) => {
                     try {
-                        const detail = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${item.similarPost}`);
+                        const detail = await axios.get(
+                            `${process.env.REACT_APP_API_BASE_URL}/posts/id/${item.similarPost}`,
+                            { withCredentials: true }
+                        );
                         return {
                             ...item,
                             title: detail.data.title || "제목 없음",

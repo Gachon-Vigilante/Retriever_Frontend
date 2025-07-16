@@ -20,7 +20,7 @@ const useFetchPostDetails = () => {
         const fetchPosts = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/all`);
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/all`, { withCredentials: true });
                 const formattedData = response.data.map((post) => ({
                     id: post.id,
                     title: post.title,
@@ -52,7 +52,7 @@ const useFetchPostDetails = () => {
     const fetchPostsDetail = async (id) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${id}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${id}`, { withCredentials: true });
 
             const post = response.data;
 
@@ -87,7 +87,7 @@ const useFetchPostDetails = () => {
     const fetchDetailsByPostId = async (postId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/${postId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/${postId}`, { withCredentials: true });
             const similarPosts = response.data?.similarPosts || [];
 
             const formattedDetails = similarPosts.map((item) => ({

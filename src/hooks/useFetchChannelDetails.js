@@ -23,7 +23,7 @@ const useFetchChannelDetails = () => {
     const fetchChannels = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`);
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true });
             const formatted = response.data.map((ch) => ({
                 id: ch.id, // Int64 기반 ID
                 title: ch.title || "제목 없음",
@@ -44,7 +44,7 @@ const useFetchChannelDetails = () => {
     const fetchDetailsByChannelId = async (channelId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/channel/${channelId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/channel/${channelId}`, { withCredentials: true });
             const formatted = response.data.map((item) => ({
                 msgUrl: item.url || item.msgUrl || "N/A",
                 text: item.text || "내용 없음",

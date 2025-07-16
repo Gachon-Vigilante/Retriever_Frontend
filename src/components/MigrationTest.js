@@ -2,28 +2,54 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3-force";
 import ForceGraph2D from "react-force-graph-2d";
 import styles from "../css/components/MigrationTest.module.css";
-import dummyData from "../components/columns/similarity_filtered_100nodes_modified.json";
+import dummyData from "../components/columns/nodetessst.json";
 
 
 const getNodeColor = (node) => {
-    if (typeof node.cluster !== "undefined") {
-        // cluster 번호를 기반으로 색상을 생성
-        const clusterNum = parseInt(node.cluster, 10);
-        const colors = [
-            "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
-            "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
-            "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
-            "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
-        ];
-        return colors[clusterNum % colors.length];
+    const colors = [
+        "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
+        "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
+        "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
+        "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
+    ];
+
+    if (typeof node.cluster === "number" && node.cluster !== -1) {
+        return colors[node.cluster % colors.length];
     }
-    return "#999"; // fallback
+
+    // If not Post or Channel, inherit color from connected Channel
+    if (node.group !== "Channel" && node.group !== "Post") {
+        const connectedChannelLink = dummyData.links.find(
+            (l) =>
+                ((l.source === node.id || (typeof l.source === "object" && l.source.id === node.id)) &&
+                 dummyData.nodes.find(n => n.id === l.target && n.group === "Channel")) ||
+                ((l.target === node.id || (typeof l.target === "object" && l.target.id === node.id)) &&
+                 dummyData.nodes.find(n => n.id === l.source && n.group === "Channel"))
+        );
+
+        if (connectedChannelLink) {
+            const channelNode = dummyData.nodes.find(n =>
+                n.id === ((connectedChannelLink.source === node.id || connectedChannelLink.source?.id === node.id)
+                    ? connectedChannelLink.target
+                    : connectedChannelLink.source)
+            );
+            if (channelNode && typeof channelNode.cluster === "number") {
+                return colors[channelNode.cluster % colors.length];
+            }
+        }
+    }
+
+    return "#999999"; // fallback color if no cluster or channel found
 };
 
 const MigrationTest = () => {
-    // Only keep SIMILAR links with score >= 0.7 and nodes connected by them
+    // Only keep SIMILAR (score >= 0.7), PROMOTES, SELLS, REFERS_TO links and their connected nodes
     const filteredLinks = dummyData.links.filter(
-        (link) => link.label === "SIMILAR" && link.score >= 0.7
+        (link) =>
+            (link.label === "SIMILAR" && link.score >= 0.7) ||
+            link.label === "PROMOTES" ||
+            link.label === "SELLS" ||
+            link.label === "REFERS_TO"
     );
     const connectedNodeIds = new Set();
     filteredLinks.forEach(link => {
@@ -32,9 +58,11 @@ const MigrationTest = () => {
     });
     const filteredNodes = dummyData.nodes
         .filter(n => connectedNodeIds.has(n.id))
+        .filter(n => !(n.group === "Post" && (n.cluster === undefined || n.cluster === null)))
         .map(n => ({
             ...n,
-            cluster: n.cluster ?? -1
+            cluster: n.cluster ?? -1,
+            label: n.title || n.name || n.siteName || n.id
         }));
 
     const [graphData, setGraphData] = useState({ nodes: filteredNodes, links: filteredLinks });
@@ -46,7 +74,8 @@ const MigrationTest = () => {
 
     const filterRelatedNodes = (nodeId) => {
         const relatedLinks = originalData.links.filter(
-            (l) => l.source === nodeId || l.target === nodeId
+            (l) => (typeof l.source === "object" ? l.source.id : l.source) === nodeId ||
+                   (typeof l.target === "object" ? l.target.id : l.target) === nodeId
         );
         const relatedNodeIds = new Set([nodeId]);
         relatedLinks.forEach((l) => {
@@ -78,16 +107,27 @@ const MigrationTest = () => {
 
     useEffect(() => {
         if (fgRef.current) {
-            fgRef.current.d3Force("charge")?.strength(-350);
+            fgRef.current.d3Force("charge")?.strength(-80);
             fgRef.current.d3Force("collide")?.radius(20);
-            fgRef.current.d3Force("link")?.distance((link) =>
-                link.label === "SIMILAR" ? 300 * (1 - (link.score || 0)) + 50 : 200
-            );
+
+            fgRef.current.d3Force("link")?.distance((link) => {
+                // similarity가 높을수록 거리를 짧게, 낮을수록 멀게
+                const sim = Math.min(Math.max(link.score ?? 0.7, 0.7), 1);
+                const scaled = 50 + (1 - sim) * 300; // 거리 범위: 50~140
+                return scaled;
+            });
             fgRef.current.d3Force("link")?.strength((link) =>
-                link.label === "SIMILAR" ? 1.5 : 0.1
+                link.label === "SIMILAR" ? 2 : 0.1
             );
-            fgRef.current.d3Force("x", d3.forceX().strength(0.05));
-            fgRef.current.d3Force("y", d3.forceY().strength(0.05));
+
+            // Spread clusters more naturally in opposite directions
+            fgRef.current.d3Force("x", d3.forceX((node) => {
+                return typeof node.cluster === "number" ? Math.cos(node.cluster) * 500 : 0;
+            }).strength(1.5));
+
+            fgRef.current.d3Force("y", d3.forceY((node) => {
+                return typeof node.cluster === "number" ? Math.sin(node.cluster) * 500 : 0;
+            }).strength(1.5));
         }
     }, []);
 
@@ -102,7 +142,10 @@ const MigrationTest = () => {
                 linkDirectionalArrowLength={8}
                 linkDirectionalArrowRelPos={1}
                 onEngineStop={() => fgRef.current.zoomToFit(600)}
-                nodeLabel={(node) => `${node.label}: ${node.title || node.name || node.siteName}`}
+                nodeLabel={(node) => {
+                    const label = node.title || node.name || node.siteName || node.label || "(Unnamed)";
+                    return label;
+                }}
                 linkLabel={(link) => link.label}
                 onNodeClick={handleNodeClick}
                 onLinkClick={handleLinkClick}
