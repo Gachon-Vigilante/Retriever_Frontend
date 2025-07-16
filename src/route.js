@@ -12,6 +12,7 @@ import GraphVisualizer from "./components/GraphVisualizer";
 import AIReports from "./page/AIReports";
 import Login from "./page/Login";
 import MigrationTest from "./components/MigrationTest";
+import UserList from "./page/UserList";
 
 function AppRouter() {
     return (
@@ -28,6 +29,7 @@ function AppRouter() {
                 <Route path="/network-graph" element={<GraphVisualizer/>}/>
                 <Route path="/test" element={<MigrationTest/>}/>
                 <Route path="/ai-reports" element={<AIReports/>}/>
+                <Route path="/userlist" element={<UserList/>}/>
             </Routes>
         </BrowserRouter>
     );

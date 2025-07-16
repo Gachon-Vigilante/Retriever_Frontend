@@ -108,6 +108,20 @@ const Sidebar = () => {
                 <div className="user-details">
                     <p className="user-name">관리자</p>
                 </div>
+                <a
+                    className="logout-button"
+                    href="#"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        // Clear cookies
+                        document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                        document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                        // Redirect to login page
+                        window.location.href = "/";
+                    }}
+                >
+                    로그아웃
+                </a>
             </div>
         </aside>
     );

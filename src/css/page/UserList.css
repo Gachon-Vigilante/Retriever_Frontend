@@ -1,0 +1,34 @@
+.user-page {
+    display: flex;
+    height: 100vh;
+    background-color: #f3f4f6;
+}
+
+.user-main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column; /* Stack header and content vertically */
+}
+
+.user-main.with-sidebar {
+    margin-left: 250px; /* same as sidebar width */
+}
+
+.user-table {
+    width: 100%;
+}
+
+.user-add-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.user-add-button:hover {
+    background-color: #4338ca;
+}

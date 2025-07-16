@@ -26,6 +26,10 @@ export const menuItems = [
     {
         name: "테스트 페이지",
         path: "/test",
+    },
+    {
+        name: "사용자/관리자 등록",
+        path: "/userlist",
     }
     // {
     //     name: "유사도 분석",

@@ -140,3 +140,17 @@
     margin-left: 250px; /* same width as sidebar */
     transition: margin-left 0.3s ease;
 }
+
+.logout-button {
+    display: inline-block;
+    margin-top: 40px;
+    margin-left: 50px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    color: #0056b3;
+}
