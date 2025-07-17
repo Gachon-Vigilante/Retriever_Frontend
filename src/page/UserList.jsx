@@ -12,20 +12,18 @@ axios.defaults.withCredentials = true;
 
 const getRoleFromAccessToken = () => {
     const cookies = Object.fromEntries(
-        document.cookie.split("; ").map((c) => {
+        document.cookie.split(";").map((c) => {
             const [key, value] = c.split("=");
             return [key.trim(), value];
         })
     );
 
     const token = cookies.accessToken;
-    console.log("파싱된 accessToken:", token);
 
     if (!token) return null;
 
     try {
         const decoded = jwtDecode(token);
-        console.log("디코딩된 JWT:", decoded);
         return decoded.role?.replace(/^ROLE_/, "");
     } catch (err) {
         console.error("JWT decode error:", err);
@@ -48,7 +46,6 @@ const UserList = () => {
     };
 
     useEffect(() => {
-        console.log("useEffect 실행됨");
         fetchUsers();
         const role = getRoleFromAccessToken();
         console.log("현재 로그인한 사용자 권한:", role);
@@ -77,7 +74,42 @@ const UserList = () => {
             field: 'role',
             headerName: '역할',
             flex: 1,
-            editable: currentUserRole === "ROOT"
+            editable: currentUserRole === "ROOT",
+            type: 'singleSelect',
+            valueOptions: ['ADMIN', 'USER'],
+            renderEditCell: (params) => {
+                const handleChange = async (event) => {
+                    const newRole = event.target.value;
+
+                    if (params.row.role === "ROOT") {
+                        alert("ROOT 권한은 변경할 수 없습니다.");
+                        if (params.api?.stopCellEditMode) {
+                            params.api.stopCellEditMode({ id: params.id, field: params.field });
+                        }
+                        return;
+                    }
+
+                    if (
+                        (params.value === "USER" && newRole === "ADMIN") ||
+                        (params.value === "ADMIN" && newRole === "USER")
+                    ) {
+                        await handleRoleChange(params.id, newRole);
+                    } else {
+                        alert("USER와 ADMIN 간에만 변경 가능합니다.");
+                    }
+
+                    if (params.api?.stopCellEditMode) {
+                        params.api.stopCellEditMode({ id: params.id, field: params.field });
+                    }
+                };
+
+                return (
+                    <select value={params.value} onChange={handleChange} autoFocus>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="USER">USER</option>
+                    </select>
+                );
+            }
         }
     ];
 
@@ -99,8 +131,12 @@ const UserList = () => {
                             rowsPerPageOptions={[5, 10]}
                             disableRowSelectionOnClick
                             onCellEditCommit={(params) => {
+                                const prevRole = users[params.id].role;
+                                if (prevRole === "ROOT") {
+                                    alert("ROOT 권한은 변경할 수 없습니다.");
+                                    return;
+                                }
                                 if (params.field === 'role') {
-                                    const prevRole = users[params.id].role;
                                     const newRole = params.value;
 
                                     if (

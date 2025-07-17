@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from "react";
 import {Link, useLocation} from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import {menuItems} from "./columns/MenuItems";
 import "../css/components/sidebar.css";
 
 const Sidebar = () => {
     const location = useLocation();
     const [expandedMenu, setExpandedMenu] = useState(null);
+    const [userName, setUserName] = useState("사용자");
 
     useEffect(() => {
         const matchedMenu = menuItems.find((menuItem) =>
@@ -15,6 +17,22 @@ const Sidebar = () => {
             setExpandedMenu(matchedMenu.name);
         }
     }, [location.pathname]);
+
+    useEffect(() => {
+        const cookies = document.cookie.split("; ");
+        const accessTokenCookie = cookies.find(cookie => cookie.startsWith("accessToken="));
+        if (accessTokenCookie) {
+            const token = accessTokenCookie.split("=")[1];
+            try {
+                const decoded = jwtDecode(token);
+                if (decoded?.role) {
+                    setUserName(decoded.role.replace("ROLE_", ""));
+                }
+            } catch (err) {
+                console.error("JWT decode error:", err);
+            }
+        }
+    }, []);
 
     const handleMenuClick = (menuName) => {
         setExpandedMenu((prevMenu) => (prevMenu === menuName ? null : menuName));
@@ -106,7 +124,7 @@ const Sidebar = () => {
                     className="profile-image"
                 />
                 <div className="user-details">
-                    <p className="user-name">관리자</p>
+                    <p className="user-name">{userName}</p>
                 </div>
                 <a
                     className="logout-button"
