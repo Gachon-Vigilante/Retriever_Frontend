@@ -11,24 +11,9 @@ import {jwtDecode} from "jwt-decode";
 axios.defaults.withCredentials = true;
 
 const getRoleFromAccessToken = () => {
-    const cookies = Object.fromEntries(
-        document.cookie.split(";").map((c) => {
-            const [key, value] = c.split("=");
-            return [key.trim(), value];
-        })
-    );
-
-    const token = cookies.accessToken;
-
-    if (!token) return null;
-
-    try {
-        const decoded = jwtDecode(token);
-        return decoded.role?.replace(/^ROLE_/, "");
-    } catch (err) {
-        console.error("JWT decode error:", err);
-        return null;
-    }
+    const storedRole = localStorage.getItem("role");
+    if (!storedRole) return null;
+    return storedRole.replace(/^ROLE_/, "");
 };
 
 const UserList = () => {
@@ -68,7 +53,7 @@ const UserList = () => {
     };
 
     const userColumns = [
-        {field: 'employeeId', headerName: '사번', flex: 1},
+        {field: 'employeeId', headerName: '아이디', flex: 1},
         {field: 'name', headerName: '이름', flex: 1},
         {
             field: 'role',
@@ -119,7 +104,7 @@ const UserList = () => {
             <main className="user-main with-sidebar">
                 <header className="ai-chat-header">
                     <h1>사용자 목록</h1>
-                    <button className="user-add-button" onClick={() => setOpenAddModal(true)}>관리자 추가</button>
+                    <button className="user-add-button" onClick={() => setOpenAddModal(true)}>사용자 추가</button>
                 </header>
                 <div className="user-table">
                     <Box sx={{height: '100%', width: '100%', marginBottom: '2rem'}}>

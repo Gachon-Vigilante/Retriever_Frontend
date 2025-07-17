@@ -7,7 +7,14 @@ import "../css/components/sidebar.css";
 const Sidebar = () => {
     const location = useLocation();
     const [expandedMenu, setExpandedMenu] = useState(null);
-    const [userName, setUserName] = useState("사용자");
+    const [userName, setUserName] = useState(() => {
+        const savedName = localStorage.getItem("name");
+        return savedName || "사용자";
+    });
+    const [role, setRole] = useState(() => {
+        const savedRole = localStorage.getItem("role");
+        return savedRole || "USER";
+    });
 
     useEffect(() => {
         const matchedMenu = menuItems.find((menuItem) =>
@@ -18,25 +25,17 @@ const Sidebar = () => {
         }
     }, [location.pathname]);
 
-    useEffect(() => {
-        const cookies = document.cookie.split("; ");
-        const accessTokenCookie = cookies.find(cookie => cookie.startsWith("accessToken="));
-        if (accessTokenCookie) {
-            const token = accessTokenCookie.split("=")[1];
-            try {
-                const decoded = jwtDecode(token);
-                if (decoded?.role) {
-                    setUserName(decoded.role.replace("ROLE_", ""));
-                }
-            } catch (err) {
-                console.error("JWT decode error:", err);
-            }
-        }
-    }, []);
 
     const handleMenuClick = (menuName) => {
         setExpandedMenu((prevMenu) => (prevMenu === menuName ? null : menuName));
     };
+
+    const filteredMenuItems = menuItems.filter((item) => {
+        if (item.name === "사용자/관리자 등록") {
+            return role === "ADMIN" || role === "ROLE_ROOT";
+        }
+        return true;
+    });
 
     return (
         <aside className="sidebar open">
@@ -48,7 +47,7 @@ const Sidebar = () => {
                 />
             </Link>
             <nav className="menu">
-                {menuItems.map((menuItem) => (
+                {filteredMenuItems.map((menuItem) => (
                     <div key={menuItem.name} className="menu-item-container">
                         {menuItem.subItems ? (
                             <>
