@@ -41,7 +41,7 @@ const UserList = () => {
         const targetUser = users[rowId];
         try {
             await axios.patch(`${process.env.REACT_APP_API_BASE_URL}/user/grant-role`, {
-                employeeId: targetUser.employeeId,
+                loginId: targetUser.loginId,
                 role: newRole
             }, {withCredentials: true});
             fetchUsers();
@@ -53,7 +53,7 @@ const UserList = () => {
     };
 
     const userColumns = [
-        {field: 'employeeId', headerName: '아이디', flex: 1},
+        {field: 'loginId', headerName: '아이디', flex: 1},
         {field: 'name', headerName: '이름', flex: 1},
         {
             field: 'role',

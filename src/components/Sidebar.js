@@ -32,7 +32,7 @@ const Sidebar = () => {
 
     const filteredMenuItems = menuItems.filter((item) => {
         if (item.name === "사용자/관리자 등록") {
-            return role === "ADMIN" || role === "ROLE_ROOT";
+            return role === "ROLE_ADMIN" || role === "ROLE_ROOT";
         }
         return true;
     });
@@ -91,7 +91,7 @@ const Sidebar = () => {
                                 </div>
                             </>
                         ) : (
-                            menuItem.name === "테스트 페이지" ? (
+                            menuItem.name === "테스트 페이지" || menuItem.name === "유사도 그래프" ? (
                                 <a
                                     href={menuItem.path}
                                     target="_blank"

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const UserAdd = ({ open, onClose, onUserAdded }) => {
   const [formData, setFormData] = useState({
-    employeeId: '',
+    loginId: '',
     password: '',
     name: ''
   });
@@ -17,7 +17,7 @@ const UserAdd = ({ open, onClose, onUserAdded }) => {
         { withCredentials: true }
       );
       alert('사용자가 성공적으로 등록되었습니다.');
-      setFormData({ employeeId: '', password: '', name: '' });
+      setFormData({ loginId: '', password: '', name: '' });
       if (onUserAdded) {
         onUserAdded();
       }
@@ -36,13 +36,13 @@ const UserAdd = ({ open, onClose, onUserAdded }) => {
           <TextField
             autoFocus
             margin="dense"
-            id="employeeId"
-            label="아이디 (employeeId)"
+            id="loginId"
+            label="아이디 (loginId)"
             type="text"
             fullWidth
             variant="outlined"
-            value={formData.employeeId}
-            onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
+            value={formData.loginId}
+            onChange={(e) => setFormData({ ...formData, loginId: e.target.value })}
           />
           <TextField
             margin="dense"
