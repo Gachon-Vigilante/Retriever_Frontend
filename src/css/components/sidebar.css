@@ -108,8 +108,8 @@
 /* User Info */
 .user-info {
     margin-top: auto;
-    display: flex;
-    align-items: center;
+    /*display: flex;*/
+    /*align-items: center;*/
     padding-top: 15px;
     border-top: 1px solid #e0e0e0;
     color: black;
@@ -127,7 +127,7 @@
 
 .user-details {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .user-name {
@@ -141,10 +141,14 @@
     transition: margin-left 0.3s ease;
 }
 
+.user-role {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
 .logout-button {
-    display: inline-block;
-    margin-top: 40px;
-    margin-left: 50px;
+
     font-size: 14px;
     color: #007bff;
     text-decoration: underline;

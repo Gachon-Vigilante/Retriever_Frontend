@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Link, useLocation} from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import {menuItems} from "./columns/MenuItems";
 import "../css/components/sidebar.css";
 
@@ -118,28 +118,30 @@ const Sidebar = () => {
                 ))}
             </nav>
             <div className="user-info">
-                <img
-                    src={`${process.env.PUBLIC_URL}/police.png`}
-                    alt="profile image"
-                    className="profile-image"
-                />
                 <div className="user-details">
+                    <img
+                        src={`${process.env.PUBLIC_URL}/police.png`}
+                        alt="profile image"
+                        className="profile-image"
+                    />
                     <p className="user-name">{userName}</p>
                 </div>
-                <a
-                    className="logout-button"
-                    href="#"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        // Clear cookies
-                        document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                        document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                        // Redirect to login page
-                        window.location.href = "/";
-                    }}
-                >
-                    로그아웃
-                </a>
+                <div className="user-role">
+                    <a
+                        className="logout-button"
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            // Clear cookies
+                            document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                            document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                            // Redirect to login page
+                            window.location.href = "/";
+                        }}
+                    >
+                        로그아웃
+                    </a>
+                </div>
             </div>
         </aside>
     );
