@@ -20,6 +20,10 @@
     width: 100%;
 }
 
+.user-table-datagrid {
+    padding-top: 3rem;
+}
+
 .user-add-button {
     background-color: #007bff;
     color: white;

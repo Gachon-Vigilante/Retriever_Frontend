@@ -69,7 +69,7 @@ const UserList = () => {
                     if (params.row.role === "ROOT") {
                         alert("ROOT 권한은 변경할 수 없습니다.");
                         if (params.api?.stopCellEditMode) {
-                            params.api.stopCellEditMode({ id: params.id, field: params.field });
+                            params.api.stopCellEditMode({id: params.id, field: params.field});
                         }
                         return;
                     }
@@ -84,7 +84,7 @@ const UserList = () => {
                     }
 
                     if (params.api?.stopCellEditMode) {
-                        params.api.stopCellEditMode({ id: params.id, field: params.field });
+                        params.api.stopCellEditMode({id: params.id, field: params.field});
                     }
                 };
 
@@ -108,33 +108,35 @@ const UserList = () => {
                 </header>
                 <div className="user-table">
                     <Box sx={{height: '100%', width: '100%', marginBottom: '2rem'}}>
-                        <h3>사용자 목록</h3>
-                        <DataGrid
-                            rows={users.map((user, index) => ({id: index, ...user}))}
-                            columns={userColumns}
-                            pageSize={5}
-                            rowsPerPageOptions={[5, 10]}
-                            disableRowSelectionOnClick
-                            onCellEditCommit={(params) => {
-                                const prevRole = users[params.id].role;
-                                if (prevRole === "ROOT") {
-                                    alert("ROOT 권한은 변경할 수 없습니다.");
-                                    return;
-                                }
-                                if (params.field === 'role') {
-                                    const newRole = params.value;
-
-                                    if (
-                                        (prevRole === "USER" && newRole === "ADMIN") ||
-                                        (prevRole === "ADMIN" && newRole === "USER")
-                                    ) {
-                                        handleRoleChange(params.id, newRole);
-                                    } else {
-                                        alert("USER와 ADMIN 간에만 변경 가능합니다.");
+                        {/*<h3>사용자 목록</h3>*/}
+                        <div className="user-table-datagrid">
+                            <DataGrid
+                                rows={users.map((user, index) => ({id: index, ...user}))}
+                                columns={userColumns}
+                                pageSize={5}
+                                rowsPerPageOptions={[5, 10]}
+                                disableRowSelectionOnClick
+                                onCellEditCommit={(params) => {
+                                    const prevRole = users[params.id].role;
+                                    if (prevRole === "ROOT") {
+                                        alert("ROOT 권한은 변경할 수 없습니다.");
+                                        return;
                                     }
-                                }
-                            }}
-                        />
+                                    if (params.field === 'role') {
+                                        const newRole = params.value;
+
+                                        if (
+                                            (prevRole === "USER" && newRole === "ADMIN") ||
+                                            (prevRole === "ADMIN" && newRole === "USER")
+                                        ) {
+                                            handleRoleChange(params.id, newRole);
+                                        } else {
+                                            alert("USER와 ADMIN 간에만 변경 가능합니다.");
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
                     </Box>
                 </div>
                 <UserAdd open={openAddModal} onClose={() => setOpenAddModal(false)} onUserAdded={fetchUsers}/>
