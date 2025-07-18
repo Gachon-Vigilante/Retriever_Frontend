@@ -18,6 +18,7 @@ const getClusterColor = (cluster) => {
 
 const MigrationTest = () => {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const [originalGraphData, setOriginalGraphData] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [showRelatedOnly, setShowRelatedOnly] = useState(false);
   const fgRef = useRef();
@@ -117,7 +118,6 @@ const MigrationTest = () => {
             links.push({ source: channel.id, target: argotId, label: "SELLS" });
 
             if (argot.drugId && !drugMap.has(argot.drugId)) {
-              // Optional: add drug node here only if missing in drugRes pass
               nodes.push({
                 id: argot.drugId,
                 label: "Drug",
@@ -144,8 +144,6 @@ const MigrationTest = () => {
           }
         });
 
-        // Optionally remove or comment out the argotsRes.data block, since argots are now handled via channels
-        // argotsRes.data.forEach((argot) => { ... });
 
         const validIds = new Set(nodes.map((n) => n.id));
         const filteredLinks = links.filter(link => {
@@ -161,6 +159,7 @@ const MigrationTest = () => {
         }));
 
         setGraphData({ nodes, links: cleanedLinks });
+        setOriginalGraphData({ nodes, links: cleanedLinks });
       } catch (err) {
         console.error("Graph fetch error:", err);
       }
@@ -184,20 +183,20 @@ const MigrationTest = () => {
           ctx.beginPath();
 
           switch (node.label) {
-            case "Post": // square
+            case "Post":
               ctx.rect(node.x - 6, node.y - 6, 12, 12);
               break;
-            case "Channel": // circle
+            case "Channel":
               ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
               break;
-            case "Argot": // diamond
+            case "Argot":
               ctx.moveTo(node.x, node.y - 6);
               ctx.lineTo(node.x + 6, node.y);
               ctx.lineTo(node.x, node.y + 6);
               ctx.lineTo(node.x - 6, node.y);
               ctx.closePath();
               break;
-            case "Drug": // star
+            case "Drug":
               const spikes = 5;
               const outerRadius = 6;
               const innerRadius = 3;
@@ -216,7 +215,7 @@ const MigrationTest = () => {
               ctx.lineTo(x, y - outerRadius);
               ctx.closePath();
               break;
-            default: // fallback to circle
+            default:
               ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
           }
 
@@ -233,79 +232,37 @@ const MigrationTest = () => {
         linkColor={() => "#999"}
         linkWidth={1}
         cooldownTicks={100}
-        onEngineStop={() => fgRef.current.zoomToFit(400)}
-        onNodeClick={(node) => setSelectedNode(node)}
+        onNodeClick={(node) => {
+          setSelectedNode(node);
+          if (fgRef.current && node.x !== undefined && node.y !== undefined) {
+            fgRef.current.centerAt(node.x, node.y, 1000);
+            fgRef.current.zoom(4, 1000);
+          }
+        }}
       />
       <Drawer anchor="left" open={!!selectedNode} onClose={() => setSelectedNode(null)}>
         <div style={{ width: 300, padding: 20 }}>
           <h3>{selectedNode?.label} 정보</h3>
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-            <button
-              className={styles.modalsButton}
-              onClick={() => {
-                if (!selectedNode || !fgRef.current) return;
-                const allEdges = fgRef.current.graphData.links;
-                const allNodes = fgRef.current.graphData.nodes;
 
-                const connectedIds = new Set();
-                connectedIds.add(selectedNode.id);
-                allEdges.forEach((edge) => {
-                  if (edge.source === selectedNode.id) connectedIds.add(edge.target);
-                  if (edge.target === selectedNode.id) connectedIds.add(edge.source);
-                });
-
-                // hide unrelated nodes and edges
-                const updatedNodes = allNodes.map((node) => ({
-                  ...node,
-                  hidden: !connectedIds.has(node.id),
-                }));
-                const updatedLinks = allEdges.map((edge) => ({
-                  ...edge,
-                  hidden: !(connectedIds.has(edge.source) && connectedIds.has(edge.target)),
-                }));
-                fgRef.current.graphData.nodes = updatedNodes;
-                fgRef.current.graphData.links = updatedLinks;
-                setGraphData({ nodes: updatedNodes, links: updatedLinks });
-                setShowRelatedOnly(true);
-              }}
-            >
-              관련 노드만 보기
-            </button>
-
-            <button
-              className={styles.modalsButton}
-              onClick={() => {
-                if (!fgRef.current) return;
-                const allNodes = graphData.nodes.map((node) => ({ ...node, hidden: false }));
-                const allLinks = graphData.links.map((link) => ({ ...link, hidden: false }));
-                fgRef.current.graphData.nodes = allNodes;
-                fgRef.current.graphData.links = allLinks;
-                setGraphData({ nodes: allNodes, links: allLinks });
-                setShowRelatedOnly(false);
-              }}
-            >
-              모든 노드 보기
-            </button>
-          </div>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableBody>
                 {selectedNode?.label === "Channel" && (
                   <>
                     <TableRow>
-                      <TableCell>Title</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
                       <TableCell>{selectedNode?.title}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Username</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Username</TableCell>
                       <TableCell>{selectedNode?.username}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Status</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Status</TableCell>
                       <TableCell>{selectedNode?.status}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Promoted</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Promoted</TableCell>
                       <TableCell>{selectedNode?.promotedCount}</TableCell>
                     </TableRow>
                   </>
@@ -313,11 +270,11 @@ const MigrationTest = () => {
                 {selectedNode?.label === "Argot" && (
                   <>
                     <TableRow>
-                      <TableCell>Name</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Name</TableCell>
                       <TableCell>{selectedNode?.name || selectedNode?.drugName}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Drug ID</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Drug ID</TableCell>
                       <TableCell>{selectedNode?.drugId}</TableCell>
                     </TableRow>
                   </>
@@ -325,11 +282,11 @@ const MigrationTest = () => {
                 {selectedNode?.label === "Drug" && (
                   <>
                     <TableRow>
-                      <TableCell>Name</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Name</TableCell>
                       <TableCell>{selectedNode?.name}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Drug ID</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Drug ID</TableCell>
                       <TableCell>{selectedNode?.id}</TableCell>
                     </TableRow>
                   </>
@@ -337,11 +294,11 @@ const MigrationTest = () => {
                 {selectedNode?.label === "Post" && (
                   <>
                     <TableRow>
-                      <TableCell>Site</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Site</TableCell>
                       <TableCell>{selectedNode?.siteName}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Created At</TableCell>
+                      <TableCell style={{ fontWeight: 'bold' }}>Created At</TableCell>
                       <TableCell>{selectedNode?.createdAt}</TableCell>
                     </TableRow>
                   </>
@@ -349,6 +306,48 @@ const MigrationTest = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <button
+                className={styles.modalsButton}
+                onClick={() => {
+                  if (!originalGraphData) return;
+                  const connectedIds = new Set();
+                  const relatedLinks = originalGraphData.links.filter((edge) => {
+                    const sourceId = typeof edge.source === 'object' ? edge.source.id : edge.source;
+                    const targetId = typeof edge.target === 'object' ? edge.target.id : edge.target;
+                    if (sourceId === selectedNode.id || targetId === selectedNode.id) {
+                      connectedIds.add(sourceId);
+                      connectedIds.add(targetId);
+                      return true;
+                    }
+                    return false;
+                  });
+
+                  const filteredNodes = originalGraphData.nodes.filter((node) =>
+                      connectedIds.has(node.id)
+                  );
+                  setGraphData({ nodes: filteredNodes, links: relatedLinks });
+                  setShowRelatedOnly(true);
+                  setTimeout(() => {
+                    if (fgRef.current && selectedNode?.x !== undefined && selectedNode?.y !== undefined) {
+                      fgRef.current.centerAt(selectedNode.x, selectedNode.y, 1000);
+                      fgRef.current.zoom(4, 1000);
+                    }
+                  }, 300);
+                }}
+            >
+              관련 노드만 보기
+            </button>
+
+            <button
+                className={styles.modalsButton}
+                onClick={() => {
+                  window.location.reload();
+                }}
+            >
+              모든 노드 보기
+            </button>
+          </div>
         </div>
       </Drawer>
     </div>
