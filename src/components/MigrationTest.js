@@ -42,7 +42,7 @@ const MigrationTest = () => {
         const drugMap = new Map();
 
         postsRes.data.forEach((post) => {
-          const { postId, content, siteName, createdAt, similarPosts = [], promotesChannels = [], cluster = -1 } = post;
+          const { postId, content, siteName, createdAt, updatedAt, link, similarPosts = [], promotesChannels = [], cluster = -1 } = post;
           postMap.set(postId, true);
           nodes.push({
             id: postId,
@@ -52,7 +52,9 @@ const MigrationTest = () => {
             color: getClusterColor(cluster),
             siteName,
             createdAt,
-            content
+            updatedAt,
+            content,
+            link
           });
 
           similarPosts.forEach((similar) => {
@@ -65,7 +67,9 @@ const MigrationTest = () => {
                 color: getClusterColor(similar.cluster ?? -1),
                 siteName: similar.siteName,
                 createdAt: similar.createdAt,
-                content: similar.content
+                updatedAt: similar.updatedAt,
+                content: similar.content,
+                link: similar.link
               });
               postMap.set(similar.postId, true);
             }
@@ -121,7 +125,7 @@ const MigrationTest = () => {
               nodes.push({
                 id: argot.drugId,
                 label: "Drug",
-                name: argot.drugName || argot.drugId,
+                name: argot.name || argot.drugId,
                 color: "#FF5722"
               });
               drugMap.set(argot.drugId, true);
@@ -138,7 +142,7 @@ const MigrationTest = () => {
             nodes.push({
               id: drug.id,
               label: "Drug",
-              name: drug.name || drug.drugName || drug.id,
+              name: drug.name || drug.id,
               color: "#FF5722"
             });
           }
@@ -241,7 +245,7 @@ const MigrationTest = () => {
         }}
       />
       <Drawer anchor="left" open={!!selectedNode} onClose={() => setSelectedNode(null)}>
-        <div style={{ width: 300, padding: 20 }}>
+        <div style={{ width: 300, padding: 20, height: '100vh', overflowY: 'auto' }}>
           <h3>{selectedNode?.label} 정보</h3>
 
           <TableContainer component={Paper}>
@@ -251,19 +255,19 @@ const MigrationTest = () => {
                   <>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
-                      <TableCell>{selectedNode?.title}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.title}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Username</TableCell>
-                      <TableCell>{selectedNode?.username}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.username}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Status</TableCell>
-                      <TableCell>{selectedNode?.status}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.status}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Promoted</TableCell>
-                      <TableCell>{selectedNode?.promotedCount}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.promotedCount}</TableCell>
                     </TableRow>
                   </>
                 )}
@@ -271,11 +275,11 @@ const MigrationTest = () => {
                   <>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Name</TableCell>
-                      <TableCell>{selectedNode?.name || selectedNode?.drugName}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.name}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Drug ID</TableCell>
-                      <TableCell>{selectedNode?.drugId}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.drugId}</TableCell>
                     </TableRow>
                   </>
                 )}
@@ -283,11 +287,11 @@ const MigrationTest = () => {
                   <>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Name</TableCell>
-                      <TableCell>{selectedNode?.name}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.name}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Drug ID</TableCell>
-                      <TableCell>{selectedNode?.id}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.id}</TableCell>
                     </TableRow>
                   </>
                 )}
@@ -295,11 +299,27 @@ const MigrationTest = () => {
                   <>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Site</TableCell>
-                      <TableCell>{selectedNode?.siteName}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.siteName}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Created At</TableCell>
-                      <TableCell>{selectedNode?.createdAt}</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.createdAt}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: 'bold' }}>Updated At</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.updatedAt}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: 'bold' }}>Content</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.content}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: 'bold' }}>Link</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>
+                        <a href={selectedNode?.link} target="_blank" rel="noopener noreferrer">
+                          {selectedNode?.link}
+                        </a>
+                      </TableCell>
                     </TableRow>
                   </>
                 )}
