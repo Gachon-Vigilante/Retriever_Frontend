@@ -5,14 +5,14 @@ import { Drawer, Table, TableBody, TableCell, TableContainer, TableRow, Paper } 
 import styles from "../css/components/MigrationTest.module.css";
 
 const clusterColors = [
-  "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
-  "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
-  "#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
-  "#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
+  "#ff4d4f", "#40a9ff", "#ffd666", "#73d13d", "#9254de",
+  "#69c0ff", "#ff85c0", "#ff7a45", "#95de64", "#ffd6e7",
+  "#36cfc9", "#ffc069", "#ffadd2", "#bae637", "#5cdbd3",
+  "#ffec3d", "#597ef7", "#ff9c6e", "#7cb305", "#ffa39e"
 ];
 
 const getClusterColor = (cluster) => {
-  if (cluster === -1) return "#cccccc";
+  if (cluster === -1) return "#fffff0";
   return clusterColors[cluster % clusterColors.length];
 };
 
@@ -48,8 +48,8 @@ const MigrationTest = () => {
             id: postId,
             label: "Post",
             cluster,
-            name: siteName || content?.slice(0, 20),
             color: getClusterColor(cluster),
+            name: siteName || content?.slice(0, 20),
             siteName,
             createdAt,
             updatedAt,
@@ -63,8 +63,8 @@ const MigrationTest = () => {
                 id: similar.postId,
                 label: "Post",
                 cluster: similar.cluster ?? -1,
-                name: similar.siteName || similar.content?.slice(0, 20),
                 color: getClusterColor(similar.cluster ?? -1),
+                name: similar.siteName || similar.content?.slice(0, 20),
                 siteName: similar.siteName,
                 createdAt: similar.createdAt,
                 updatedAt: similar.updatedAt,
@@ -177,6 +177,7 @@ const MigrationTest = () => {
       <ForceGraph2D
         ref={fgRef}
         graphData={graphData}
+        linkDistance={150}
         nodeLabel={(node) => `${node.label}: ${node.name}`}
         nodeCanvasObject={(node, ctx, globalScale) => {
           const label = node.name;
@@ -234,7 +235,7 @@ const MigrationTest = () => {
         linkDirectionalArrowRelPos={1}
         linkDirectionalParticles={0}
         linkColor={() => "#999"}
-        linkWidth={1}
+        linkWidth={0.5}
         cooldownTicks={100}
         onNodeClick={(node) => {
           setSelectedNode(node);
@@ -304,6 +305,10 @@ const MigrationTest = () => {
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Created At</TableCell>
                       <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.createdAt}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: 'bold' }}>Cluster</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.cluster}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Updated At</TableCell>
