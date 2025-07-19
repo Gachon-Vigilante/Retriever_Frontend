@@ -8,6 +8,7 @@ import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import useFetchChannels from "../hooks/useFetchChannels";
+import ToolTip from "../components/ToolTip";
 
 const ProgressBar = ({label, percentage, value, color}) => (
     <div className="progress-bar-container">
@@ -73,22 +74,42 @@ const calculateMonthlyChannelGrowth = (channels) => {
     return Math.round(growthRate);
 };
 
-const RankList = ({title, items}) => (
-    <div className="rank-card">
-        <h3>{title}</h3>
-        <ul>
-            {items.map((item, index) => (
-                <li key={index} className="rank-item">
-                    <span className="rank-number">{index + 1}</span>
-                    <div className="rank-content">
-                        <p className="rank-title">{item.name}</p>
-                        <p className="rank-detail">{item.detail}</p>
-                    </div>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
+const RankList = ({title, items, link, tooltip}) => {
+    const isNew = (date) => {
+        const today = new Date();
+        const createdDate = new Date(date);
+        const diffTime = Math.abs(today - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 3;
+    };
+
+    return (
+        <div className="rank-card">
+            <h3 className="tooltip" data-tooltip={tooltip}>{title}</h3>
+            <ul>
+                {items.map((item, index) => (
+                    <li key={index} className="rank-item">
+                        <span className="rank-number">{index + 1}</span>
+                        <div className="rank-content">
+                            {item.channelId ? (
+                                <a href={`/ai-reports?channelId=${item.channelId}`}>
+                                    <p className="rank-title">{item.name}</p>
+                                </a>
+                            ) : (
+                                <p className="rank-title">{item.name}</p>
+                            )}
+                            <p className="rank-detail">{item.detail}</p>
+                        </div>
+                        {isNew(item.createdAt) && <span className="rank-new">NEW</span>}
+                    </li>
+                ))}
+            </ul>
+            <a href={link} className="view-link">
+                전체 목록 확인
+            </a>
+        </div>
+    );
+};
 
 const Statistics = () => {
     const chartRef = useRef(null);
@@ -354,34 +375,34 @@ const Statistics = () => {
         <div className="dashboard">
             <Sidebar/>
             <main className="main with-sidebar">
-                <header className="header">
-                    <h1>통계</h1>
-                    {/*<button className="download">Download</button>*/}
-                </header>
-
+                {/*<header className="header">*/}
+                {/*    <h1>통계</h1>*/}
+                {/*    /!*<button className="download">Download</button>*!/*/}
+                {/*</header>*/}
+                <ToolTip title="통계" tooltipText="텔레그램 채널/홍보 게시글/거래 마약류 등의 각종 통계를 표시합니다." />
                 <section className="statistics-chart">
                     <div className="statistics">
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 텔레그램 채널 수를 표시합니다.">
                             <h3>주간 신규 탐지 채널</h3>
                             <p>{weeklyChannelCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 홍보 게시글 수를 표시합니다.">
                             <h3>주간 신규 탐지 포스트</h3>
                             <p>{weeklyPostCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="탐지된 전체 텔레그램 채널 수를 표시합니다.">
                             <h3>총 탐지 채널</h3>
                             <p>{channelCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="직전 월 대비 홍보 게시글 증감율을 표시합니다.">
                             <h3>전월 대비 홍보 게시글 증감율</h3>
                             <p>{monthlyPostGrowth !== null ? `${monthlyPostGrowth}%` : '데이터 없음'}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="직전 월 대비 신규 마약 판매 텔레그램 채널 증감율을 표시합니다.">
                             <h3>전월 대비 거래 채널 증감율</h3>
                             <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="월간 가장 많이 판매한 마약류를 표시합니다.">
                             <h3>월간 최다 거래 마약류</h3>
                             <p className="p">메스암페타민</p>
                         </div>
@@ -392,7 +413,7 @@ const Statistics = () => {
                 </section>
 
                 <section className="additional-statistics">
-                    <div className="card">
+                    <div className="card tooltip" data-tooltip="가장 많이 사용된 마약 관련 은어 순위를 표시합니다.">
                         <h3>최다 사용 은어</h3>
                         {argotData.map((item, index) => (
                             <ProgressBar
@@ -403,7 +424,7 @@ const Statistics = () => {
                             />
                         ))}
                     </div>
-                    <div className="card">
+                    <div className="card tooltip" data-tooltip="가장 많이 탐지된 마약류 순위를 표시합니다.">
                         <h3>최다 탐지 마약류</h3>
                         {drugData.map((item, index) => (
                             <ProgressBar
@@ -419,8 +440,8 @@ const Statistics = () => {
 
                 <section className="tables">
                     <RankList title="신규 탐지 채널"
-                              items={newTelegramChannels.filter(channel => channel.status === "active")}/>
-                    <RankList title="최근 탐지 은어" items={newArgotData}/>
+                              items={newTelegramChannels.filter(channel => channel.status === "active")} tooltip="감지된 텔레그램 채널을 최신순으로 표시합니다."/>
+                    <RankList title="최근 탐지 은어" items={newArgotData} tooltip="새롭게 감지된 은어명을 최신순으로 표시합니다."/>
                 </section>
             </main>
         </div>

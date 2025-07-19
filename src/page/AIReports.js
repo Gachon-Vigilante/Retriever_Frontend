@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../css/components/Pagination.css";
 import axios from "axios";
+import ToolTip from "../components/ToolTip";
 axios.defaults.withCredentials = true;
 
 const AIReports = () => {
@@ -56,16 +57,18 @@ useEffect(() => {
         <div className="ai-chat-page">
             <Sidebar/>
             <main className="ai-chat-main with-sidebar">
-                <header className="ai-chat-header">
-                    <h1>AI 리포트</h1>
-                </header>
+                {/*<header className="ai-chat-header">*/}
+                {/*    <h1>AI 리포트</h1>*/}
+                {/*</header>*/}
+                <ToolTip title="AI 리포트" tooltipText="지성이가 텍스트를 알려줍니다." />
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
-                        <h3>텔레그램 채널</h3>
+                        <h3 className="tooltip" data-tooltip="현재 active 상태인 텔레그램 채널을 표시합니다.">텔레그램 채널</h3>
                         {loading && <p>Loading channels...</p>}
                         {error && <p>Error loading channels: {error}</p>}
                         <ul>
                             {channels
+                                .filter((channel) => channel.status === "active")
                                 .slice(channelPage * channelsPerPage, (channelPage + 1) * channelsPerPage)
                                 .map((channel) => (
                                     <li
@@ -98,7 +101,7 @@ useEffect(() => {
                         />
                     </div>
                     <div className="chat-window">
-                        <h3>AI 분석 보고서</h3>
+                        <h3 className="tooltip" data-tooltip="선택한 채널에 대한 분석 리포트를 시간순으로 제공합니다.">AI 분석 보고서</h3>
                         <p className="selected-channel-name">
                             {selectedChannelId
                                 ? channels.find((ch) => ch.id === selectedChannelId)?.name

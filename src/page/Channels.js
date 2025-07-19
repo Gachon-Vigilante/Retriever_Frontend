@@ -1,7 +1,7 @@
 /* eslint-disable */
 "use client";
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useSearchParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
@@ -30,10 +30,8 @@ const Channels = () => {
         }
     }, [channels, initialTitle]);
     const [selectedChannelId, setSelectedChannelId] = useState(null);
-    // Removed expandedImages state
     const [modalImage, setModalImage] = useState(null);
 
-    // Channel price ranges state
     const [channelPriceRanges, setChannelPriceRanges] = useState({});
 
     const [searchName, setSearchName] = useState("");
@@ -124,7 +122,36 @@ const Channels = () => {
         setSelectedChannelDescription(selected?.description || "가격 정보 없음");
     };
 
-    // Removed toggleImageSize function as image expansion is now handled via modal
+    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+    const [isTooltipClicked, setIsTooltipClicked] = useState(false);
+    const tooltipRef = useRef(null);
+
+    const handleClick = () => {
+        setIsTooltipClicked(!isTooltipClicked);
+        setIsTooltipVisible(!isTooltipClicked);
+    };
+
+    const handleMouseEnter = () => {
+        if (!isTooltipClicked) setIsTooltipVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+        if (!isTooltipClicked) setIsTooltipVisible(false);
+    };
+
+    const handleClickOutside = (event) => {
+        if (
+            tooltipRef.current &&
+            !tooltipRef.current.contains(event.target)
+        ) {
+            setIsTooltipClicked(false);
+            setIsTooltipVisible(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const closeModal = () => setIsModalOpen(false);
 
@@ -162,6 +189,36 @@ const Channels = () => {
                             검색
                         </button>
                     </div>
+                    <div style={{ position: "absolute", top: 25, right: 20 }}>
+                        <button
+                            className="tooltip-button"
+                            onClick={handleClick}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                            style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                                border: "#007bff 1px solid",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: 0,
+                                backgroundColor: "#fff",
+                                cursor: "pointer",
+                                fontSize: "3rem",
+                                color: "#007bff",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            ?
+                        </button>
+                        {isTooltipVisible && (
+                            <div className="tooltip-box">
+                                마약 거래가 감지된 텔레그램 채널의 정보를 확인하고, 가격대와 실제 채팅 히스토리를 파악할 수 있습니다.
+                            </div>
+                        )}
+                    </div>
                 </header>
 
                 <div className="channel-content">
@@ -180,7 +237,7 @@ const Channels = () => {
                             <strong>선택한 채널 가격 정보:</strong>
                             <pre style={{ margin: 0 }}>{selectedChannelDescription}</pre>
                         </div>
-                        <h3>채널 리스트</h3>
+                        <h3 className="tooltip" data-tooltip="탐지된 모든 텔레그램 채널을 active/inactive 형태로 표시합니다.">채널 리스트</h3>
                         <label className="status-filter">
                             <input
                                 type="checkbox"
@@ -327,7 +384,7 @@ const Channels = () => {
 
 
                     <section className="channel-details">
-                        <h3>채널 상세 정보</h3>
+                        <h3 className="tooltip" data-tooltip="선택한 텔레그램 채널의 상세 채팅 내역을 확인합니다.">채널 상세 정보</h3>
                         {loading && selectedChannelId ? (
                             <p>Loading details...</p>
                         ) : error ? (

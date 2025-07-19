@@ -49,7 +49,12 @@ const ToolTip = ({ title, tooltipText }) => {
       </button>
       {isTooltipVisible && (
         <div className="tooltip-box">
-          <p>{tooltipText}</p>
+          <p>{tooltipText.split(',').map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line.trim()}
+                <br />
+              </React.Fragment>
+          ))}</p>
         </div>
       )}
     </div>

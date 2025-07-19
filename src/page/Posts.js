@@ -4,8 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
-import axios from "axios";
-import {Buffer} from "buffer";
 import ReactPaginate from "react-paginate";
 
 const Posts = () => {
@@ -13,7 +11,20 @@ const Posts = () => {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [similarities, setSimilarities] = useState([]);
 
-    // ✅ 검색 조건 상태
+    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+    const handleClick = () => {
+      setIsTooltipVisible((prev) => !prev);
+    };
+
+    const handleMouseEnter = () => {
+      setIsTooltipVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsTooltipVisible(false);
+    };
+
     const [searchTitle, setSearchTitle] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -22,12 +33,10 @@ const Posts = () => {
     const [postPage, setPostPage] = useState(0);
     const itemsPerPage = 10;
 
-    // ✅ posts 데이터가 변경되면 filteredPosts를 초기화
     useEffect(() => {
         setFilteredPosts(posts);
     }, [posts]);
 
-    // ✅ 검색 조건에 따라 필터링
     useEffect(() => {
         let filtered = posts;
 
@@ -54,75 +63,16 @@ const Posts = () => {
     const paginatedPosts = filteredPosts.slice(postPage * itemsPerPage, (postPage + 1) * itemsPerPage);
     const pageCount = Math.ceil(filteredPosts.length / itemsPerPage);
 
-    // ✅ 게시글 클릭 시 상세 정보 가져오기
     const handlePostClick = (postId) => {
         setSelectedPostId(postId);
         fetchPostsDetail(postId);
-    };
-
-    const fetchSimilarities = async (id) => {
-        try {
-            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/post/${id}`, { withCredentials: true });
-            const fetched = res.data.similarPosts || [];
-
-            const detailed = await Promise.all(
-                fetched.map(async (item) => {
-                    try {
-                        const detail = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${item.similarPost}`, { withCredentials: true });
-                        return {
-                            ...item,
-                            title: detail.data.title || "제목 없음",
-                            link: detail.data.link || "#",
-                        };
-                    } catch {
-                        return {
-                            ...item,
-                            title: `게시글 ${item.similarPost}`,
-                            link: "#",
-                        };
-                    }
-                })
-            );
-
-            setSimilarities(detailed.sort((a, b) => b.similarity - a.similarity));
-        } catch (err) {
-            console.error("유사 게시글 로드 실패:", err);
-            setSimilarities([]);
-        }
-    };
-
-    const openGraph = () => {
-        if (!selectedPost) return;
-
-        const graphData = {
-            rootPost: selectedPost.id,
-            nodes: [
-                { id: selectedPost.id, text: selectedPost.title, type: "main", color: "#ff5733" },
-                ...similarities.map((post) => ({
-                    id: post.similarPost,
-                    text: post.title || post.similarPost,
-                    type: "similar",
-                    color: "#3375ff",
-                })),
-            ],
-            lines: similarities.map((post) => ({
-                from: selectedPost.id,
-                to: post.similarPost,
-                text: `유사도: ${(post.similarity * 100).toFixed(2)}%`,
-                width: 2 + post.similarity * 5,
-            })),
-        };
-
-        const encoded = encodeURIComponent(Buffer.from(JSON.stringify(graphData)).toString("base64"));
-        window.open(`/network-graph?data=${encoded}`, "_blank");
     };
 
     return (
         <div className="posts-page">
             <Sidebar />
             <main className="posts-main with-sidebar">
-                {/* 검색 조건 UI 추가 */}
-                <header className="posts-header">
+                <header className="posts-header" style={{ position: "relative" }}>
                     {/*<div className="posts-title">*/}
                         <h1>거래 게시글</h1>
                     {/*</div>*/}
@@ -156,11 +106,41 @@ const Posts = () => {
                             검색
                         </button>
                     </div>
+                    <div style={{ position: "absolute", top: 5, right: 1 }}>
+                        <button
+                          className="tooltip-button"
+                          onClick={handleClick}
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "50%",
+                            border: "#007bff 1px solid",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: 0,
+                            backgroundColor: "#fff",
+                            cursor: "pointer",
+                            fontSize: "3rem",
+                            color: "#007bff",
+                            fontWeight: "bold"
+                          }}
+                        >
+                          ?
+                        </button>
+                        {isTooltipVisible && (
+                          <div className="tooltip-box">
+                              이 화면에서는 거래 게시글의 제목과 날짜 범위로 검색할 수 있습니다.
+                            검색 후 게시글을 클릭하면 상세 정보와 유사도 분석 결과를 확인할 수 있습니다.
+                          </div>
+                        )}
+                    </div>
                 </header>
                 <div className="posts-content">
-                    {/* Post List */}
                     <section className="posts-list">
-                        <h3>거래글 목록</h3>
+                        <h3 className="tooltip" data-tooltip="탐지된 거래글 목록이 표시됩니다.">거래글 목록</h3>
                         {loading ? (
                             <p>Loading posts...</p>
                         ) : error ? (
@@ -210,7 +190,7 @@ const Posts = () => {
 
                     {/* Post Details */}
                     <section className="post-details">
-                        <h3>게시글 상세</h3>
+                        <h3 className="tooltip" data-tooltip="선택한 게시글의 상세정보와, 실제 사이트에 게시된 홍보글을 확인합니다.">게시글 상세</h3>
                         {selectedPost ? (
                             <div className="details-content">
                                 <div className="detail-box">
@@ -233,7 +213,6 @@ const Posts = () => {
                                     </p>
                                 </div>
 
-                                {/* ✅ iframe 추가 */}
                                 {selectedPost.link && (
                                     <iframe
                                         src={selectedPost.link}
@@ -249,33 +228,6 @@ const Posts = () => {
                                         }}
                                     ></iframe>
                                 )}
-                                <h3>유사도 분석 결과: {selectedPost.title}</h3>
-                                <button className="similarity-modal-button" onClick={openGraph}>
-                                    유사도 보기 (새 창)
-                                </button>
-                                <div className="similarity-results">
-                                    {similarities.length > 0 ? (
-                                        <ul>
-                                            {similarities.map((similar, idx) => (
-                                                <li key={idx} className="similarity-box">
-                                                    <h4>
-                                                        <a
-                                                            href={similar.link}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="similarity-link"
-                                                        >
-                                                            {similar.title}
-                                                        </a>
-                                                    </h4>
-                                                    <p><strong>유사도:</strong> {(similar.similarity * 100).toFixed(2)}%</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p>유사한 게시글이 없습니다.</p>
-                                    )}
-                                </div>
                             </div>
                         ) : (
                             <p>게시글을 선택해 주세요.</p>

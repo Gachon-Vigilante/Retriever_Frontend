@@ -7,21 +7,24 @@
 }
 
 .tooltip-button {
-    width: 20px;
-    height: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    border: #4a5568 1px solid;
+    border: #007bff 1px solid;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
     background-color: #fff;
     cursor: pointer;
+    font-size: 3rem;
+    color: #007bff;
+    font-weight: bold;
 }
 
 .tooltip-box {
     position: absolute;
-    top: calc(100% - 8px);
+    top: calc(100% - 4px);
     left: auto;
     right: 0;
     width: 260px;
@@ -32,6 +35,7 @@
     z-index: 999;
     font-size: 14px;
     word-break: keep-all;
+    white-space: pre-line;
 }
 
 .tooltip-box::after {
