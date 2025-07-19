@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use client";
 
 import React, {useEffect, useRef, useState} from "react";
@@ -40,8 +39,7 @@ const Channels = () => {
     const [filteredChannels, setFilteredChannels] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const userId = "admin";
-    const {bookmarks, setBookmarks} = useFetchBookmarks(userId);
+    const {bookmarks, setBookmarks} = useFetchBookmarks();
     const [showInactive, setShowInactive] = useState(false);
 
     const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
@@ -58,28 +56,27 @@ const Channels = () => {
 
     const isBookmarked = (channelId) => bookmarks.some((b) => b.channelId === channelId);
 
-    const toggleBookmark = async (channel) => {
-        try {
-            if (isBookmarked(channel.id)) {
-                const bookmark = bookmarks.find((b) => b.channelId === channel.id);
-                await axios.delete(
-                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/delete/${bookmark.id}`,
-                    { withCredentials: true }
-                );
-                setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
-            } else {
-                const newBookmark = { channelId: channel.id, userId };
-                await axios.post(
-                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/add`,
-                    newBookmark,
-                    { withCredentials: true }
-                );
-                setBookmarks((prev) => [...prev, newBookmark]);
-            }
-        } catch (err) {
-            console.error("Error toggling bookmark:", err);
+const toggleBookmark = async (channel) => {
+    try {
+        if (isBookmarked(channel.id)) {
+            const bookmark = bookmarks.find((b) => b.channelId === channel.id);
+            await axios.delete(
+                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/delete/${bookmark.id}`,
+                { withCredentials: true }
+            );
+            setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
+        } else {
+            await axios.post(
+                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${channel.id}/add`,
+                null,
+                { withCredentials: true }
+            );
+            setBookmarks((prev) => [...prev, { channelId: channel.id }]);
         }
-    };
+    } catch (err) {
+        console.error("Error toggling bookmark:", err);
+    }
+};
 
     const sortChannels = (channels) => {
         return [...channels].sort((a, b) => {
@@ -117,7 +114,7 @@ const Channels = () => {
 
     const handleChannelClick = (channelId) => {
         setSelectedChannelId(channelId);
-        fetchDetailsByChannelId(channelId); // 💡 int64 기반 _id 넘겨줌
+        fetchDetailsByChannelId(channelId);
         const selected = channels.find((ch) => ch.id === channelId);
         setSelectedChannelDescription(selected?.description || "가격 정보 없음");
     };
