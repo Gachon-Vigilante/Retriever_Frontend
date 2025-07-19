@@ -27,7 +27,7 @@
     top: calc(100% - 4px);
     left: auto;
     right: 0;
-    width: 260px;
+    width: 460px;
     padding: 12px 16px;
     border-radius: 8px;
     background-color: #fff;
@@ -36,6 +36,7 @@
     font-size: 14px;
     word-break: keep-all;
     white-space: pre-line;
+    line-height: 1.8;
 }
 
 .tooltip-box::after {
