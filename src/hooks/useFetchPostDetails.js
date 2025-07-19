@@ -7,6 +7,8 @@ const useFetchPostDetails = () => {
     const [selectedPost, setSelectedPost] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [totalCount, setTotalCount] = useState(0);
+    const [postPage, setPostPage] = useState(0);
 
     const parseDateTime = (dateTime) => {
         if (!dateTime) return null;
@@ -20,8 +22,11 @@ const useFetchPostDetails = () => {
         const fetchPosts = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/all`, { withCredentials: true });
-                const formattedData = response.data.map((post) => ({
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${postPage}&size=10`,
+                    { withCredentials: true }
+                );
+                const formattedData = (response.data.posts || []).map((post) => ({
                     id: post.id,
                     title: post.title,
                     content: post.content,
@@ -39,6 +44,7 @@ const useFetchPostDetails = () => {
                         : "날짜 없음",
                 }));
                 setPosts(formattedData);
+                setTotalCount(response.data.totalCount || 0);
             } catch (err) {
                 setError(`Error fetching posts: ${err.message}`);
             } finally {
@@ -47,7 +53,7 @@ const useFetchPostDetails = () => {
         };
 
         fetchPosts();
-    }, []);
+    }, [postPage]);
 
     const fetchPostsDetail = async (id) => {
         try {
@@ -113,6 +119,9 @@ const useFetchPostDetails = () => {
         fetchPostsDetail,
         loading,
         error,
+        totalCount,
+        postPage,
+        setPostPage
     };
 };
 

@@ -7,7 +7,16 @@ import "../css/page/Posts.css";
 import ReactPaginate from "react-paginate";
 
 const Posts = () => {
-    const { posts, selectedPost, fetchPostsDetail, loading, error } = useFetchPostDetails();
+    const {
+        posts,
+        selectedPost,
+        fetchPostsDetail,
+        loading,
+        error,
+        totalCount,
+        postPage,
+        setPostPage
+    } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [similarities, setSimilarities] = useState([]);
 
@@ -30,7 +39,6 @@ const Posts = () => {
     const [endDate, setEndDate] = useState(null);
     const [filteredPosts, setFilteredPosts] = useState([]);
 
-    const [postPage, setPostPage] = useState(0);
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -42,14 +50,15 @@ const Posts = () => {
 
         if (searchTitle.trim() !== "") {
             filtered = filtered.filter((post) =>
-                post.content && post.content.toLowerCase().includes(searchTitle.toLowerCase())
+                post.title && post.title.toLowerCase().includes(searchTitle.toLowerCase())
             );
         }
 
         if (startDate || endDate) {
             filtered = filtered.filter((post) => {
-                if (!post.timestamp) return false;
-                const postDate = new Date(post.timestamp);
+                const dateStr = post.timestamp || post.createdAt;
+                if (!dateStr) return false;
+                const postDate = new Date(dateStr);
                 return (
                     (!startDate || postDate.getTime() >= startDate.getTime()) &&
                     (!endDate || postDate.getTime() <= endDate.getTime())
@@ -60,8 +69,7 @@ const Posts = () => {
         setFilteredPosts(filtered);
     }, [searchTitle, startDate, endDate, posts]);
 
-    const paginatedPosts = filteredPosts.slice(postPage * itemsPerPage, (postPage + 1) * itemsPerPage);
-    const pageCount = Math.ceil(filteredPosts.length / itemsPerPage);
+    const pageCount = Math.ceil(totalCount / itemsPerPage);
 
     const handlePostClick = (postId) => {
         setSelectedPostId(postId);
@@ -148,7 +156,7 @@ const Posts = () => {
                         ) : (
                             <ul>
                                 {filteredPosts.length > 0 ? (
-                                    paginatedPosts.map((post) => (
+                                    filteredPosts.map((post) => (
                                         <li
                                             key={post.id}
                                             className={`post-item ${
