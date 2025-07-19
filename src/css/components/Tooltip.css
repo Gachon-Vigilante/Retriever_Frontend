@@ -1,0 +1,46 @@
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.tooltip-button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: #4a5568 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.tooltip-box {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: auto;
+    right: 0;
+    width: 260px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    z-index: 999;
+    font-size: 14px;
+    word-break: keep-all;
+}
+
+.tooltip-box::after {
+    content: "";
+    position: absolute;
+    bottom: 69px;
+    top: auto;
+    right: 16px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent;
+}

@@ -1,3 +1,4 @@
+// ForceGraph2D를 사용하는 유사도 그래프 컴포넌트.
 import React, { useEffect, useRef, useState } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 import axios from "axios";
@@ -21,6 +22,7 @@ const MigrationTest = () => {
   const [originalGraphData, setOriginalGraphData] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [showRelatedOnly, setShowRelatedOnly] = useState(false);
+  const [channelCatalogMap, setChannelCatalogMap] = useState(new Map());
   const fgRef = useRef();
 
   useEffect(() => {
@@ -32,6 +34,16 @@ const MigrationTest = () => {
           axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/depth`, { withCredentials: true }),
           axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, { withCredentials: true })
         ]);
+
+        // Fetch all channels to get the catalog descriptions
+        const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true });
+        const catalogMap = new Map();
+        catalogRes.data.forEach((ch) => {
+          if (ch.catalog?.description) {
+            catalogMap.set(ch.id, ch.catalog.description);
+          }
+        });
+        setChannelCatalogMap(catalogMap);
 
         const nodes = [];
         const links = [];
@@ -76,21 +88,25 @@ const MigrationTest = () => {
             links.push({ source: postId, target: similar.postId, label: "SIMILAR" });
           });
 
-          promotesChannels.forEach((channel) => {
-            if (!channelMap.has(channel.id)) {
-              channelMap.set(channel.id, true);
+          // supports both [{id, ...}] and [{channel: {id, ...}, ...}]
+          promotesChannels.forEach((promotes) => {
+            // If the promotes object has a channel property, use channel.id, else fallback to promotes.id for backward compatibility
+            const channelObj = promotes.channel || promotes;
+            const channelId = channelObj.id;
+            if (!channelMap.has(channelId)) {
+              channelMap.set(channelId, true);
               nodes.push({
-                id: channel.id,
+                id: channelId,
                 label: "Channel",
-                name: channel.title,
+                name: channelObj.title,
                 color: "#4CAF50",
-                title: channel.title,
-                username: channel.username,
-                status: channel.status,
-                promotedCount: channel.promotedCount
+                title: channelObj.title,
+                username: channelObj.username,
+                status: channelObj.status,
+                promotedCount: channelObj.promotedCount
               });
             }
-            links.push({ source: postId, target: channel.id, label: "PROMOTES" });
+            links.push({ source: postId, target: channelId, label: "PROMOTES" });
           });
         });
 
@@ -225,6 +241,9 @@ const MigrationTest = () => {
           }
 
           ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = "#333";
+          ctx.stroke();
           if (globalScale > 1.5) {
             ctx.fillStyle = "black";
             ctx.fillText(label, node.x + 8, node.y + 4);
@@ -269,6 +288,12 @@ const MigrationTest = () => {
                     <TableRow>
                       <TableCell style={{ fontWeight: 'bold' }}>Promoted</TableCell>
                       <TableCell style={{ wordBreak: 'break-word' }}>{selectedNode?.promotedCount}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: 'bold' }}>Catalog</TableCell>
+                      <TableCell style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                        {channelCatalogMap.get(selectedNode?.id) || "없음"}
+                      </TableCell>
                     </TableRow>
                   </>
                 )}

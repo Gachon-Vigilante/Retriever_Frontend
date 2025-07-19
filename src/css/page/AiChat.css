@@ -69,6 +69,33 @@
     overflow-y: auto;
     width: 100%; /* Ensure full width within grid */
 }
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 1000;
+}
+
+.tooltip:hover::after,
+.tooltip:hover::before {
+    opacity: 1;
+}
 
 .chatbot-list h3 {
     margin-bottom: 15px;

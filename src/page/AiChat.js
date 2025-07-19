@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import "../css/page/AiChat.css";
 import useFetchChannels from "../hooks/useFetchChannels";
+import ToolTip from "../components/ToolTip";
 
 const AiChat = () => {
     const [selectedChannelId, setSelectedChannelId] = useState(null);
@@ -15,12 +16,13 @@ const AiChat = () => {
         <div className="ai-chat-page">
             <Sidebar />
             <main className="ai-chat-main with-sidebar">
-                <header className="ai-chat-header">
-                    <h1>AI 관리</h1>
-                </header>
+                {/*<header className="ai-chat-header">*/}
+                {/*    <h1>AI 관리</h1>*/}
+                {/*</header>*/}
+                <ToolTip title="AI 관리" tooltipText="AI를 통해 텔레그램 채널에 대해 정보를 파악할 수 있습니다." />
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
-                        <h3>텔레그램 채널</h3>
+                        <h3 className="tooltip" data-tooltip="전체 텔레그램 채널을 표시합니다.">텔레그램 채널</h3>
                         {loading && <p>Loading channels...</p>}
                         {error && <p>Error loading channels: {error}</p>}
                         <ul className="ai-channel-list">

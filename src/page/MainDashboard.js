@@ -7,6 +7,7 @@ import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import axios from "axios";
+import ToolTip from "../components/ToolTip";
 
 const calculateMonthlyPostGrowth = (posts) => {
     const monthlyCounts = Array(12).fill(0);
@@ -54,7 +55,7 @@ const calculateMonthlyChannelGrowth = (channels) => {
     return Math.round(growthRate);
 };
 
-const RankList = ({title, items, link}) => {
+const RankList = ({title, items, link, tooltip}) => {
     const isNew = (date) => {
         const today = new Date();
         const createdDate = new Date(date);
@@ -65,7 +66,7 @@ const RankList = ({title, items, link}) => {
 
     return (
         <div className="rank-card">
-            <h3>{title}</h3>
+            <h3 className="tooltip" data-tooltip={tooltip}>{title}</h3>
             <ul>
                 {items.map((item, index) => (
                     <li key={index} className="rank-item">
@@ -259,33 +260,30 @@ const MainDashboard = () => {
         <div className="dashboard with-sidebar">
             <Sidebar/>
             <main className="main">
-                <header className="header">
-                    <h1>실시간 거래 현황</h1>
-                </header>
-
+                <ToolTip title="실시간 거래 현황" tooltipText="실시간 텔레그램 채널 및 게시글 업데이트와, 월별 통계를 표시합니다." />
                 <section className="statistics-chart">
                     <div className="statistics">
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 텔레그램 채널 수를 표시합니다.">
                             <h3>주간 신규 탐지 채널</h3>
                             <p>{weeklyChannelCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 홍보 게시글 수를 표시합니다.">
                             <h3>주간 신규 탐지 포스트</h3>
                             <p>{weeklyPostCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="탐지된 전체 텔레그램 채널 수를 표시합니다.">
                             <h3>총 탐지 채널</h3>
                             <p>{channelCount}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="직전 월 대비 홍보 게시글 증감율을 표시합니다.">
                             <h3>전월 대비 홍보 게시글 증감율</h3>
                             <p>{monthlyPostGrowth !== null ? `${monthlyPostGrowth}%` : '데이터 없음'}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="직전 월 대비 신규 마약 판매 텔레그램 채널 증감율을 표시합니다.">
                             <h3>전월 대비 거래 채널 증감율</h3>
                             <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
-                        <div className="card">
+                        <div className="card tooltip" data-tooltip="월간 가장 많이 판매한 마약류를 표시합니다.">
                             <h3>월간 최다 거래 마약류</h3>
                             <p className="p">메스암페타민</p>
                         </div>
@@ -296,9 +294,9 @@ const MainDashboard = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels"/>
-                    <RankList title="신규 탐지 게시글" items={newPosts} link="/posts"/>
-                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports"/>
+                    <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" tooltip="감지된 텔레그램 채널을 최신순으로 표시합니다."/>
+                    <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" tooltip="감지된 홍보 게시글을 최신순으로 표시합니다."/>
+                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports" tooltip="AI가 분석한 리포트를 최신순으로 표시합니다."/>
                 </section>
             </main>
         </div>

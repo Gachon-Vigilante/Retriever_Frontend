@@ -1,4 +1,4 @@
-// "use client"
+// 기존 neovis.js를 사용하는 유사도 그래프 페이지. 미사용
 import styles from "../css/components/GraphVisualizer.module.css";
 import {useEffect, useRef, useState} from "react"
 import NeoVis from "neovis.js"

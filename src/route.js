@@ -26,8 +26,7 @@ function AppRouter() {
                 <Route path="/statistics" element={<Statistics/>}/>
                 <Route path="/similarity" element={<Similarity/>}/>
                 <Route path="/channel-similarities" element={<ChannelSimilarities/>}/>
-                <Route path="/network-graph" element={<GraphVisualizer/>}/>
-                <Route path="/test" element={<MigrationTest/>}/>
+                <Route path="/network-graph" element={<MigrationTest/>}/>
                 <Route path="/ai-reports" element={<AIReports/>}/>
                 <Route path="/userlist" element={<UserList/>}/>
             </Routes>
