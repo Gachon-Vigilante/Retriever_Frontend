@@ -121,6 +121,20 @@ const MigrationTest = () => {
 
                 const globalArgotMap = new Map();
 
+                // 1. Add drugs from drugsRes first
+                drugsRes.data.forEach((drug) => {
+                    if (!drugMap.has(drug.id)) {
+                        drugMap.set(drug.id, true);
+                        nodes.push({
+                            id: drug.id,
+                            label: "Drug",
+                            name: drug.name || drug.id,
+                            color: "#FF5722"
+                        });
+                    }
+                });
+
+                // 2. Then add channels and their argots/links
                 channelsRes.data.forEach((channel) => {
                     channelMap.set(channel.id, true);
                     nodes.push({
@@ -151,31 +165,11 @@ const MigrationTest = () => {
                         const argotNodeId = `argot:${argotName}`;
                         links.push({source: channel.id, target: argotNodeId, label: "SELLS"});
 
-                        if (argot.drugId && !drugMap.has(argot.drugId)) {
-                            nodes.push({
-                                id: argot.drugId,
-                                label: "Drug",
-                                name: argot.drugId,
-                                color: "#FF5722"
-                            });
-                            drugMap.set(argot.drugId, true);
-                        }
+                        // Removed: drug node creation for argot.drugId if not present
                         if (argot.drugId) {
                             links.push({source: argotNodeId, target: argot.drugId, label: "REFERS_TO"});
                         }
                     });
-                });
-
-                drugsRes.data.forEach((drug) => {
-                    if (!drugMap.has(drug.id)) {
-                        drugMap.set(drug.id, true);
-                        nodes.push({
-                            id: drug.id,
-                            label: "Drug",
-                            name: drug.name || drug.id,
-                            color: "#FF5722"
-                        });
-                    }
                 });
 
 
