@@ -171,11 +171,11 @@ const Posts = () => {
                                                     {post.content.length > 30 ? post.content.slice(0, 30) + "..." : post.content}
                                                 </p>
                                                 <p className="post-site">
-                                                    <strong>Site:</strong> {post.siteName}
+                                                    <strong>Site:</strong> {post.siteName || '없음'}
                                                 </p>
                                                 <p className="post-timestamp">
-                                                    <strong>Posted Time:</strong>{" "}
-                                                    {new Date(post.createdAt).toLocaleString()}
+                                                    <strong>발견일시:</strong>{" "}
+                                                    {new Date(post.createdAt).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </li>
@@ -204,21 +204,21 @@ const Posts = () => {
                         {selectedPost ? (
                             <div className="details-content">
                                 <div className="detail-box">
-                                    <p> {/* 게시글 제목의 경우 null값으로 반환되므로 03.27 이후 미사용 예정*/}
-                                        <strong>게시글 제목:</strong> {selectedPost.title}
+                                    {/*<p> /!* 게시글 제목의 경우 null값으로 반환되므로 03.27 이후 미사용 예정*!/*/}
+                                    {/*    <strong>게시글 제목:</strong> {selectedPost.title}*/}
+                                    {/*</p>*/}
+                                    <p>
+                                        <strong>사이트 링크:</strong> {selectedPost.siteLink}
                                     </p>
                                     <p>
-                                        <strong>사이트명:</strong> {selectedPost.siteName}
-                                    </p>
-                                    <p>
-                                        <strong>게시일:</strong>{" "}
-                                        {new Date(selectedPost.createdAt).toLocaleString()}
+                                        <strong>발견일시:</strong>{" "}
+                                        {new Date(selectedPost.createdAt).toLocaleDateString()}
                                     </p>
                                     <p>
                                         <strong>게시글 내용:</strong> {selectedPost.content}
                                     </p>
                                     <p>
-                                        <strong>Promo Link:</strong>{" "}
+                                        <strong>홍보 채널:</strong>{" "}
                                         {selectedPost.promoSiteLink}
                                     </p>
                                 </div>

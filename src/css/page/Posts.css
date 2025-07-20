@@ -133,6 +133,10 @@
     font-size: 14px;
     margin: 5px 0;
     color: #2d3748;
+    max-width: 1000px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .promo-iframe {

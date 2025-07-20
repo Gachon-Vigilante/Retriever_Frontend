@@ -32,7 +32,7 @@ const useFetchPostDetails = () => {
                     content: post.content,
                     siteName: post.siteName,
                     promoSiteLink: post.promoSiteLink,
-                    link: post.link,
+                    siteLink: post.link,
                     timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
                         ? new Date(post.timestamp).toLocaleDateString("ko-KR")
                         : "날짜 없음",
@@ -68,7 +68,7 @@ const useFetchPostDetails = () => {
                 content: post.content,
                 siteName: post.siteName,
                 promoSiteLink: post.promoSiteLink,
-                link: post.link,
+                siteLink: post.link,
                 timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
                     ? new Date(post.timestamp).toLocaleDateString("ko-KR")
                     : "날짜 없음",

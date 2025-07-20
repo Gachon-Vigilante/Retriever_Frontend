@@ -99,9 +99,7 @@ const MigrationTest = () => {
                         links.push({source: postId, target: similar.postId, label: "SIMILAR"});
                     });
 
-                    // supports both [{id, ...}] and [{channel: {id, ...}, ...}]
                     promotesChannels.forEach((promotes) => {
-                        // If the promotes object has a channel property, use channel.id, else fallback to promotes.id for backward compatibility
                         const channelObj = promotes.channel || promotes;
                         const channelId = channelObj.id;
                         if (!channelMap.has(channelId)) {
@@ -121,6 +119,8 @@ const MigrationTest = () => {
                     });
                 });
 
+                const globalArgotMap = new Map();
+
                 channelsRes.data.forEach((channel) => {
                     channelMap.set(channel.id, true);
                     nodes.push({
@@ -135,30 +135,33 @@ const MigrationTest = () => {
                     });
 
                     channel.sellsArgots?.forEach((argot) => {
-                        const argotId = `${channel.id}:${argot.name}`;
-                        if (!argotMap.has(argotId)) {
-                            argotMap.set(argotId, true);
-                            nodes.push({
-                                id: argotId,
+                        const argotName = argot.name;
+                        if (!globalArgotMap.has(argotName)) {
+                            const argotNodeId = `argot:${argotName}`;
+                            globalArgotMap.set(argotName, {
+                                id: argotNodeId,
                                 label: "Argot",
-                                name: argot.name,
+                                name: argotName,
                                 color: "#000",
                                 drugId: argot.drugId
                             });
+                            argotMap.set(argotNodeId, true);
+                            nodes.push(globalArgotMap.get(argotName));
                         }
-                        links.push({source: channel.id, target: argotId, label: "SELLS"});
+                        const argotNodeId = `argot:${argotName}`;
+                        links.push({source: channel.id, target: argotNodeId, label: "SELLS"});
 
                         if (argot.drugId && !drugMap.has(argot.drugId)) {
                             nodes.push({
                                 id: argot.drugId,
                                 label: "Drug",
-                                name: argot.name || argot.drugId,
+                                name: argot.drugId,
                                 color: "#FF5722"
                             });
                             drugMap.set(argot.drugId, true);
                         }
                         if (argot.drugId) {
-                            links.push({source: argotId, target: argot.drugId, label: "REFERS_TO"});
+                            links.push({source: argotNodeId, target: argot.drugId, label: "REFERS_TO"});
                         }
                     });
                 });

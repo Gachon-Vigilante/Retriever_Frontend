@@ -8,8 +8,11 @@ const useFetchNewPosts = (limit = 4) => {
     useEffect(() => {
         const fetchNewPosts = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/all`, { withCredentials: true });
-                const sortedData = response.data
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=0&size=${limit}`,
+                    { withCredentials: true }
+                );
+                const sortedData = (response.data.posts || [])
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, limit);
                 const formattedData = sortedData.map(post => ({
