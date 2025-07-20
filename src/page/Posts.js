@@ -223,9 +223,9 @@ const Posts = () => {
                                     </p>
                                 </div>
 
-                                {selectedPost.link && (
+                                {selectedPost.siteLink && (
                                     <iframe
-                                        src={selectedPost.link}
+                                        src={selectedPost.siteLink}
                                         title="Promo Site"
                                         className="promo-iframe"
                                         width="100%"
