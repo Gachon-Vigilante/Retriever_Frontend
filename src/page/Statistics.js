@@ -104,9 +104,6 @@ const RankList = ({title, items, link, tooltip}) => {
                     </li>
                 ))}
             </ul>
-            <a href={link} className="view-link">
-                전체 목록 확인
-            </a>
         </div>
     );
 };
