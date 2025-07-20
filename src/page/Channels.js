@@ -159,28 +159,28 @@ const toggleBookmark = async (channel) => {
             <main className="channel-main with-sidebar">
                 <header className="channel-header">
                     <h1>텔레그램 채널</h1>
-                    <div className="search-container">
+                    <div className="search-container-channel">
                         <input
                             type="text"
-                            className="search-input"
+                            className="search-input-channel"
                             placeholder="채널 이름 검색"
                             value={searchName}
                             onChange={(e) => setSearchName(e.target.value)}
                         />
                         <input
                             type="text"
-                            className="search-input"
+                            className="search-input-channel"
                             placeholder="채널 ID 검색"
                             value={searchId}
                             onChange={(e) => setSearchId(e.target.value)}
                         />
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="채널 링크 검색"
-                            value={searchLink}
-                            onChange={(e) => setSearchLink(e.target.value)}
-                        />
+                        {/*<input*/}
+                        {/*    type="text"*/}
+                        {/*    className="search-input"*/}
+                        {/*    placeholder="채널 링크 검색"*/}
+                        {/*    value={searchLink}*/}
+                        {/*    onChange={(e) => setSearchLink(e.target.value)}*/}
+                        {/*/>*/}
                         <button className="search-button" onClick={() => {
                         }}>
                             검색

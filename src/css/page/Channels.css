@@ -219,10 +219,11 @@
 }
 
 /* Search Container */
-.search-container {
+.search-container-channel {
+    max-width: 1000px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 40px;
     background-color: #fff;
     padding: 15px;
     margin-left: 50px;
@@ -244,8 +245,10 @@
 }
 
 
-.search-input {
+.search-input-channel {
     /*flex: 1;*/
+    min-width: 35%;
+    max-width: 40%;
     padding: 10px;
     font-size: 14px;
     border: 1px solid #e2e8f0;

@@ -56,12 +56,11 @@ const Posts = () => {
 
         if (startDate || endDate) {
             filtered = filtered.filter((post) => {
-                const dateStr = post.timestamp || post.createdAt;
-                if (!dateStr) return false;
-                const postDate = new Date(dateStr);
+                if (!post.createdAt) return false;
+                const postDate = new Date(post.createdAt);
                 return (
-                    (!startDate || postDate.getTime() >= startDate.getTime()) &&
-                    (!endDate || postDate.getTime() <= endDate.getTime())
+                    (!startDate || postDate >= startDate) &&
+                    (!endDate || postDate <= endDate)
                 );
             });
         }
