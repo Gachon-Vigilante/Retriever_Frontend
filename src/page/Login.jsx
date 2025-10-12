@@ -29,18 +29,18 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
-                {
-                    loginId: id,
-                    password: password
-                },
-                { withCredentials: true }
-            );
-
-            const { name, role } = res.data;
-            localStorage.setItem('name', name);
-            localStorage.setItem('role', role);
+            // const res = await axios.post(
+            //     `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
+            //     {
+            //         loginId: id,
+            //         password: password
+            //     },
+            //     { withCredentials: true }
+            // );
+            //
+            // const { name, role } = res.data;
+            // localStorage.setItem('name', name);
+            // localStorage.setItem('role', role);
             navigate('/dashboard');
         } catch (e) {
             console.error('로그인 실패', e);
