@@ -4,7 +4,7 @@
 }
 
 .dashboard.with-sidebar {
-    margin-left: 250px; /* same as sidebar width */
+    margin-left: 250px;
 }
 
 /* Sidebar Component Styling */
@@ -87,6 +87,11 @@
     cursor: help;
 }
 
+.card h3 {
+    font-size: 14px;
+    color: grey;
+}
+
 .tooltip::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -113,6 +118,7 @@
 
 .chart {
     flex: 3;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
