@@ -146,7 +146,7 @@ const Chat = ({ channelId }) => {
                     onFocus={() => setShowTooltip(true)}
                     onBlur={() => setTimeout(() => setShowTooltip(false), 100)}
                 />
-                <button className="chat-button" onClick={handleSendMessage}>보내기</button>
+                <button className="chat-button" onClick={handleSendMessage}>질문하기</button>
                 <button className="chat-button-reset" onClick={handleResetChat}>대화 리셋</button>
             </div>
         </div>
