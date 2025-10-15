@@ -121,6 +121,14 @@
     gap: 16px;
 }
 
+.details-content-exp {
+    font-size: 18px;
+    text-align: center;
+    color: midnightblue;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+}
+
 .detail-box {
     background-color: #e6fffa;
     border: 1px solid #38b2ac;

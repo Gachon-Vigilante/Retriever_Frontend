@@ -46,7 +46,7 @@ const useFetchPostDetails = () => {
                 setPosts(formattedData);
                 setTotalCount(response.data.totalCount || 0);
             } catch (err) {
-                setError(`Error fetching posts: ${err.message}`);
+                setError(`${err.message}`);
             } finally {
                 setLoading(false);
             }
@@ -82,7 +82,7 @@ const useFetchPostDetails = () => {
 
             setSelectedPost(formattedPost);
         } catch (err) {
-            setError(`Error fetching post detail: ${err.message}`);
+            setError(`${err.message}`);
             setSelectedPost(null);
         } finally {
             setLoading(false);
@@ -104,7 +104,7 @@ const useFetchPostDetails = () => {
             setSelectedDetails(formattedDetails);
             setSelectedPost(posts.find((post) => post.id === postId));
         } catch (err) {
-            setError(`Error fetching similar posts: ${err.message}`);
+            setError(`${err.message}`);
             setSelectedDetails([]);
         } finally {
             setLoading(false);

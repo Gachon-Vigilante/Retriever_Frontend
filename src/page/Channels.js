@@ -388,7 +388,7 @@ const toggleBookmark = async (channel) => {
                         {loading && selectedChannelId ? (
                             <p>Loading details...</p>
                         ) : error ? (
-                            <p className="error-message">{error}</p>
+                            <p className="error-message">채널 상세를 불러오는 중 에러가 발생했습니다: {error}</p>
                         ) : selectedDetails.length > 0 ? (
                             <div className="details-content">
                                 {selectedDetails.map((detail, index) => {

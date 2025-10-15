@@ -74,6 +74,12 @@
     cursor: help;
 }
 
+.tooltip-error {
+    color: #e53e3e;
+    font-size: 14px;
+    text-align: center;
+}
+
 .tooltip::after {
     content: attr(data-tooltip);
     position: absolute;
