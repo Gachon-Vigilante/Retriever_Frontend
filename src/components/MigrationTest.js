@@ -4,7 +4,7 @@ import ForceGraph2D from "react-force-graph-2d";
 import axios from "axios";
 import {Drawer, Table, TableBody, TableCell, TableContainer, TableRow, Paper} from "@mui/material";
 import styles from "../css/components/MigrationTest.module.css";
-import ToolTip from "./ToolTip";
+import GraphErrorModal from "./GraphErrorModal";
 
 const clusterColors = [
     "#ff4d4f", "#40a9ff", "#ffd666", "#73d13d", "#9254de",
@@ -25,6 +25,7 @@ const MigrationTest = () => {
     const [showRelatedOnly, setShowRelatedOnly] = useState(false);
     const [channelCatalogMap, setChannelCatalogMap] = useState(new Map());
     const fgRef = useRef();
+    const [fetchError, setFetchError] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,7 +37,6 @@ const MigrationTest = () => {
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
                 ]);
 
-                // Fetch all channels to get the catalog descriptions
                 const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, {withCredentials: true});
                 const catalogMap = new Map();
                 catalogRes.data.forEach((ch) => {
@@ -121,7 +121,6 @@ const MigrationTest = () => {
 
                 const globalArgotMap = new Map();
 
-                // 1. Add drugs from drugsRes first
                 drugsRes.data.forEach((drug) => {
                     if (!drugMap.has(drug.id)) {
                         drugMap.set(drug.id, true);
@@ -134,7 +133,6 @@ const MigrationTest = () => {
                     }
                 });
 
-                // 2. Then add channels and their argots/links
                 channelsRes.data.forEach((channel) => {
                     channelMap.set(channel.id, true);
                     nodes.push({
@@ -165,7 +163,6 @@ const MigrationTest = () => {
                         const argotNodeId = `argot:${argotName}`;
                         links.push({source: channel.id, target: argotNodeId, label: "SELLS"});
 
-                        // Removed: drug node creation for argot.drugId if not present
                         if (argot.drugId) {
                             links.push({source: argotNodeId, target: argot.drugId, label: "REFERS_TO"});
                         }
@@ -190,6 +187,7 @@ const MigrationTest = () => {
                 setOriginalGraphData({nodes, links: cleanedLinks});
             } catch (err) {
                 console.error("Graph fetch error:", err);
+                setFetchError(true);
             }
         };
 
@@ -481,6 +479,11 @@ const MigrationTest = () => {
                     </div>
                 </div>
             </Drawer>
+            <GraphErrorModal
+                open={fetchError}
+                message="네트워크 오류로 인해 그래프 생성에 실패했습니다."
+                onClose={() => window.close()}
+            />
         </div>
     );
 };

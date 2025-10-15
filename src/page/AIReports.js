@@ -58,16 +58,13 @@ const AIReports = () => {
         <div className="ai-chat-page">
             <Sidebar/>
             <main className="ai-chat-main with-sidebar">
-                {/*<header className="ai-chat-header">*/}
-                {/*    <h1>AI 리포트</h1>*/}
-                {/*</header>*/}
                 <ToolTip title="AI 리포트" tooltipText="모니터링 중인 텔레그램 채널에서 채팅이 발생하면 그 채팅을 AI가 분석하여 리포트 형태로 누적합니다.
                         기본적으로는 모든 채널에서 분석된 리포트가 최신순으로 보여지고 왼쪽에서 특정 채널을 클릭하면 해당 채널의 분석 리포트를 조회할 수 있습니다."/>
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
                         <h3 className="tooltip" data-tooltip="현재 active 상태인 텔레그램 채널을 표시합니다.">텔레그램 채널</h3>
-                        {loading && <p>Loading channels...</p>}
-                        {error && <p>Error loading channels: {error}</p>}
+                        {loading && <p>채널 목록 로딩 중...</p>}
+                        {error && <p className="tooltip-error">채널을 불러오는 중 오류가 발생했습니다: {error}</p>}
                         <ul>
                             {channels
                                 .filter((channel) => channel.status === "active")
@@ -78,7 +75,7 @@ const AIReports = () => {
                                         className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
                                         onClick={() => {
                                             if (selectedChannelId === channel.id) {
-                                                setSelectedChannelId(null); // 클릭된 항목이 이미 선택된 경우 전체 보기로 전환
+                                                setSelectedChannelId(null);
                                             } else {
                                                 setSelectedChannelId(channel.id);
                                             }
@@ -140,7 +137,6 @@ const AIReports = () => {
                             containerClassName={"pagination"}
                             activeClassName={"active"}
                         />
-                        {/*<Chat channelId={selectedChannelId}/>*/}
                     </div>
                 </div>
             </main>

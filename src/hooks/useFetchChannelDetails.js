@@ -35,7 +35,7 @@ const useFetchChannelDetails = () => {
             }));
             setChannels(formatted);
         } catch (err) {
-            setError(`Error fetching channels: ${err.message}`);
+            setError(`${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -56,7 +56,7 @@ const useFetchChannelDetails = () => {
             setSelectedDetails(formatted);
         } catch (err) {
             console.error("Error fetching channel details:", err);
-            setError(`Error fetching channel details: ${err.message}`);
+            setError(`${err.message}`);
             setSelectedDetails([]);
         } finally {
             setLoading(false);

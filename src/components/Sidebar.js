@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Link, useLocation} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 import {menuItems} from "./columns/MenuItems";
-import "../css/components/sidebar.css";
+import "../css/components/Sidebar.css";
 
 const Sidebar = () => {
     const location = useLocation();
@@ -80,14 +79,15 @@ const Sidebar = () => {
                                         <div
                                             key={subItem.name}
                                             className={`submenu-item ${
-                                                location.pathname === subItem.path
-                                                    ? "active"
-                                                    : ""
+                                                location.pathname === subItem.path ? "active" : ""
                                             }`}
+                                            onClick={() => window.location.pathname !== subItem.path && window.location.assign(subItem.path)}
+                                            style={{ cursor: "pointer" }}
                                         >
-                                            <Link to={subItem.path}>{subItem.name}</Link>
+                                            {subItem.name}
                                         </div>
                                     ))}
+
                                 </div>
                             </>
                         ) : (
@@ -131,10 +131,8 @@ const Sidebar = () => {
                         href="#"
                         onClick={(e) => {
                             e.preventDefault();
-                            // Clear cookies
                             document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                             document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                            // Redirect to login page
                             window.location.href = "/";
                         }}
                     >

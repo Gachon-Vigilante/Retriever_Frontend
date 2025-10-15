@@ -18,7 +18,6 @@ const Posts = () => {
         setPostPage
     } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [similarities, setSimilarities] = useState([]);
 
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -80,9 +79,7 @@ const Posts = () => {
             <Sidebar />
             <main className="posts-main with-sidebar">
                 <header className="posts-header" style={{ position: "relative" }}>
-                    {/*<div className="posts-title">*/}
                         <h1>거래 게시글</h1>
-                    {/*</div>*/}
                     <div className="search-container">
                         <input
                             type="text"
@@ -91,7 +88,6 @@ const Posts = () => {
                             value={searchTitle}
                             onChange={(e) => setSearchTitle(e.target.value)}
                         />
-                        {/*<div className="datepickers">*/}
                             <DatePicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
@@ -108,7 +104,6 @@ const Posts = () => {
                                 dateFormat="yyyy-MM-dd"
                                 showMonthYearDropdown
                             />
-                        {/*</div>*/}
                         <button className="search-button" onClick={() => {}}>
                             검색
                         </button>
@@ -149,11 +144,11 @@ const Posts = () => {
                 </header>
                 <div className="posts-content">
                     <section className="posts-list">
-                        <h3 className="tooltip" data-tooltip="탐지된 거래글 목록이 표시됩니다.">거래글 목록</h3>
+                        <h3 className="tooltip" data-tooltip="탐지된 거래글 목록이 표시됩니다.">거래 게시글 목록</h3>
                         {loading ? (
-                            <p>Loading posts...</p>
+                            <p>홍보 게시글 로딩 중...</p>
                         ) : error ? (
-                            <p className="error-message">{error}</p>
+                            <p className="error-message">게시글 로딩 중 오류가 발생했습니다: {error}</p>
                         ) : (
                             <ul>
                                 {filteredPosts.length > 0 ? (
@@ -196,16 +191,11 @@ const Posts = () => {
                             activeClassName={"active"}
                         />
                     </section>
-
-                    {/* Post Details */}
                     <section className="post-details">
                         <h3 className="tooltip" data-tooltip="선택한 게시글의 상세정보와, 실제 사이트에 게시된 홍보글을 확인합니다.">게시글 상세</h3>
                         {selectedPost ? (
                             <div className="details-content">
                                 <div className="detail-box">
-                                    {/*<p> /!* 게시글 제목의 경우 null값으로 반환되므로 03.27 이후 미사용 예정*!/*/}
-                                    {/*    <strong>게시글 제목:</strong> {selectedPost.title}*/}
-                                    {/*</p>*/}
                                     <p>
                                         <strong>사이트 링크:</strong> {selectedPost.siteLink}
                                     </p>
@@ -239,7 +229,7 @@ const Posts = () => {
                                 )}
                             </div>
                         ) : (
-                            <p>게시글을 선택해 주세요.</p>
+                            <p className="details-content-exp">게시글을 선택해 주세요.</p>
                         )}
                     </section>
                 </div>

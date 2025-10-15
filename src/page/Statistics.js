@@ -111,7 +111,7 @@ const RankList = ({title, items, link, tooltip}) => {
 const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-    const {posts} = useFetchPostDetails(); // 불러오기
+    const {posts} = useFetchPostDetails();
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const [argotData, setArgotData] = useState([]);
@@ -133,7 +133,7 @@ const Statistics = () => {
 
     const getWeeklyCount = (data) => {
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
         return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
     };
@@ -156,13 +156,13 @@ const Statistics = () => {
     }, [posts]);
 
     const getMonthlyPostCount = (posts, year) => {
-        const monthlyCounts = Array(12).fill(0); // 12개월 초기화
+        const monthlyCounts = Array(12).fill(0);
 
         posts.forEach((post) => {
             if (!post.createdAt) return;
             const date = new Date(post.createdAt);
             const postYear = date.getFullYear();
-            const month = date.getMonth(); // 0부터 시작 (0 = 1월)
+            const month = date.getMonth();
 
             if (postYear === year) {
                 monthlyCounts[month]++;
@@ -372,19 +372,15 @@ const Statistics = () => {
         <div className="dashboard">
             <Sidebar/>
             <main className="main with-sidebar">
-                {/*<header className="header">*/}
-                {/*    <h1>통계</h1>*/}
-                {/*    /!*<button className="download">Download</button>*!/*/}
-                {/*</header>*/}
                 <ToolTip title="통계" tooltipText="텔레그램 채널/홍보 게시글/거래 마약류 등의 각종 통계를 표시합니다." />
                 <section className="statistics-chart">
                     <div className="statistics">
                         <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 텔레그램 채널 수를 표시합니다.">
-                            <h3>주간 신규 탐지 채널</h3>
+                            <h3>주간 신규 채널</h3>
                             <p>{weeklyChannelCount}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="최근 7일 동안 탐지된 신규 홍보 게시글 수를 표시합니다.">
-                            <h3>주간 신규 탐지 포스트</h3>
+                            <h3>주간 신규 포스트</h3>
                             <p>{weeklyPostCount}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="탐지된 전체 텔레그램 채널 수를 표시합니다.">
@@ -392,16 +388,16 @@ const Statistics = () => {
                             <p>{channelCount}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="직전 월 대비 홍보 게시글 증감율을 표시합니다.">
-                            <h3>전월 대비 홍보 게시글 증감율</h3>
+                            <h3>홍보 게시글 증감율</h3>
                             <p>{monthlyPostGrowth !== null ? `${monthlyPostGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="직전 월 대비 신규 마약 판매 텔레그램 채널 증감율을 표시합니다.">
-                            <h3>전월 대비 거래 채널 증감율</h3>
+                            <h3>거래 채널 증감율</h3>
                             <p>{monthlyChannelGrowth !== null ? `${monthlyChannelGrowth}%` : '데이터 없음'}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="월간 가장 많이 판매한 마약류를 표시합니다.">
-                            <h3>월간 최다 거래 마약류</h3>
-                            <p className="p">메스암페타민</p>
+                            <h3>월간 최다거래</h3>
+                            <p>메스암페타민</p>
                         </div>
                     </div>
                     <div className="chart">

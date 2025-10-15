@@ -10,14 +10,6 @@ const useFetchPostDetails = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [postPage, setPostPage] = useState(0);
 
-    const parseDateTime = (dateTime) => {
-        if (!dateTime) return null;
-        const dateString = dateTime.$date || dateTime;
-        const parsedDate = new Date(dateString);
-        return isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
-    };
-
-    // 1. 게시글 목록
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -46,7 +38,7 @@ const useFetchPostDetails = () => {
                 setPosts(formattedData);
                 setTotalCount(response.data.totalCount || 0);
             } catch (err) {
-                setError(`Error fetching posts: ${err.message}`);
+                setError(`${err.message}`);
             } finally {
                 setLoading(false);
             }
@@ -82,14 +74,13 @@ const useFetchPostDetails = () => {
 
             setSelectedPost(formattedPost);
         } catch (err) {
-            setError(`Error fetching post detail: ${err.message}`);
+            setError(`${err.message}`);
             setSelectedPost(null);
         } finally {
             setLoading(false);
         }
     };
 
-    // 2. 게시글 유사도 분석용
     const fetchDetailsByPostId = async (postId) => {
         setLoading(true);
         try {
@@ -104,7 +95,7 @@ const useFetchPostDetails = () => {
             setSelectedDetails(formattedDetails);
             setSelectedPost(posts.find((post) => post.id === postId));
         } catch (err) {
-            setError(`Error fetching similar posts: ${err.message}`);
+            setError(`${err.message}`);
             setSelectedDetails([]);
         } finally {
             setLoading(false);

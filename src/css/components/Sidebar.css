@@ -5,8 +5,8 @@
     width: 250px;
     height: 100%;
     padding: 20px;
-    background-color: white; /* ✅ 전체 반투명 적용 */
-    backdrop-filter: blur(10px); /* ✅ 배경 흐림 효과로 더 자연스럽게 */
+    background-color: white;
+    backdrop-filter: blur(10px);
     color: #3f4d67;
     box-sizing: border-box;
     position: fixed;
@@ -15,25 +15,17 @@
     z-index: 1000;
 }
 
-/* 사이드바가 열렸을 때 */
-
-
-/* 사이드바가 닫혔을 때 */
-
-
 .menu-item:hover,
 .submenu-item:hover {
     background-color: rgba(0, 123, 255, 0.8);
 }
 
-/* Logo */
 .logo-image {
     width: 200px;
     margin-bottom: 20px;
     align-self: center;
 }
 
-/* Menu */
 .menu {
     flex-grow: 1;
 }
@@ -42,7 +34,6 @@
     margin-bottom: 20px;
 }
 
-/* Main menu item */
 .menu-item {
     cursor: pointer;
     font-size: 16px;
@@ -54,22 +45,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    text-decoration: none; /* Remove underline */
+    text-decoration: none;
 }
 
 .menu-item:hover {
     background-color: #007bff;
     color: white;
-    text-decoration: none; /* Ensure underline is not added on hover */
+    text-decoration: none;
 }
 
 .menu-item.active {
     background-color: #00BAEA;
     color: white;
-    text-decoration: none; /* Ensure underline is not added for active state */
+    text-decoration: none;
 }
 
-/* Submenu */
 .submenu {
     padding-left: 10px;
     max-height: 0;
@@ -78,10 +68,9 @@
 }
 
 .submenu.expanded {
-    max-height: 200px; /* Adjust this based on expected submenu height */
+    max-height: 200px;
 }
 
-/* Submenu item */
 .submenu-item {
     font-size: 14px;
     padding: 10px 15px;
@@ -105,11 +94,8 @@
     color: white;
 }
 
-/* User Info */
 .user-info {
     margin-top: auto;
-    /*display: flex;*/
-    /*align-items: center;*/
     padding-top: 15px;
     border-top: 1px solid #e0e0e0;
     color: black;
@@ -137,7 +123,7 @@
 }
 
 .main-content {
-    margin-left: 250px; /* same width as sidebar */
+    margin-left: 250px;
     transition: margin-left 0.3s ease;
 }
 
