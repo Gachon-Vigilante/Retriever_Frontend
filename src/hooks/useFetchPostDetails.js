@@ -10,14 +10,6 @@ const useFetchPostDetails = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [postPage, setPostPage] = useState(0);
 
-    const parseDateTime = (dateTime) => {
-        if (!dateTime) return null;
-        const dateString = dateTime.$date || dateTime;
-        const parsedDate = new Date(dateString);
-        return isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
-    };
-
-    // 1. 게시글 목록
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -89,7 +81,6 @@ const useFetchPostDetails = () => {
         }
     };
 
-    // 2. 게시글 유사도 분석용
     const fetchDetailsByPostId = async (postId) => {
         setLoading(true);
         try {

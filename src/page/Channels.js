@@ -31,7 +31,6 @@ const Channels = () => {
     const [selectedChannelId, setSelectedChannelId] = useState(null);
     const [modalImage, setModalImage] = useState(null);
 
-    const [channelPriceRanges, setChannelPriceRanges] = useState({});
 
     const [searchName, setSearchName] = useState("");
     const [searchId, setSearchId] = useState("");
@@ -174,13 +173,6 @@ const toggleBookmark = async (channel) => {
                             value={searchId}
                             onChange={(e) => setSearchId(e.target.value)}
                         />
-                        {/*<input*/}
-                        {/*    type="text"*/}
-                        {/*    className="search-input"*/}
-                        {/*    placeholder="채널 링크 검색"*/}
-                        {/*    value={searchLink}*/}
-                        {/*    onChange={(e) => setSearchLink(e.target.value)}*/}
-                        {/*/>*/}
                         <button className="search-button" onClick={() => {
                         }}>
                             검색
@@ -293,7 +285,7 @@ const toggleBookmark = async (channel) => {
                             </>
                         ) : (
                             <>
-                                <h4>🟢 Active 채널</h4>
+                                <h4>🟢 활성화 채널</h4>
                                 <ul>
                                     {filteredChannels
                                         .filter((channel) => channel.status === "active")
@@ -336,7 +328,7 @@ const toggleBookmark = async (channel) => {
                                     pageClassName={"pagination-page"}
                                 />
 
-                                <h4>🔴 Inactive 채널</h4>
+                                <h4>🔴 비활성화 채널</h4>
                                 <ul>
                                     {filteredChannels
                                         .filter((channel) => channel.status === "inactive")
@@ -394,7 +386,6 @@ const toggleBookmark = async (channel) => {
                                 {selectedDetails.map((detail, index) => {
                                     let fileType = detail.mediaType || "";
 
-                                    // 파일 타입 추정 (Base64 기반)
                                     if (detail.image) {
                                         if (detail.image.startsWith("/9j/")) fileType = "jpeg";
                                         else if (detail.image.startsWith("iVBOR")) fileType = "png";
@@ -402,7 +393,6 @@ const toggleBookmark = async (channel) => {
                                         else if (detail.image.startsWith("AAAA")) fileType = "mp4";
                                     }
 
-                                    // Base64인지 URL인지 구분
                                     const isBase64 = detail.image && !detail.image.startsWith("http");
 
                                     return (
@@ -421,8 +411,6 @@ const toggleBookmark = async (channel) => {
                                                 rehypePlugins={[rehypeHighlight]}
                                                 children={detail.text}
                                             />
-
-                                            {/* 이미지 렌더링 */}
                                             {detail.image && fileType !== "mp4" && (
                                                 isBase64 ? (
                                                     <img
@@ -440,8 +428,6 @@ const toggleBookmark = async (channel) => {
                                                     />
                                                 )
                                             )}
-
-                                            {/* 영상 렌더링 */}
                                             {detail.image && fileType === "mp4" && (
                                                 isBase64 ? (
                                                     <video controls className="channel-video">

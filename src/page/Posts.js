@@ -18,7 +18,6 @@ const Posts = () => {
         setPostPage
     } = useFetchPostDetails();
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [similarities, setSimilarities] = useState([]);
 
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 

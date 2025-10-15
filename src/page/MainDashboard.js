@@ -95,7 +95,7 @@ const RankList = ({title, items, link, tooltip}) => {
 const MainDashboard = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-    const {posts} = useFetchPostDetails(); // 불러오기
+    const {posts} = useFetchPostDetails();
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const {channels: allChannels} = useFetchChannels(); // fetch all channels
@@ -109,7 +109,6 @@ const MainDashboard = () => {
     const [weeklyChannelCount, setWeeklyChannelCount] = useState(0);
     const [weeklyPostCount, setWeeklyPostCount] = useState(0);
 
-    // Utility function to calculate weekly count
     const getWeeklyCount = (data) => {
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
@@ -160,13 +159,11 @@ const MainDashboard = () => {
                 const reportList = reportsRes.data;
                 const channels = channelsRes.data;
 
-                // 채널 ID → 이름 매핑
                 const channelMap = {};
                 channels.forEach((channel) => {
                     channelMap[channel.id] = channel.title || "제목 없음";
                 });
 
-                // 채널별 최신 리포트만 남기기
                 const latestReportPerChannel = {};
                 reportList.forEach((report) => {
                     if (!report.channelId || !report.timestamp) return;

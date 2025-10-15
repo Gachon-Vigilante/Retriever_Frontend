@@ -4,7 +4,6 @@ import ForceGraph2D from "react-force-graph-2d";
 import axios from "axios";
 import {Drawer, Table, TableBody, TableCell, TableContainer, TableRow, Paper} from "@mui/material";
 import styles from "../css/components/MigrationTest.module.css";
-import ToolTip from "./ToolTip";
 import GraphErrorModal from "./GraphErrorModal";
 
 const clusterColors = [

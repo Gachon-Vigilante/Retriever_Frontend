@@ -111,7 +111,7 @@ const RankList = ({title, items, link, tooltip}) => {
 const Statistics = () => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
-    const {posts} = useFetchPostDetails(); // 불러오기
+    const {posts} = useFetchPostDetails();
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
     const [argotData, setArgotData] = useState([]);
@@ -133,7 +133,7 @@ const Statistics = () => {
 
     const getWeeklyCount = (data) => {
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
         return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
     };
@@ -156,13 +156,13 @@ const Statistics = () => {
     }, [posts]);
 
     const getMonthlyPostCount = (posts, year) => {
-        const monthlyCounts = Array(12).fill(0); // 12개월 초기화
+        const monthlyCounts = Array(12).fill(0);
 
         posts.forEach((post) => {
             if (!post.createdAt) return;
             const date = new Date(post.createdAt);
             const postYear = date.getFullYear();
-            const month = date.getMonth(); // 0부터 시작 (0 = 1월)
+            const month = date.getMonth();
 
             if (postYear === year) {
                 monthlyCounts[month]++;
@@ -372,10 +372,6 @@ const Statistics = () => {
         <div className="dashboard">
             <Sidebar/>
             <main className="main with-sidebar">
-                {/*<header className="header">*/}
-                {/*    <h1>통계</h1>*/}
-                {/*    /!*<button className="download">Download</button>*!/*/}
-                {/*</header>*/}
                 <ToolTip title="통계" tooltipText="텔레그램 채널/홍보 게시글/거래 마약류 등의 각종 통계를 표시합니다." />
                 <section className="statistics-chart">
                     <div className="statistics">
