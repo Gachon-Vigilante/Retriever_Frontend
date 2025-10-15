@@ -209,12 +209,6 @@
     outline: none;
 }
 
-.chat-input button {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
 .chat-input img {
     width: 24px;
     height: 24px;
@@ -270,10 +264,48 @@
 
 .chat-button {
     background-color: #007bff;
-    color: black;
+    color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
+    font-weight: 600;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.chat-button:hover,
+.chat-button:focus {
+    background-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    outline: none;
+}
+
+.chat-button:active {
+    background-color: #003d80;
+}
+
+.chat-button-reset {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.chat-button-reset:hover,
+.chat-button-reset:focus {
+    background-color: #c62828;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    outline: none;
+}
+
+.chat-button-reset:active {
+    background-color: #8b1a1a;
 }
