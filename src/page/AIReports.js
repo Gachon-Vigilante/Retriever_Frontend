@@ -58,9 +58,6 @@ const AIReports = () => {
         <div className="ai-chat-page">
             <Sidebar/>
             <main className="ai-chat-main with-sidebar">
-                {/*<header className="ai-chat-header">*/}
-                {/*    <h1>AI 리포트</h1>*/}
-                {/*</header>*/}
                 <ToolTip title="AI 리포트" tooltipText="모니터링 중인 텔레그램 채널에서 채팅이 발생하면 그 채팅을 AI가 분석하여 리포트 형태로 누적합니다.
                         기본적으로는 모든 채널에서 분석된 리포트가 최신순으로 보여지고 왼쪽에서 특정 채널을 클릭하면 해당 채널의 분석 리포트를 조회할 수 있습니다."/>
                 <div className="ai-chat-content">
