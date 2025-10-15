@@ -16,15 +16,12 @@ const AiChat = () => {
         <div className="ai-chat-page">
             <Sidebar />
             <main className="ai-chat-main with-sidebar">
-                {/*<header className="ai-chat-header">*/}
-                {/*    <h1>AI 관리</h1>*/}
-                {/*</header>*/}
                 <ToolTip title="AI 관리" tooltipText="AI를 통해 텔레그램 채널에 대해 정보를 파악할 수 있습니다." />
                 <div className="ai-chat-content">
                     <div className="chatbot-list">
                         <h3 className="tooltip" data-tooltip="현재 active 상태인 텔레그램 채널을 표시합니다.">Active 텔레그램 채널</h3>
-                        {loading && <p>Loading channels...</p>}
-                        {error && <p>Error loading channels: {error}</p>}
+                        {loading && <p>로딩 중...</p>}
+                        {error && <p>채널을 불러오는 중 오류가 발생했습니다: {error}</p>}
                         <ul className="ai-channel-list">
                             {channels
                                 .filter(channel => channel.status === "active")

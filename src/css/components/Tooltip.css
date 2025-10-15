@@ -4,6 +4,14 @@
     justify-content: space-between;
     align-items: center;
     height: 60px;
+    margin-bottom: 20px;
+
+}
+.header h1 {
+    padding-right: 10px;
+    font-size: 2rem;
+    font-weight: bolder;
+    color: #2d3748;
 }
 
 .tooltip-button {
