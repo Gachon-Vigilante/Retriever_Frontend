@@ -9,20 +9,26 @@ const useFetchChannels = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const [channelsRes, botsRes] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true }),         // channel_info
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/chatbots/all`, { withCredentials: true }),         // chat_bots
-                ]);
+                const channelsRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
 
-                const chatBots = botsRes.data;
+                let chatBots = [];
+                try {
+                    const botsRes = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/chatbots/all`, { withCredentials: true });
+                    chatBots = (botsRes.data && botsRes.data.data) ? botsRes.data.data : Array.isArray(botsRes.data) ? botsRes.data : [];
+                } catch (e) {
+                    chatBots = [];
+                }
 
-                const formatted = channelsRes.data.map((channel) => {
-                    const matchingBot = chatBots.find((bot) =>
-                        bot.chats && Object.keys(bot.chats).includes(String(channel._id))
-                    );
+                const formatted = (channelsRes.data && channelsRes.data.data ? channelsRes.data.data : channelsRes.data || []).map((channel) => {
+                    const channelIdCandidates = [channel.id, channel._id].filter(Boolean).map(String);
+                    const matchingBot = chatBots.find((bot) => {
+                        if (!bot || !bot.chats) return false;
+                        const keys = Object.keys(bot.chats);
+                        return channelIdCandidates.some((cid) => keys.includes(cid));
+                    });
 
                     return {
-                        id: channel.id,
+                        id: channel.id ?? channel._id,
                         name: channel.title || "제목 없음",
                         status: channel.status,
                         createdAt: channel.createdAt,

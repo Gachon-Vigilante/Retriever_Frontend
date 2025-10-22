@@ -9,7 +9,7 @@ const useFetchChannelCount = () => {
     useEffect(() => {
         const fetchChannelCount = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true });
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
                 setChannelCount(response.data.length); // Set the total count of channels
             } catch (err) {
                 setError(err.message);

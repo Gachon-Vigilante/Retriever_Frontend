@@ -156,12 +156,16 @@ const MainDashboard = () => {
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true }),
                 ]);
 
-                const reportList = reportsRes.data;
-                const channels = channelsRes.data;
+                const reportListRaw = reportsRes.data;
+                const reportList = Array.isArray(reportListRaw) ? reportListRaw : (reportListRaw && reportListRaw.data) ? reportListRaw.data : [];
+
+                const channelsRaw = channelsRes.data;
+                const channels = Array.isArray(channelsRaw) ? channelsRaw : (channelsRaw && channelsRaw.data) ? channelsRaw.data : [];
 
                 const channelMap = {};
                 channels.forEach((channel) => {
-                    channelMap[channel.id] = channel.title || "제목 없음";
+                    const id = channel.id ?? channel._id;
+                    channelMap[id] = channel.title || "제목 없음";
                 });
 
                 const latestReportPerChannel = {};

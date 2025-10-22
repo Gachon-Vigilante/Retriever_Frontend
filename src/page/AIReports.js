@@ -44,7 +44,8 @@ const AIReports = () => {
                 } else {
                     response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, {withCredentials: true});
                 }
-                const sortedReports = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                const list = Array.isArray(response.data) ? response.data : (response.data && response.data.data) ? response.data.data : [];
+                const sortedReports = list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 setReports(sortedReports);
             } catch (err) {
                 console.error("Error fetching reports:", err);
@@ -53,6 +54,8 @@ const AIReports = () => {
         };
         fetchReports();
     }, [selectedChannelId]);
+
+    const activeChannels = channels.filter((channel) => channel.status === "active");
 
     return (
         <div className="ai-chat-page">
@@ -66,8 +69,7 @@ const AIReports = () => {
                         {loading && <p>채널 목록 로딩 중...</p>}
                         {error && <p className="tooltip-error">채널을 불러오는 중 오류가 발생했습니다: {error}</p>}
                         <ul>
-                            {channels
-                                .filter((channel) => channel.status === "active")
+                            {activeChannels
                                 .slice(channelPage * channelsPerPage, (channelPage + 1) * channelsPerPage)
                                 .map((channel) => (
                                     <li
@@ -84,7 +86,7 @@ const AIReports = () => {
                                         <div className="channel-info">
                                             <p className="channel-name">{channel.name}</p>
                                             <p className="channel-chatSendTime">
-                                                {channel.createdAt}
+                                                {channel.createdAt ? new Date(channel.createdAt).toLocaleString() : "-"}
                                             </p>
                                         </div>
                                     </li>
@@ -93,7 +95,7 @@ const AIReports = () => {
                         <ReactPaginate
                             previousLabel={"<"}
                             nextLabel={">"}
-                            pageCount={Math.ceil(channels.length / channelsPerPage)}
+                            pageCount={Math.ceil(activeChannels.length / channelsPerPage) || 1}
                             onPageChange={({selected}) => setChannelPage(selected)}
                             containerClassName={"pagination"}
                             activeClassName={"active"}
@@ -114,13 +116,13 @@ const AIReports = () => {
                                         .map((report) => (
                                             <li key={report.id} className="report-item">
                                                 <p><strong>Channel:</strong> {
-                                                    channels.find((ch) => ch.id === report.channelId)?.name || `ID: ${report.channelId}`
+                                                    channels.find((ch) => String(ch.id) === String(report.channelId))?.name || `ID: ${report.channelId}`
                                                 }</p>
                                                 <p><strong>Type:</strong> {report.type}</p>
                                                 <p><strong>Content:</strong> {report.content}</p>
                                                 <p><strong>Description:</strong> {report.description}</p>
                                                 <p>
-                                                    <strong>Created:</strong> {new Date(report.timestamp).toLocaleString()}
+                                                    <strong>Created:</strong> {report.timestamp ? new Date(report.timestamp).toLocaleString() : "-"}
                                                 </p>
                                             </li>
                                         ))}
@@ -132,7 +134,7 @@ const AIReports = () => {
                         <ReactPaginate
                             previousLabel={"<"}
                             nextLabel={">"}
-                            pageCount={Math.ceil(reports.length / reportsPerPage)}
+                            pageCount={Math.ceil(reports.length / reportsPerPage) || 1}
                             onPageChange={({selected}) => setReportPage(selected)}
                             containerClassName={"pagination"}
                             activeClassName={"active"}
