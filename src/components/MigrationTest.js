@@ -37,9 +37,9 @@ const MigrationTest = () => {
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
                 ]);
 
-                const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, {withCredentials: true});
+                const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, {withCredentials: true});
                 const catalogMap = new Map();
-                catalogRes.data.forEach((ch) => {
+                catalogRes.data.data.forEach((ch) => {
                     if (ch.catalog?.description) {
                         catalogMap.set(ch.id, ch.catalog.description);
                     }
@@ -54,7 +54,7 @@ const MigrationTest = () => {
                 const argotMap = new Map();
                 const drugMap = new Map();
 
-                postsRes.data.forEach((post) => {
+                postsRes.data.data.forEach((post) => {
                     const {
                         postId,
                         content,
@@ -121,7 +121,7 @@ const MigrationTest = () => {
 
                 const globalArgotMap = new Map();
 
-                drugsRes.data.forEach((drug) => {
+                drugsRes.data.data.forEach((drug) => {
                     if (!drugMap.has(drug.id)) {
                         drugMap.set(drug.id, true);
                         nodes.push({
@@ -132,8 +132,7 @@ const MigrationTest = () => {
                         });
                     }
                 });
-
-                channelsRes.data.forEach((channel) => {
+                channelsRes.data.data.forEach((channel) => {
                     channelMap.set(channel.id, true);
                     nodes.push({
                         id: channel.id,

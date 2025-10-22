@@ -153,7 +153,7 @@ const MainDashboard = () => {
             try {
                 const [reportsRes, channelsRes] = await Promise.all([
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true }),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true }),
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true }),
                 ]);
 
                 const reportList = reportsRes.data;
