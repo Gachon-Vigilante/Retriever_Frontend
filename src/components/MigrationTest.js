@@ -26,6 +26,8 @@ const MigrationTest = () => {
     const [channelCatalogMap, setChannelCatalogMap] = useState(new Map());
     const fgRef = useRef();
     const [fetchError, setFetchError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const openedFromSidebar = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("from") === "sidebar";
 
     useEffect(() => {
         const fetchData = async () => {
@@ -184,14 +186,20 @@ const MigrationTest = () => {
 
                 setGraphData({nodes, links: cleanedLinks});
                 setOriginalGraphData({nodes, links: cleanedLinks});
-            } catch (err) {
-                console.error("Graph fetch error:", err);
-                setFetchError(true);
-            }
-        };
 
-        fetchData();
-    }, []);
+                if (openedFromSidebar && (!nodes || nodes.length === 0)) {
+                    setErrorMessage("표시할 데이터가 없습니다.");
+                    setFetchError(true);
+                }
+             } catch (err) {
+                 console.error("Graph fetch error:", err);
+                setErrorMessage("네트워크 오류로 인해 그래프 생성에 실패했습니다.");
+                setFetchError(true);
+             }
+         };
+
+         fetchData();
+     }, []);
 
     const [tooltipVisible, setTooltipVisible] = useState(false);
     return (
@@ -480,7 +488,7 @@ const MigrationTest = () => {
             </Drawer>
             <GraphErrorModal
                 open={fetchError}
-                message="네트워크 오류로 인해 그래프 생성에 실패했습니다."
+                message={errorMessage}
                 onClose={() => window.close()}
             />
         </div>

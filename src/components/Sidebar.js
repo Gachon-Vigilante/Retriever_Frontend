@@ -92,16 +92,25 @@ const Sidebar = () => {
                             </>
                         ) : (
                             menuItem.name === "테스트 페이지" || menuItem.name === "유사도 그래프" ? (
-                                <a
-                                    href={menuItem.path}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`menu-item ${
-                                        location.pathname === menuItem.path ? "active" : ""
-                                    }`}
-                                >
-                                    {menuItem.name}
-                                </a>
+                                (() => {
+                                    const hasQuery = menuItem.path.includes("?");
+                                    const fromParam = "from=sidebar";
+                                    const hrefWithFrom = menuItem.path.includes("from=sidebar")
+                                        ? menuItem.path
+                                        : `${menuItem.path}${hasQuery ? "&" : "?"}${fromParam}`;
+                                    return (
+                                        <a
+                                            href={hrefWithFrom}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`menu-item ${
+                                                location.pathname === menuItem.path ? "active" : ""
+                                            }`}
+                                        >
+                                            {menuItem.name}
+                                        </a>
+                                    );
+                                })()
                             ) : (
                                 <Link
                                     to={menuItem.path}
