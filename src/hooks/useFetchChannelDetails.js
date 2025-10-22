@@ -23,15 +23,15 @@ const useFetchChannelDetails = () => {
     const fetchChannels = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true });
-            const formatted = response.data.map((ch) => ({
-                id: ch.id, // Int64 기반 ID
+            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
+            const formatted = response.data.data.map((ch) => ({
+                id: ch.id,
                 title: ch.title || "제목 없음",
                 username: ch.username || "",
                 status: ch.status || "unknown",
                 link: ch.link || "",
                 createdAt: parseDateTime(ch.createdAt),
-                description: ch.catalog?.description || "", // 추가된 필드
+                description: ch.catalog?.description || "",
             }));
             setChannels(formatted);
         } catch (err) {
@@ -45,7 +45,7 @@ const useFetchChannelDetails = () => {
         setLoading(true);
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/channel/${channelId}`, { withCredentials: true });
-            const formatted = response.data.map((item) => ({
+            const formatted = response.data.data.map((item) => ({
                 msgUrl: item.url || item.msgUrl || "N/A",
                 text: item.text || "내용 없음",
                 image: item.media?.url || item.image,

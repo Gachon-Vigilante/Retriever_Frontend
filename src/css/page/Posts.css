@@ -220,6 +220,12 @@
     gap: 55px;
 }
 
+.pagination li.active a {
+    background-color: #007bff;
+    color: white !important;
+    border-color: #007bff;
+}
+
 /* @media 사용 시 화면 크기에 맞게 gap을 조절할 수 있게 됨.*/
 @media (max-width: 1200px) {
     .datepickers {

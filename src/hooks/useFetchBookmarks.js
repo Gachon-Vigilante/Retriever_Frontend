@@ -10,7 +10,7 @@ const useFetchBookmarks = (userId) => {
         const fetchBookmarks = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/user`,
+                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/me`,
                     { withCredentials: true }
                 );
                 setBookmarks(response.data);

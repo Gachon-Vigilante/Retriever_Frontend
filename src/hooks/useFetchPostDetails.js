@@ -14,29 +14,33 @@ const useFetchPostDetails = () => {
         const fetchPosts = async () => {
             try {
                 setLoading(true);
+                const apiPage = (Number(postPage) || 0) + 1;
                 const response = await axios.get(
-                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${postPage}&size=10`,
+                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${apiPage}&size=10`,
                     { withCredentials: true }
                 );
-                const formattedData = (response.data.posts || []).map((post) => ({
-                    id: post.id,
-                    title: post.title,
-                    content: post.content,
-                    siteName: post.siteName,
-                    promoSiteLink: post.promoSiteLink,
-                    siteLink: post.link,
-                    timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
-                        ? new Date(post.timestamp).toLocaleDateString("ko-KR")
-                        : "날짜 없음",
-                    updatedAt: post.updatedAt && !isNaN(Date.parse(post.updatedAt))
-                        ? new Date(post.updatedAt).toLocaleDateString("ko-KR")
-                        : "날짜 없음",
-                    createdAt: post.createdAt && !isNaN(Date.parse(post.createdAt))
-                        ? new Date(post.createdAt).toLocaleDateString("ko-KR")
-                        : "날짜 없음",
-                }));
+
+                const respData = response.data?.data ?? response.data;
+                const postsArray = respData?.posts ?? [];
+
+                const formattedData = (postsArray || []).map((post) => {
+                    const isoDate = post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
+
+                    return {
+                        id: post.id,
+                        title: post.title || "제목 없음",
+                        content: post.text ?? post.description ?? post.title ?? "",
+                        siteName: post.siteName ?? null,
+                        promoSiteLink: post.promoSiteLink ?? null,
+                        siteLink: post.link ?? post.siteLink ?? null,
+                        createdAt: isoDate,
+                        updatedAt: post.updatedAt || post.publishedAt || post.createdAt || post.timestamp || null,
+                        timestamp: post.timestamp || null,
+                    };
+                });
+
                 setPosts(formattedData);
-                setTotalCount(response.data.totalCount || 0);
+                setTotalCount(Number(respData?.totalCount ?? 0));
             } catch (err) {
                 setError(`${err.message}`);
             } finally {
@@ -52,24 +56,26 @@ const useFetchPostDetails = () => {
             setLoading(true);
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${id}`, { withCredentials: true });
 
-            const post = response.data;
+            const respData = response.data?.data ?? response.data;
+            const post = respData?.post ?? respData;
+
+            if (!post) {
+                setSelectedPost(null);
+                return;
+            }
+
+            const isoDate = post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
 
             const formattedPost = {
                 id: post.id,
-                title: post.title,
-                content: post.content,
-                siteName: post.siteName,
-                promoSiteLink: post.promoSiteLink,
-                siteLink: post.link,
-                timestamp: post.timestamp && !isNaN(Date.parse(post.timestamp))
-                    ? new Date(post.timestamp).toLocaleDateString("ko-KR")
-                    : "날짜 없음",
-                updatedAt: post.updatedAt && !isNaN(Date.parse(post.updatedAt))
-                    ? new Date(post.updatedAt).toLocaleDateString("ko-KR")
-                    : "날짜 없음",
-                createdAt: post.createdAt && !isNaN(Date.parse(post.createdAt))
-                    ? new Date(post.createdAt).toLocaleDateString("ko-KR")
-                    : "날짜 없음",
+                title: post.title || "제목 없음",
+                content: post.text ?? post.description ?? post.title ?? "",
+                siteName: post.siteName ?? null,
+                promoSiteLink: post.promoSiteLink ?? null,
+                siteLink: post.link ?? post.siteLink ?? null,
+                createdAt: isoDate,
+                updatedAt: post.updatedAt || post.publishedAt || post.createdAt || post.timestamp || null,
+                timestamp: post.timestamp || null,
             };
 
             setSelectedPost(formattedPost);
@@ -85,15 +91,16 @@ const useFetchPostDetails = () => {
         setLoading(true);
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/${postId}`, { withCredentials: true });
-            const similarPosts = response.data?.similarPosts || [];
+            const respData = response.data?.data ?? response.data;
+            const similarPosts = respData?.similarPosts ?? respData?.similarPosts ?? [];
 
-            const formattedDetails = similarPosts.map((item) => ({
+            const formattedDetails = (similarPosts || []).map((item) => ({
                 similarPost: item.similarPost,
                 similarity: item.similarity,
             }));
 
             setSelectedDetails(formattedDetails);
-            setSelectedPost(posts.find((post) => post.id === postId));
+            setSelectedPost(posts.find((post) => post.id === postId) ?? null);
         } catch (err) {
             setError(`${err.message}`);
             setSelectedDetails([]);
