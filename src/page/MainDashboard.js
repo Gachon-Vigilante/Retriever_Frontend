@@ -198,7 +198,6 @@ const MainDashboard = () => {
 
 
     useEffect(() => {
-        if (!allChannels.length) return;
 
         const monthlyCounts = Array(12).fill(0);
         allChannels.forEach((channel) => {
@@ -274,7 +273,7 @@ const MainDashboard = () => {
                         </div>
                         <div className="card tooltip" data-tooltip="탐지된 전체 텔레그램 채널 수를 표시합니다.">
                             <h3>총 탐지 채널</h3>
-                            <p>{channelCount}</p>
+                            <p>{channelCount ?? 0}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="직전 월 대비 홍보 게시글 증감율을 표시합니다.">
                             <h3>홍보 게시글 증감율</h3>
