@@ -3,12 +3,16 @@ export const menuItems = [
         name: "텔레그램 채널",
         path: "/channels",
     },
+    // {
+    //     name: "AI 관리",
+    //     subItems: [
+    //         {name: "AI 챗봇", path: "/aichat"},
+    //         {name: "AI 리포트", path: "/ai-reports"},
+    //     ]
+    // },
     {
         name: "AI 관리",
-        subItems: [
-            {name: "AI 챗봇", path: "/aichat"},
-            {name: "AI 리포트", path: "/ai-reports"},
-        ]
+        path: "/aichat",
     },
     {
         name: "통계",
