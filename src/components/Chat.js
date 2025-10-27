@@ -17,11 +17,27 @@ const Chat = ({ selectedChannel }) => {
     const channelKey = selectedChannel ? (selectedChannel.channelId ?? selectedChannel.id) : null;
     const currentMessages = channelKey ? (messagesByChannel[channelKey] || []) : [];
 
-    const addMessage = (sender, message) => {
+    const addMessage = (sender, message, opts = {}) => {
+        if (!channelKey) return;
+        const { pending = false, messageId = null } = opts;
+        setMessagesByChannel((prev) => {
+            const prevArr = prev[channelKey] ? [...prev[channelKey]] : [];
+            const msgObj = { sender, message, pending, messageId };
+            return { ...prev, [channelKey]: [...prevArr, msgObj] };
+        });
+    };
+
+    const replaceMessage = (messageId, newFields) => {
         if (!channelKey) return;
         setMessagesByChannel((prev) => {
             const prevArr = prev[channelKey] ? [...prev[channelKey]] : [];
-            return { ...prev, [channelKey]: [...prevArr, { sender, message }] };
+            const newArr = prevArr.map((m) => {
+                if (m.messageId && messageId && String(m.messageId) === String(messageId)) {
+                    return { ...m, ...newFields };
+                }
+                return m;
+            });
+            return { ...prev, [channelKey]: newArr };
         });
     };
 
@@ -38,8 +54,11 @@ const Chat = ({ selectedChannel }) => {
         setUserInput("");
         setLoading(true);
 
+        const channelKeyLocal = selectedChannel.channelId ?? selectedChannel.id;
+        const pendingId = `pending-${Date.now()}`;
+        addMessage("bot", "답변을 기다리는 중입니다.", { pending: true, messageId: pendingId });
+
         try {
-            const channelKeyLocal = selectedChannel.channelId ?? selectedChannel.id;
             const askUrl = `${baseApi}/${encodeURIComponent(channelKeyLocal)}?q=${encodeURIComponent(message)}`;
             const res = await fetch(askUrl, {
                 method: "GET",
@@ -48,10 +67,10 @@ const Chat = ({ selectedChannel }) => {
             });
             const data = await res.json();
 
-            addMessage("bot", data.answer || "응답이 없습니다.");
+            replaceMessage(pendingId, { sender: "bot", message: data.answer || "응답이 없습니다.", pending: false });
         } catch (err) {
             console.error(err);
-            addMessage("bot", "서버 오류가 발생했습니다.");
+            replaceMessage(pendingId, { sender: "bot", message: "서버 오류가 발생했습니다.", pending: false });
         } finally {
             setLoading(false);
         }
@@ -139,11 +158,15 @@ const Chat = ({ selectedChannel }) => {
             </header>
             <div className="chat-messages">
                 {currentMessages.map((msg, i) => (
-                    <div key={i} className={`chat-message ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
+                    <div key={msg.messageId || i} className={`chat-message ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
                         {msg.sender === "bot" ? (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                                {msg.message}
-                            </ReactMarkdown>
+                            msg.pending ? (
+                                <p className="bot-pending">답변을 기다리는 중입니다.</p>
+                            ) : (
+                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+                                    {msg.message}
+                                </ReactMarkdown>
+                            )
                         ) : (
                             <p>{msg.message}</p>
                         )}
