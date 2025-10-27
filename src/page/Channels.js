@@ -49,7 +49,7 @@ const Channels = () => {
     const [filteredChannels, setFilteredChannels] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const {bookmarks, setBookmarks} = useFetchBookmarks();
+    const {bookmarks, setBookmarks, refreshBookmarks} = useFetchBookmarks();
     const [showInactive, setShowInactive] = useState(false);
 
     const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
@@ -64,31 +64,78 @@ const Channels = () => {
         filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
     );
 
-    const isBookmarked = (channelId) => {
-        if (!Array.isArray(bookmarks)) return false;
-        return bookmarks.some((b) => b.channelId === channelId);
+    const isBookmarked = (channel) => {
+        if (!Array.isArray(bookmarks) || !channel) return false;
+        return bookmarks.some((b) => {
+            const bkCid = b.channelId ?? b.channel_id ?? b.channel;
+            if (bkCid == null) return false;
+            return String(bkCid) === String(channel.id) || (channel.channelId && String(bkCid) === String(channel.channelId));
+        });
     };
-const toggleBookmark = async (channel) => {
-    try {
-        if (isBookmarked(channel.id)) {
-            const bookmark = bookmarks.find((b) => b.channelId === channel.id);
-            await axios.delete(
-                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/delete/${bookmark.id}`,
-                { withCredentials: true }
-            );
-            setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
-        } else {
-            await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${channel.id}/add`,
-                null,
-                { withCredentials: true }
-            );
-            setBookmarks((prev) => [...prev, { channelId: channel.id }]);
+
+    const toggleBookmark = async (channel) => {
+        try {
+            const matchIdx = bookmarks.findIndex((b) => {
+                const bkCid = b.channelId ?? b.channel_id ?? b.channel;
+                if (bkCid == null) return false;
+                return String(bkCid) === String(channel.id) || (channel.channelId && String(bkCid) === String(channel.channelId));
+            });
+
+            // 삭제: 낙관적 제거
+            if (matchIdx !== -1) {
+                const existing = bookmarks[matchIdx];
+                const bookmarkId = existing.bookmarkId || existing.id || existing._id;
+                // optimistic UI remove
+                setBookmarks((prev) => prev.filter((_, i) => i !== matchIdx));
+                if (!bookmarkId) {
+                    // id가 없으면 서버에선 삭제 불가 -> refresh
+                    await refreshBookmarks();
+                    return;
+                }
+                try {
+                    await axios.delete(
+                        `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(bookmarkId)}`,
+                        { withCredentials: true }
+                    );
+                } catch (err) {
+                    // 실패 시 서버 상태로 복구
+                    console.error("삭제 실패, 북마크 다시 로드:", err);
+                    await refreshBookmarks();
+                }
+                return;
+            }
+
+            // 추가: 낙관적 추가 (임시 항목)
+            const channelIdForApi = channel.channelId ?? channel.id;
+            const tempBookmark = { bookmarkId: `temp-${Date.now()}`, channelId: channelIdForApi };
+            setBookmarks((prev) => [...prev, tempBookmark]);
+            try {
+                const res = await axios.post(
+                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(channelIdForApi)}`,
+                    null,
+                    { withCredentials: true }
+                );
+                const created = (res && res.data && res.data.data) ? res.data.data : res.data;
+                if (created) {
+                    // replace temp with real created item(s)
+                    setBookmarks((prev) => {
+                        const withoutTemp = prev.filter((b) => !(b.bookmarkId && String(b.bookmarkId).startsWith("temp-") && String(b.channelId) === String(channelIdForApi)));
+                        if (Array.isArray(created)) return [...withoutTemp, ...created];
+                        return [...withoutTemp, created];
+                    });
+                } else {
+                    // 서버가 created를 반환하지 않으면 새로고침으로 동기화
+                    await refreshBookmarks();
+                }
+            } catch (err) {
+                console.error("추가 실패, 북마크 다시 로드:", err);
+                await refreshBookmarks();
+            }
+        } catch (err) {
+            console.error("Error toggling bookmark:", err);
+            await refreshBookmarks();
         }
-    } catch (err) {
-        console.error("Error toggling bookmark:", err);
-    }
-};
+    };
 
     const sortChannels = (channels) => {
         return [...channels].sort((a, b) => {
@@ -274,13 +321,14 @@ const toggleBookmark = async (channel) => {
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
@@ -319,13 +367,14 @@ const toggleBookmark = async (channel) => {
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
@@ -362,13 +411,14 @@ const toggleBookmark = async (channel) => {
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}

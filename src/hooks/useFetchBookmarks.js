@@ -49,26 +49,26 @@ const useFetchBookmarks = (userId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchBookmarks = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/me`,
-                    { withCredentials: true }
-                );
-                setBookmarks(normalizeToArray(response.data));
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching bookmarks:", error);
-                setError(error);
-                setLoading(false);
-            }
-        };
+    const fetchBookmarks = async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/me`,
+                { withCredentials: true }
+            );
+            setBookmarks(normalizeToArray(response.data));
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching bookmarks:", err);
+            setError(err);
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchBookmarks();
     }, [userId]);
 
-    return { bookmarks, setBookmarks, loading, error };
+    return { bookmarks, setBookmarks, loading, error, refreshBookmarks: fetchBookmarks };
 };
 
 export default useFetchBookmarks;
