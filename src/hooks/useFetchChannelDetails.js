@@ -24,14 +24,16 @@ const useFetchChannelDetails = () => {
         setLoading(true);
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
-            const formatted = response.data.data.map((ch) => ({
-                id: ch.id,
+            const raw = (response && response.data && Array.isArray(response.data.data)) ? response.data.data : Array.isArray(response.data) ? response.data : [];
+            const formatted = raw.map((ch) => ({
+                id: ch.id ?? ch._id ?? (ch.channelId ? String(ch.channelId) : undefined),
                 title: ch.title || "제목 없음",
                 username: ch.username || "",
-                status: ch.status || "unknown",
+                status: (ch.status || "unknown").toLowerCase(),
                 link: ch.link || "",
-                createdAt: parseDateTime(ch.createdAt),
-                description: ch.catalog?.description || "",
+                createdAt: parseDateTime(ch.updatedAt || ch.checkedAt || ch.date || ch.createdAt),
+                description: ch.about || ch.description || ch.catalog?.description || "",
+                raw: ch
             }));
             setChannels(formatted);
         } catch (err) {
@@ -45,13 +47,14 @@ const useFetchChannelDetails = () => {
         setLoading(true);
         try {
             const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chat/channel/${channelId}`, { withCredentials: true });
-            const formatted = response.data.data.map((item) => ({
+            const raw = (response && response.data && Array.isArray(response.data.data)) ? response.data.data : Array.isArray(response.data) ? response.data : [];
+            const formatted = raw.map((item) => ({
                 msgUrl: item.url || item.msgUrl || "N/A",
-                text: item.text || "내용 없음",
-                image: item.media?.url || item.image,
+                text: item.text || item.message || "내용 없음",
+                image: item.media?.url || item.image || null,
                 mediaType: item.media?.type || null,
-                timestamp: parseDateTime(item.timestamp),
-                sender: item.sender || null,
+                timestamp: parseDateTime(item.timestamp || item.date || item.createdAt),
+                sender: item.sender || item.from || null,
             }));
             setSelectedDetails(formatted);
         } catch (err) {

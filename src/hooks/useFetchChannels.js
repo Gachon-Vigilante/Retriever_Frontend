@@ -13,26 +13,40 @@ const useFetchChannels = () => {
 
                 let chatBots = [];
                 try {
-                    const botsRes = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/chatbots/all`, { withCredentials: true });
+                    const botsRes = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/api/v1/watson/c`, { withCredentials: true });
                     chatBots = (botsRes.data && botsRes.data.data) ? botsRes.data.data : Array.isArray(botsRes.data) ? botsRes.data : [];
                 } catch (e) {
                     chatBots = [];
                 }
 
-                const formatted = (channelsRes.data && channelsRes.data.data ? channelsRes.data.data : channelsRes.data || []).map((channel) => {
-                    const channelIdCandidates = [channel.id, channel._id].filter(Boolean).map(String);
+                // 안전한 원시 배열 추출
+                const rawList = (channelsRes && channelsRes.data && Array.isArray(channelsRes.data.data))
+                    ? channelsRes.data.data
+                    : Array.isArray(channelsRes.data)
+                        ? channelsRes.data
+                        : [];
+
+                const formatted = rawList.map((channel) => {
+                    const id = channel.id ?? channel._id ?? (channel.channelId ? String(channel.channelId) : undefined);
+                    const channelIdCandidates = [id].filter(Boolean).map(String);
+
                     const matchingBot = chatBots.find((bot) => {
                         if (!bot || !bot.chats) return false;
-                        const keys = Object.keys(bot.chats);
+                        const keys = Object.keys(bot.chats || {});
                         return channelIdCandidates.some((cid) => keys.includes(cid));
                     });
 
                     return {
-                        id: channel.id ?? channel._id,
-                        name: channel.title || "제목 없음",
-                        status: channel.status,
-                        createdAt: channel.createdAt,
+                        // Channels.js가 기대하는 필드명
+                        id: id,
+                        title: channel.title || "제목 없음",
+                        username: channel.username || "",
+                        link: channel.link || "",
+                        description: channel.about || channel.description || "",
+                        status: (channel.status || "").toLowerCase() === "active" ? "active" : "inactive",
+                        createdAt: channel.updatedAt || channel.checkedAt || channel.date || channel.createdAt || null,
                         hasChatBot: Boolean(matchingBot),
+                        raw: channel
                     };
                 });
 

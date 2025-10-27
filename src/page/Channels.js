@@ -4,6 +4,7 @@ import React, {useEffect, useRef, useState} from "react";
 import { useSearchParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
+import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
 import "../css/page/Channels.css";
 import axios from "axios";
@@ -17,9 +18,11 @@ const Channels = () => {
     const [searchParams] = useSearchParams();
     const initialTitle = searchParams.get("title");
 
-    const {channels, selectedDetails, fetchDetailsByChannelId, loading, error} = useFetchChannelDetails();
+    const { selectedDetails, fetchDetailsByChannelId, loading: detailsLoading, error: detailsError } = useFetchChannelDetails();
+    const { channels, loading: channelsLoading, error: channelsError } = useFetchChannels();
+
     useEffect(() => {
-        if (channels.length > 0 && initialTitle) {
+        if (channels && channels.length > 0 && initialTitle) {
             const matched = channels.find(c => (c.title || "").trim() === decodeURIComponent(initialTitle).trim());
             if (matched) {
                 setSelectedChannelId(matched.id);
@@ -108,7 +111,7 @@ const toggleBookmark = async (channel) => {
     }, [searchName, searchId, searchLink, channels, bookmarks]);
 
     useEffect(() => {
-        if (channels.length > 0) {
+        if (channels && channels.length > 0) {
             setFilteredChannels(sortChannels(channels));
         }
     }, [channels, bookmarks]);
@@ -379,10 +382,10 @@ const toggleBookmark = async (channel) => {
 
                     <section className="channel-details">
                         <h3 className="tooltip" data-tooltip="선택한 텔레그램 채널의 상세 채팅 내역을 확인합니다.">채널 상세 정보</h3>
-                        {loading && selectedChannelId ? (
+                        {detailsLoading && selectedChannelId ? (
                             <p>Loading details...</p>
-                        ) : error ? (
-                            <p className="error-message">채널 상세를 불러오는 중 에러가 발생했습니다: {error}</p>
+                        ) : detailsError ? (
+                            <p className="error-message">채널 상세를 불러오는 중 에러가 발생했습니다: {detailsError}</p>
                         ) : selectedDetails.length > 0 ? (
                             <div className="details-content">
                                 {selectedDetails.map((detail, index) => {
@@ -473,3 +476,4 @@ const toggleBookmark = async (channel) => {
 };
 
 export default Channels;
+

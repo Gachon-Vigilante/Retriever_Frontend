@@ -76,8 +76,10 @@ const calculateMonthlyChannelGrowth = (channels) => {
 
 const RankList = ({title, items, link, tooltip}) => {
     const isNew = (date) => {
+        if (!date) return false;
         const today = new Date();
         const createdDate = new Date(date);
+        if (isNaN(createdDate.getTime())) return false;
         const diffTime = Math.abs(today - createdDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays <= 3;
@@ -93,10 +95,10 @@ const RankList = ({title, items, link, tooltip}) => {
                         <div className="rank-content">
                             {item.channelId ? (
                                 <a href={`/ai-reports?channelId=${item.channelId}`}>
-                                    <p className="rank-title">{item.name}</p>
+                                    <p className="rank-title">{item.title || item.name}</p>
                                 </a>
                             ) : (
-                                <p className="rank-title">{item.name}</p>
+                                <p className="rank-title">{item.title || item.name}</p>
                             )}
                             <p className="rank-detail">{item.detail}</p>
                         </div>
@@ -135,7 +137,13 @@ const Statistics = () => {
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-        return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
+        return data.filter((item) => {
+            if (!item) return false;
+            const dateStr = item.createdAt || item.updatedAt || item.checkedAt || item.date || item.timestamp;
+            if (!dateStr) return false;
+            const d = new Date(dateStr);
+            return !isNaN(d.getTime()) && d >= oneWeekAgo;
+        }).length;
     };
 
     useEffect(() => {
@@ -176,7 +184,11 @@ const Statistics = () => {
 
         const monthlyCounts = Array(12).fill(0);
         allChannels.forEach((channel) => {
-            const date = new Date(channel.createdAt);
+            if (!channel) return;
+            const dateStr = channel.createdAt || channel.updatedAt || channel.checkedAt || channel.date;
+            if (!dateStr) return;
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return;
             if (date.getFullYear() === 2025) {
                 const month = date.getMonth();
                 monthlyCounts[month]++;
@@ -234,7 +246,7 @@ const Statistics = () => {
     useEffect(() => {
         const fetchArgotData = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/chat/all`);
+                const response = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/api/v1/watson/c`);
                 const argotCounts = {};
                 response.data.forEach((item) => {
                     if (item.argot) item.argot.forEach((argotId) => {

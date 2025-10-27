@@ -5,7 +5,7 @@ import rehypeHighlight from "rehype-highlight";
 import "../css/page/AiChat.css";
 
 const Chat = ({ channelId }) => {
-    const apiEndpoint = `${process.env.REACT_APP_AI_BASE_URL}/watson/c`;
+    const apiEndpoint = `${process.env.REACT_APP_AI_BASE_URL}/api/v1/watson/c`;
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
