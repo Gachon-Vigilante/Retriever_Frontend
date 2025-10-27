@@ -53,8 +53,10 @@ const Channels = () => {
         filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
     );
 
-    const isBookmarked = (channelId) => bookmarks.some((b) => b.channelId === channelId);
-
+    const isBookmarked = (channelId) => {
+        if (!Array.isArray(bookmarks)) return false;
+        return bookmarks.some((b) => b.channelId === channelId);
+    };
 const toggleBookmark = async (channel) => {
     try {
         if (isBookmarked(channel.id)) {
