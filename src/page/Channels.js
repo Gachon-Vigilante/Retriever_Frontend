@@ -18,7 +18,7 @@ const Channels = () => {
     const [searchParams] = useSearchParams();
     const initialTitle = searchParams.get("title");
 
-    const { selectedDetails, fetchDetailsByChannelId, loading: detailsLoading, error: detailsError } = useFetchChannelDetails();
+    const { selectedDetails, channelMeta, fetchDetailsByChannelId, loading: detailsLoading, error: detailsError } = useFetchChannelDetails();
     const { channels, loading: channelsLoading, error: channelsError } = useFetchChannels();
 
     useEffect(() => {
@@ -26,11 +26,19 @@ const Channels = () => {
             const matched = channels.find(c => (c.title || "").trim() === decodeURIComponent(initialTitle).trim());
             if (matched) {
                 setSelectedChannelId(matched.id);
-                fetchDetailsByChannelId(matched.id);
+                fetchDetailsByChannelId(matched.channelId ?? matched.id);
                 setSelectedChannelDescription(matched.description || "가격 정보 없음");
             }
         }
     }, [channels, initialTitle]);
+
+    useEffect(() => {
+        if (channelMeta) {
+            const desc = channelMeta.about || channelMeta.description || channelMeta.catalog?.summary || "";
+            if (desc) setSelectedChannelDescription(desc);
+        }
+    }, [channelMeta]);
+
     const [selectedChannelId, setSelectedChannelId] = useState(null);
     const [modalImage, setModalImage] = useState(null);
 
@@ -116,11 +124,11 @@ const toggleBookmark = async (channel) => {
         }
     }, [channels, bookmarks]);
 
-    const handleChannelClick = (channelId) => {
-        setSelectedChannelId(channelId);
-        fetchDetailsByChannelId(channelId);
-        const selected = channels.find((ch) => ch.id === channelId);
-        setSelectedChannelDescription(selected?.description || "가격 정보 없음");
+    const handleChannelClick = (channel) => {
+        setSelectedChannelId(channel.id);
+        const apiParam = channel.channelId ?? channel.id;
+        fetchDetailsByChannelId(apiParam);
+        setSelectedChannelDescription(channel.description || "가격 정보 없음");
     };
 
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -254,12 +262,12 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
@@ -299,12 +307,12 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
@@ -342,12 +350,12 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
@@ -476,4 +484,3 @@ const toggleBookmark = async (channel) => {
 };
 
 export default Channels;
-

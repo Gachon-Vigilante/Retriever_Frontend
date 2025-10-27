@@ -19,7 +19,6 @@ const useFetchChannels = () => {
                     chatBots = [];
                 }
 
-                // 안전한 원시 배열 추출
                 const rawList = (channelsRes && channelsRes.data && Array.isArray(channelsRes.data.data))
                     ? channelsRes.data.data
                     : Array.isArray(channelsRes.data)
@@ -28,27 +27,28 @@ const useFetchChannels = () => {
 
                 const formatted = rawList.map((channel) => {
                     const id = channel.id ?? channel._id ?? (channel.channelId ? String(channel.channelId) : undefined);
-                    const channelIdCandidates = [id].filter(Boolean).map(String);
+                    const channelId = channel.channelId ?? channel.channel_id ?? channel.telegram_id ?? channel.telegramId ?? undefined;
+                    const channelIdCandidates = [id, channelId].filter(Boolean).map(String);
 
-                    const matchingBot = chatBots.find((bot) => {
-                        if (!bot || !bot.chats) return false;
-                        const keys = Object.keys(bot.chats || {});
-                        return channelIdCandidates.some((cid) => keys.includes(cid));
-                    });
+                     const matchingBot = chatBots.find((bot) => {
+                         if (!bot || !bot.chats) return false;
+                         const keys = Object.keys(bot.chats || {});
+                         return channelIdCandidates.some((cid) => keys.includes(cid));
+                     });
 
-                    return {
-                        // Channels.js가 기대하는 필드명
-                        id: id,
-                        title: channel.title || "제목 없음",
-                        username: channel.username || "",
-                        link: channel.link || "",
-                        description: channel.about || channel.description || "",
-                        status: (channel.status || "").toLowerCase() === "active" ? "active" : "inactive",
-                        createdAt: channel.updatedAt || channel.checkedAt || channel.date || channel.createdAt || null,
-                        hasChatBot: Boolean(matchingBot),
-                        raw: channel
-                    };
-                });
+                     return {
+                         id: id,
+                         channelId: channelId,
+                         title: channel.title || "제목 없음",
+                         username: channel.username || "",
+                         link: channel.link || "",
+                         description: channel.about || channel.description || "",
+                         status: (channel.status || "").toLowerCase() === "active" ? "active" : "inactive",
+                         createdAt: channel.updatedAt || channel.checkedAt || channel.date || channel.createdAt || null,
+                         hasChatBot: Boolean(matchingBot),
+                         raw: channel
+                     };
+                 });
 
                 setChannels(formatted);
             } catch (err) {

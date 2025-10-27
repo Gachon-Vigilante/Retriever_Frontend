@@ -122,7 +122,7 @@ const Statistics = () => {
     const [drugTypeFilter, setDrugTypeFilter] = useState("All");
     const [drugTypes, setDrugTypes] = useState([]);
 
-    const {channels: newTelegramChannels} = useFetchNewTelegramChannels(10);
+    const {channels: newTelegramChannels} = useFetchNewTelegramChannels(5);
     const {posts: newPosts} = useFetchNewPosts(4);
     const {channelCount} = useFetchChannelCount();
 
@@ -281,12 +281,29 @@ const Statistics = () => {
 
         const fetchDrugData = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/chat/all`);
                 const drugCounts = {};
-                response.data.forEach((item) => {
-                    if (item.drugs) item.drugs.forEach((drugId) => {
-                        drugCounts[drugId] = (drugCounts[drugId] || 0) + 1;
-                    });
+                const channelsWithId = allChannels
+                    .map(c => ({ id: c.id, channelId: c.channelId ?? c.id }))
+                    .filter(c => c.channelId);
+
+                const metas = await Promise.allSettled(
+                    channelsWithId.map(ch =>
+                        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(ch.channelId)}`)
+                    )
+                );
+
+                metas.forEach((m) => {
+                    if (m.status !== "fulfilled") return;
+                    const meta = (m.value && m.value.data && (typeof m.value.data.data === "object")) ? m.value.data.data : m.value.data;
+                    if (!meta) return;
+                    if (Array.isArray(meta.drugs)) {
+                        meta.drugs.forEach(d => drugCounts[d] = (drugCounts[d] || 0) + 1);
+                    }
+                    if (Array.isArray(meta.chats)) {
+                        meta.chats.forEach(chat => {
+                            if (Array.isArray(chat.drugs)) chat.drugs.forEach(d => drugCounts[d] = (drugCounts[d] || 0) + 1);
+                        });
+                    }
                 });
 
                 const sorted = Object.entries(drugCounts)
@@ -298,12 +315,12 @@ const Statistics = () => {
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/id/${drugId}`).then(res => res.data.drugName)
                 );
 
-                const drugNames = await Promise.all(drugNamesPromises);
+                const drugNames = await Promise.allSettled(drugNamesPromises);
                 const formattedData = sorted.map(([, count], index) => ({
-                    label: drugNames[index],
+                    label: (drugNames[index].status === "fulfilled" ? drugNames[index].value : { data: {} }).data?.drugName || "알 수 없음",
                     value: count,
-                    percentage: ((count / total) * 100).toFixed(2),
-                    color: getColorByPercentage((count / total) * 100),
+                    percentage: total ? ((count / total) * 100).toFixed(2) : "0.00",
+                    color: getColorByPercentage(total ? ((count / total) * 100) : 0),
                 }));
 
                 setDrugData(formattedData);
@@ -324,19 +341,39 @@ const Statistics = () => {
 
         const fetchRecentArgotData = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/chat/all`);
                 const latestArgotMap = {};
 
-                response.data.forEach((item) => {
-                    if (item.argot && item.timestamp) {
-                        item.argot.forEach((argotId) => {
-                            if (
-                                !latestArgotMap[argotId] ||
-                                new Date(latestArgotMap[argotId].timestamp) < new Date(item.timestamp)
-                            ) {
-                                latestArgotMap[argotId] = {
-                                    timestamp: item.timestamp,
-                                };
+                const channelsWithId = allChannels
+                    .map(c => ({ id: c.id, channelId: c.channelId ?? c.id }))
+                    .filter(c => c.channelId);
+
+                const metas = await Promise.allSettled(
+                    channelsWithId.map(ch =>
+                        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(ch.channelId)}`)
+                    )
+                );
+
+                metas.forEach((m) => {
+                    if (m.status !== "fulfilled") return;
+                    const meta = (m.value && m.value.data && (typeof m.value.data.data === "object")) ? m.value.data.data : m.value.data;
+                    if (!meta) return;
+                    const baseTs = meta.updatedAt || meta.checkedAt || meta.date || meta.createdAt || null;
+                    if (Array.isArray(meta.argot)) {
+                        meta.argot.forEach(argotId => {
+                            const ts = baseTs;
+                            if (!latestArgotMap[argotId] || new Date(latestArgotMap[argotId].timestamp) < new Date(ts)) {
+                                latestArgotMap[argotId] = { timestamp: ts || new Date().toISOString() };
+                            }
+                        });
+                    }
+                    if (Array.isArray(meta.chats)) {
+                        meta.chats.forEach(chat => {
+                            if (Array.isArray(chat.argot) && chat.timestamp) {
+                                chat.argot.forEach(argotId => {
+                                    if (!latestArgotMap[argotId] || new Date(latestArgotMap[argotId].timestamp) < new Date(chat.timestamp)) {
+                                        latestArgotMap[argotId] = { timestamp: chat.timestamp };
+                                    }
+                                });
                             }
                         });
                     }
@@ -350,7 +387,7 @@ const Statistics = () => {
                     const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/argots/id/${argotId}`);
                     return {
                         name: res.data.name || res.data.argot || "알 수 없음",
-                        detail: new Date(meta.timestamp).toLocaleDateString(),
+                        detail: meta.timestamp ? new Date(meta.timestamp).toLocaleDateString() : "-",
                     };
                 }));
 
