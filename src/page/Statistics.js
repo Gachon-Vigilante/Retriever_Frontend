@@ -244,95 +244,73 @@ const Statistics = () => {
     }, [allChannels]);
 
     useEffect(() => {
-        const fetchArgotData = async () => {
+        const fetchMessagesAndDrugs = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_AI_BASE_URL}/api/v1/watson/c`);
+                const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
+                const messages = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
+
                 const argotCounts = {};
-                response.data.forEach((item) => {
-                    if (item.argot) item.argot.forEach((argotId) => {
-                        argotCounts[argotId] = (argotCounts[argotId] || 0) + 1;
+                messages.forEach((m) => {
+                    const arr = Array.isArray(m.argots) ? m.argots : [];
+                    arr.forEach((a) => {
+                        const key = (typeof a === "string") ? a : (a.argot || "");
+                        if (!key) return;
+                        argotCounts[key] = (argotCounts[key] || 0) + 1;
                     });
                 });
 
-                const sorted = Object.entries(argotCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
-
-                const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
-                const argotNamesPromises = sorted.map(([argotId]) =>
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/argots/id/${argotId}`).then(res => {
-                        const data = res.data;
-                        return data.name || data.slang || data.argot || "알 수 없음";
-                    })
-                );
-
-                const argotNames = await Promise.all(argotNamesPromises);
-                const formattedData = sorted.map(([, count], index) => ({
-                    label: argotNames[index],
-                    percentage: ((count / total) * 100).toFixed(2),
-                    color: getColorByPercentage((count / total) * 100),
+                const sortedArgots = Object.entries(argotCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+                const totalArgotCount = sortedArgots.reduce((s, [, c]) => s + c, 0);
+                const argotFormatted = sortedArgots.map(([argot, count]) => ({
+                    label: argot,
+                    percentage: totalArgotCount ? ((count / totalArgotCount) * 100).toFixed(2) : "0.00",
+                    color: getColorByPercentage(totalArgotCount ? ((count / totalArgotCount) * 100) : 0),
                 }));
+                setArgotData(argotFormatted);
 
-                setArgotData(formattedData);
-            } catch (error) {
-                console.error("Error fetching argot data:", error);
-            }
-        };
+                const argotKeys = Object.keys(argotCounts);
+                const settled = await Promise.allSettled(argotKeys.map((a) =>
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/argot/${encodeURIComponent(a)}`, { withCredentials: true })
+                ));
 
-        const fetchDrugData = async () => {
-            try {
                 const drugCounts = {};
-                const channelsWithId = allChannels
-                    .map(c => ({ id: c.id, channelId: c.channelId ?? c.id }))
-                    .filter(c => c.channelId);
-
-                const metas = await Promise.allSettled(
-                    channelsWithId.map(ch =>
-                        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(ch.channelId)}`)
-                    )
-                );
-
-                metas.forEach((m) => {
-                    if (m.status !== "fulfilled") return;
-                    const meta = (m.value && m.value.data && (typeof m.value.data.data === "object")) ? m.value.data.data : m.value.data;
-                    if (!meta) return;
-                    if (Array.isArray(meta.drugs)) {
-                        meta.drugs.forEach(d => drugCounts[d] = (drugCounts[d] || 0) + 1);
+                for (let i = 0; i < argotKeys.length; i++) {
+                    const arg = argotKeys[i];
+                    const cnt = argotCounts[arg] || 0;
+                    const res = settled[i];
+                    if (res.status === "fulfilled") {
+                        const list = (res.value && res.value.data && Array.isArray(res.value.data.data)) ? res.value.data.data : Array.isArray(res.value.data) ? res.value.data : [];
+                        if (list.length > 0) {
+                            list.forEach((drug) => {
+                                const drugName = drug.name || drug.englishName || "알 수 없음";
+                                drugCounts[drugName] = (drugCounts[drugName] || 0) + cnt;
+                            });
+                            continue;
+                        }
                     }
-                    if (Array.isArray(meta.chats)) {
-                        meta.chats.forEach(chat => {
-                            if (Array.isArray(chat.drugs)) chat.drugs.forEach(d => drugCounts[d] = (drugCounts[d] || 0) + 1);
-                        });
-                    }
-                });
+                    drugCounts["알 수 없음"] = (drugCounts["알 수 없음"] || 0) + cnt;
+                }
 
-                const sorted = Object.entries(drugCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
-
-                const total = sorted.reduce((sum, [_, count]) => sum + count, 0);
-                const drugNamesPromises = sorted.map(([drugId]) =>
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/id/${drugId}`).then(res => res.data.drugName)
-                );
-
-                const drugNames = await Promise.allSettled(drugNamesPromises);
-                const formattedData = sorted.map(([, count], index) => ({
-                    label: (drugNames[index].status === "fulfilled" ? drugNames[index].value : { data: {} }).data?.drugName || "알 수 없음",
-                    value: count,
-                    percentage: total ? ((count / total) * 100).toFixed(2) : "0.00",
-                    color: getColorByPercentage(total ? ((count / total) * 100) : 0),
+                const sortedDrugs = Object.entries(drugCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+                const totalDrugCount = sortedDrugs.reduce((s, [, c]) => s + c, 0);
+                const drugFormatted = sortedDrugs.map(([label, value]) => ({
+                    label,
+                    value,
+                    percentage: totalDrugCount ? ((value / totalDrugCount) * 100).toFixed(2) : "0.00",
+                    color: getColorByPercentage(totalDrugCount ? ((value / totalDrugCount) * 100) : 0),
                 }));
+                setDrugData(drugFormatted);
 
-                setDrugData(formattedData);
             } catch (error) {
-                console.error("Error fetching drug data:", error);
+                console.error("Error fetching messages/drugs for statistics:", error);
             }
         };
 
         const fetchDrugTypes = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/all`);
-                const types = [...new Set(response.data.map((drug) => drug.drugType))];
+                const list = (response && response.data && Array.isArray(response.data.data)) ? response.data.data : Array.isArray(response.data) ? response.data : [];
+                const types = [...new Set(list.map((drug) => drug.drugType))].filter(Boolean);
                 setDrugTypes(["All", ...types]);
             } catch (error) {
                 console.error("Error fetching drug types:", error);
@@ -341,67 +319,49 @@ const Statistics = () => {
 
         const fetchRecentArgotData = async () => {
             try {
+                const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
+                const messages = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
+
                 const latestArgotMap = {};
 
-                const channelsWithId = allChannels
-                    .map(c => ({ id: c.id, channelId: c.channelId ?? c.id }))
-                    .filter(c => c.channelId);
+                messages.forEach((m) => {
+                    const arr = Array.isArray(m.argots) ? m.argots : [];
+                    const tsCandidate = m.updatedAt || m.date || m.timestamp || m.editDate || m.updated_at || m.createdAt || null;
+                    const parsedTs = tsCandidate ? new Date(tsCandidate) : null;
 
-                const metas = await Promise.allSettled(
-                    channelsWithId.map(ch =>
-                        axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(ch.channelId)}`)
-                    )
-                );
-
-                metas.forEach((m) => {
-                    if (m.status !== "fulfilled") return;
-                    const meta = (m.value && m.value.data && (typeof m.value.data.data === "object")) ? m.value.data.data : m.value.data;
-                    if (!meta) return;
-                    const baseTs = meta.updatedAt || meta.checkedAt || meta.date || meta.createdAt || null;
-                    if (Array.isArray(meta.argot)) {
-                        meta.argot.forEach(argotId => {
-                            const ts = baseTs;
-                            if (!latestArgotMap[argotId] || new Date(latestArgotMap[argotId].timestamp) < new Date(ts)) {
-                                latestArgotMap[argotId] = { timestamp: ts || new Date().toISOString() };
+                    arr.forEach((a) => {
+                        const key = (typeof a === "string") ? a : (a && (a.argot || a.name || "")) || "";
+                        if (!key) return;
+                        const existingTs = latestArgotMap[key] ? new Date(latestArgotMap[key]) : null;
+                        if (!parsedTs) {
+                            if (!existingTs) latestArgotMap[key] = new Date().toISOString();
+                        } else {
+                            if (!existingTs || parsedTs > existingTs) {
+                                latestArgotMap[key] = parsedTs.toISOString();
                             }
-                        });
-                    }
-                    if (Array.isArray(meta.chats)) {
-                        meta.chats.forEach(chat => {
-                            if (Array.isArray(chat.argot) && chat.timestamp) {
-                                chat.argot.forEach(argotId => {
-                                    if (!latestArgotMap[argotId] || new Date(latestArgotMap[argotId].timestamp) < new Date(chat.timestamp)) {
-                                        latestArgotMap[argotId] = { timestamp: chat.timestamp };
-                                    }
-                                });
-                            }
-                        });
-                    }
+                        }
+                    });
                 });
 
                 const entries = Object.entries(latestArgotMap)
-                    .sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp))
+                    .sort((a, b) => new Date(b[1]) - new Date(a[1]))
                     .slice(0, 5);
 
-                const detailedData = await Promise.all(entries.map(async ([argotId, meta]) => {
-                    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/argots/id/${argotId}`);
-                    return {
-                        name: res.data.name || res.data.argot || "알 수 없음",
-                        detail: meta.timestamp ? new Date(meta.timestamp).toLocaleDateString() : "-",
-                    };
+                const detailedData = entries.map(([argot, ts]) => ({
+                    name: argot || "알 수 없음",
+                    detail: ts ? new Date(ts).toLocaleDateString() : "-",
                 }));
 
                 setNewArgotData(detailedData);
             } catch (error) {
-                console.error("Error fetching recent argot data:", error);
+                console.error("Error fetching recent argot data from messages:", error);
             }
-        };
+         };
 
-        fetchArgotData();
-        fetchDrugData();
+        fetchMessagesAndDrugs();
         fetchDrugTypes();
         fetchRecentArgotData();
-    }, [drugTypeFilter]);
+     }, [drugTypeFilter]);
 
     const getColorByPercentage = (percentage) => {
         if (percentage <= 20) {
