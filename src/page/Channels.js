@@ -3,9 +3,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import { useSearchParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
+import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import "../css/page/Channels.css";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -18,8 +18,36 @@ const Channels = () => {
     const [searchParams] = useSearchParams();
     const initialTitle = searchParams.get("title");
 
-    const { selectedDetails, channelMeta, fetchDetailsByChannelId, loading: detailsLoading, error: detailsError } = useFetchChannelDetails();
     const { channels, loading: channelsLoading, error: channelsError } = useFetchChannels();
+    const { bookmarks, setBookmarks, refreshBookmarks} = useFetchBookmarks();
+
+    const [selectedChannelId, setSelectedChannelId] = useState(null);
+    const [modalImage, setModalImage] = useState(null);
+    const [searchName, setSearchName] = useState("");
+    const [searchId, setSearchId] = useState("");
+    const [searchLink, setSearchLink] = useState("");
+    const [filteredChannels, setFilteredChannels] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showInactive, setShowInactive] = useState(false);
+    const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
+    const [activePage, setActivePage] = useState(1);
+    const [inactivePage, setInactivePage] = useState(1);
+    const itemsPerPage = 5;
+    const totalActivePages = Math.ceil(
+        filteredChannels.filter((channel) => channel.status === "active").length / itemsPerPage
+    );
+    const totalInactivePages = Math.ceil(
+        filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
+    );
+
+    // use hook for details (fetches /message/channel/{channelId} internally)
+    const {
+        selectedDetails,
+        channelMeta,
+        loading: detailsLoading,
+        error: detailsError,
+        fetchDetailsByChannelId
+    } = useFetchChannelDetails();
 
     useEffect(() => {
         if (channels && channels.length > 0 && initialTitle) {
@@ -38,31 +66,6 @@ const Channels = () => {
             if (desc) setSelectedChannelDescription(desc);
         }
     }, [channelMeta]);
-
-    const [selectedChannelId, setSelectedChannelId] = useState(null);
-    const [modalImage, setModalImage] = useState(null);
-
-
-    const [searchName, setSearchName] = useState("");
-    const [searchId, setSearchId] = useState("");
-    const [searchLink, setSearchLink] = useState("");
-    const [filteredChannels, setFilteredChannels] = useState([]);
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const {bookmarks, setBookmarks, refreshBookmarks} = useFetchBookmarks();
-    const [showInactive, setShowInactive] = useState(false);
-
-    const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
-
-    const [activePage, setActivePage] = useState(1);
-    const [inactivePage, setInactivePage] = useState(1);
-    const itemsPerPage = 5;
-    const totalActivePages = Math.ceil(
-        filteredChannels.filter((channel) => channel.status === "active").length / itemsPerPage
-    );
-    const totalInactivePages = Math.ceil(
-        filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
-    );
 
     const isBookmarked = (channel) => {
         if (!Array.isArray(bookmarks) || !channel) return false;
@@ -174,7 +177,7 @@ const Channels = () => {
     const handleChannelClick = (channel) => {
         setSelectedChannelId(channel.id);
         const apiParam = channel.channelId ?? channel.id;
-        fetchDetailsByChannelId(apiParam);
+        fetchDetailsByChannelId(apiParam); // hook 함수 사용
         setSelectedChannelDescription(channel.description || "가격 정보 없음");
     };
 
@@ -457,14 +460,21 @@ const Channels = () => {
                                     }
 
                                     const isBase64 = detail.image && !detail.image.startsWith("http");
+                                    // 메시지 URL: API가 제공하지 않으면 channelId+messageId로 추정 URL 생성
+                                    const msgUrl = detail.msgUrl || ((detail.channelId && detail.messageId) ? `https://t.me/c/${detail.channelId}/${detail.messageId}` : null);
+                                    const displayText = detail.text ?? detail.message ?? "";
 
                                     return (
                                         <div key={index} className="detail-item">
                                             <p>
                                                 <strong>Message URL:</strong>{" "}
-                                                <a href={detail.msgUrl} target="_blank" rel="noreferrer">
-                                                    {detail.msgUrl}
-                                                </a>
+                                                {msgUrl ? (
+                                                    <a href={msgUrl} target="_blank" rel="noreferrer">
+                                                        {msgUrl}
+                                                    </a>
+                                                ) : (
+                                                    <span>{detail.messageId ? `messageId: ${detail.messageId}` : "-"}</span>
+                                                )}
                                             </p>
                                             <p>
                                                 <strong>Text:</strong>
@@ -472,15 +482,18 @@ const Channels = () => {
                                             <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 rehypePlugins={[rehypeHighlight]}
-                                                children={detail.text}
+                                                children={displayText}
                                             />
+                                            {detail.argots && detail.argots.length > 0 && (
+                                                <p><strong>Argots:</strong> {detail.argots.join(", ")}</p>
+                                            )}
                                             {detail.image && fileType !== "mp4" && (
                                                 isBase64 ? (
                                                     <img
-                                                        src={isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image}
+                                                        src={`data:image/${fileType};base64,${detail.image}`}
                                                         alt="img"
                                                         className="channel-image"
-                                                        onClick={() => setModalImage(isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image)}
+                                                        onClick={() => setModalImage(`data:image/${fileType};base64,${detail.image}`)}
                                                     />
                                                 ) : (
                                                     <img
@@ -510,7 +523,7 @@ const Channels = () => {
                                             )}
 
                                             <p>
-                                                <strong>Timestamp:</strong> {detail.timestamp}
+                                                <strong>Timestamp:</strong> {detail.timestamp ?? detail.date ?? "-"}
                                             </p>
                                         </div>
                                     );

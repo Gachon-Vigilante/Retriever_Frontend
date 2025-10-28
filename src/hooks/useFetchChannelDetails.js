@@ -49,35 +49,41 @@ const useFetchChannelDetails = () => {
         setLoading(true);
         setChannelMeta(null);
         setSelectedDetails([]);
-        try {
-            const metaRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${channelId}`, { withCredentials: true });
-            const metaObj = (metaRes && metaRes.data && (typeof metaRes.data.data === "object")) ? metaRes.data.data : metaRes.data;
-            setChannelMeta(metaObj || null);
+        setError(null);
 
-            let messagesRaw = [];
-            if (metaObj) {
-                if (Array.isArray(metaObj.messages)) messagesRaw = metaObj.messages;
-                else if (Array.isArray(metaObj.chats)) messagesRaw = metaObj.chats;
-                else if (Array.isArray(metaObj.catalog?.messages)) messagesRaw = metaObj.catalog.messages;
-                else if (Array.isArray(metaObj.catalog?.messageIds)) {
-                    messagesRaw = [];
-                } else {
-                    messagesRaw = [];
-                }
+        try {
+            // 1) 메시지 엔드포인트에서 메시지 목록 조회 (/message/channel/{channelId})
+            const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/channel/${encodeURIComponent(channelId)}`, { withCredentials: true });
+            const rawList = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
+            const formattedMessages = rawList.map((m) => ({
+                id: m.id ?? m._id ?? m.messageId ?? null,
+                channelId: m.channelId ?? channelId,
+                messageId: m.messageId ?? null,
+                text: m.message ?? m.text ?? m.body ?? "",
+                timestamp: parseDateTime(m.date ?? m.timestamp ?? m.createdAt ?? m.time),
+                fromId: m.fromId ?? m.from ?? m.sender ?? null,
+                views: m.views ?? null,
+                argots: Array.isArray(m.argots) ? m.argots : (Array.isArray(m.argot) ? m.argot : []),
+                image: m.image ?? m.media?.url ?? null,
+                mediaType: m.media?.type ?? m.mediaType ?? null,
+                msgUrl: m.msgUrl ?? m.url ?? null,
+                raw: m
+            }));
+            setSelectedDetails(formattedMessages);
+
+            // 2) 채널 메타도 병행 조회 (있으면 채널 설명 등 보정)
+            try {
+                const metaRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(channelId)}`, { withCredentials: true });
+                const metaObj = (metaRes && metaRes.data && (typeof metaRes.data.data === "object")) ? metaRes.data.data : metaRes.data;
+                setChannelMeta(metaObj || null);
+            } catch (metaErr) {
+                // 메타 조회 실패 시 무시(선택 상세는 이미 설정됨)
+                console.debug("channel meta fetch failed", metaErr);
             }
 
-            const formatted = messagesRaw.map((item) => ({
-                msgUrl: item.url || item.msgUrl || "N/A",
-                text: item.text || item.message || item.body || "내용 없음",
-                image: item.media?.url || item.image || item.img || null,
-                mediaType: item.media?.type || item.type || null,
-                timestamp: parseDateTime(item.timestamp || item.date || item.createdAt || item.time),
-                sender: item.sender || item.from || item.author || null,
-            }));
-            setSelectedDetails(formatted);
         } catch (err) {
             console.error("Error fetching channel details:", err);
-            setError(`${err.message}`);
+            setError(err.message || "채널 상세 불러오기 실패");
             setSelectedDetails([]);
         } finally {
             setLoading(false);
