@@ -7,7 +7,7 @@ import useFetchChannels from "../hooks/useFetchChannels";
 import ToolTip from "../components/ToolTip";
 
 const AiChat = () => {
-    const [selectedChannelId, setSelectedChannelId] = useState(null);
+    const [selectedChannel, setSelectedChannel] = useState(null);
     const [channelPage, setChannelPage] = useState(0);
     const channelsPerPage = 10;
     const { channels, loading, error } = useFetchChannels();
@@ -28,14 +28,16 @@ const AiChat = () => {
                                 .slice(channelPage * channelsPerPage, (channelPage + 1) * channelsPerPage)
                                 .map((channel) => (
                                 <li
-                                    key={channel.id}
-                                    className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                    onClick={() => setSelectedChannelId(channel.id)}
+                                    key={channel.id ?? channel.channelId}
+                                    className={`channel-item ${String(selectedChannel?.id ?? selectedChannel?.channelId) === String(channel.channelId ?? channel.id) ? "active" : ""}`}
+                                    onClick={() => {
+                                        setSelectedChannel(channel);
+                                    }}
                                 >
                                     <div className="channel-info">
-                                        <p className="channel-name">{channel.name}</p>
+                                        <p className="channel-name">{channel.title || channel.name || "제목 없음"}</p>
                                         <p className="channel-chatSendTime">
-                                            {new Date(channel.createdAt).toLocaleString()}
+                                            {channel.createdAt ? new Date(channel.createdAt).toLocaleString() : "-"}
                                         </p>
                                     </div>
                                 </li>
@@ -52,14 +54,12 @@ const AiChat = () => {
                     </div>
                     <div className="chat-window">
                         <h3>채널별 AI</h3>
-                        {selectedChannelId && (
+                        {selectedChannel && (
                             <p className="selected-channel-name">
-                                {
-                                    channels.find((ch) => ch.id === selectedChannelId)?.name
-                                }
+                                {selectedChannel.title || selectedChannel.name || `ID: ${selectedChannel.id ?? selectedChannel.channelId}`}
                             </p>
                         )}
-                        <Chat channelId={selectedChannelId} />
+                        <Chat selectedChannel={selectedChannel} />
                     </div>
                 </div>
             </main>

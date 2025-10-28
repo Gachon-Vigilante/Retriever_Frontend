@@ -3,8 +3,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import { useSearchParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
+import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
+import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import "../css/page/Channels.css";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -17,32 +18,18 @@ const Channels = () => {
     const [searchParams] = useSearchParams();
     const initialTitle = searchParams.get("title");
 
-    const {channels, selectedDetails, fetchDetailsByChannelId, loading, error} = useFetchChannelDetails();
-    useEffect(() => {
-        if (channels.length > 0 && initialTitle) {
-            const matched = channels.find(c => (c.title || "").trim() === decodeURIComponent(initialTitle).trim());
-            if (matched) {
-                setSelectedChannelId(matched.id);
-                fetchDetailsByChannelId(matched.id);
-                setSelectedChannelDescription(matched.description || "가격 정보 없음");
-            }
-        }
-    }, [channels, initialTitle]);
+    const { channels, loading: channelsLoading, error: channelsError } = useFetchChannels();
+    const { bookmarks, setBookmarks, refreshBookmarks} = useFetchBookmarks();
+
     const [selectedChannelId, setSelectedChannelId] = useState(null);
     const [modalImage, setModalImage] = useState(null);
-
-
     const [searchName, setSearchName] = useState("");
     const [searchId, setSearchId] = useState("");
     const [searchLink, setSearchLink] = useState("");
     const [filteredChannels, setFilteredChannels] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const {bookmarks, setBookmarks} = useFetchBookmarks();
     const [showInactive, setShowInactive] = useState(false);
-
     const [selectedChannelDescription, setSelectedChannelDescription] = useState("");
-
     const [activePage, setActivePage] = useState(1);
     const [inactivePage, setInactivePage] = useState(1);
     const itemsPerPage = 5;
@@ -53,29 +40,97 @@ const Channels = () => {
         filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
     );
 
-    const isBookmarked = (channelId) => bookmarks.some((b) => b.channelId === channelId);
+    const {
+        selectedDetails,
+        channelMeta,
+        loading: detailsLoading,
+        error: detailsError,
+        fetchDetailsByChannelId
+    } = useFetchChannelDetails();
 
-const toggleBookmark = async (channel) => {
-    try {
-        if (isBookmarked(channel.id)) {
-            const bookmark = bookmarks.find((b) => b.channelId === channel.id);
-            await axios.delete(
-                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/delete/${bookmark.id}`,
-                { withCredentials: true }
-            );
-            setBookmarks((prev) => prev.filter((b) => b.channelId !== channel.id));
-        } else {
-            await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${channel.id}/add`,
-                null,
-                { withCredentials: true }
-            );
-            setBookmarks((prev) => [...prev, { channelId: channel.id }]);
+    useEffect(() => {
+        if (channels && channels.length > 0 && initialTitle) {
+            const matched = channels.find(c => (c.title || "").trim() === decodeURIComponent(initialTitle).trim());
+            if (matched) {
+                setSelectedChannelId(matched.id);
+                fetchDetailsByChannelId(matched.channelId ?? matched.id);
+                setSelectedChannelDescription(matched.description || "가격 정보 없음");
+            }
         }
-    } catch (err) {
-        console.error("Error toggling bookmark:", err);
-    }
-};
+    }, [channels, initialTitle]);
+
+    useEffect(() => {
+        if (channelMeta) {
+            const desc = channelMeta.about || channelMeta.description || channelMeta.catalog?.summary || "";
+            if (desc) setSelectedChannelDescription(desc);
+        }
+    }, [channelMeta]);
+
+    const isBookmarked = (channel) => {
+        if (!Array.isArray(bookmarks) || !channel) return false;
+        return bookmarks.some((b) => {
+            const bkCid = b.channelId ?? b.channel_id ?? b.channel;
+            if (bkCid == null) return false;
+            return String(bkCid) === String(channel.id) || (channel.channelId && String(bkCid) === String(channel.channelId));
+        });
+    };
+
+    const toggleBookmark = async (channel) => {
+        try {
+            const matchIdx = bookmarks.findIndex((b) => {
+                const bkCid = b.channelId ?? b.channel_id ?? b.channel;
+                if (bkCid == null) return false;
+                return String(bkCid) === String(channel.id) || (channel.channelId && String(bkCid) === String(channel.channelId));
+            });
+
+            if (matchIdx !== -1) {
+                const existing = bookmarks[matchIdx];
+                const bookmarkId = existing.bookmarkId || existing.id || existing._id;
+                setBookmarks((prev) => prev.filter((_, i) => i !== matchIdx));
+                if (!bookmarkId) {
+                    await refreshBookmarks();
+                    return;
+                }
+                try {
+                    await axios.delete(
+                        `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(bookmarkId)}`,
+                        { withCredentials: true }
+                    );
+                } catch (err) {
+                    console.error("삭제 실패, 북마크 다시 로드:", err);
+                    await refreshBookmarks();
+                }
+                return;
+            }
+
+            const channelIdForApi = channel.channelId ?? channel.id;
+            const tempBookmark = { bookmarkId: `temp-${Date.now()}`, channelId: channelIdForApi };
+            setBookmarks((prev) => [...prev, tempBookmark]);
+            try {
+                const res = await axios.post(
+                    `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(channelIdForApi)}`,
+                    null,
+                    { withCredentials: true }
+                );
+                const created = (res && res.data && res.data.data) ? res.data.data : res.data;
+                if (created) {
+                    setBookmarks((prev) => {
+                        const withoutTemp = prev.filter((b) => !(b.bookmarkId && String(b.bookmarkId).startsWith("temp-") && String(b.channelId) === String(channelIdForApi)));
+                        if (Array.isArray(created)) return [...withoutTemp, ...created];
+                        return [...withoutTemp, created];
+                    });
+                } else {
+                    await refreshBookmarks();
+                }
+            } catch (err) {
+                console.error("추가 실패, 북마크 다시 로드:", err);
+                await refreshBookmarks();
+            }
+        } catch (err) {
+            console.error("Error toggling bookmark:", err);
+            await refreshBookmarks();
+        }
+    };
 
     const sortChannels = (channels) => {
         return [...channels].sort((a, b) => {
@@ -106,16 +161,16 @@ const toggleBookmark = async (channel) => {
     }, [searchName, searchId, searchLink, channels, bookmarks]);
 
     useEffect(() => {
-        if (channels.length > 0) {
+        if (channels && channels.length > 0) {
             setFilteredChannels(sortChannels(channels));
         }
     }, [channels, bookmarks]);
 
-    const handleChannelClick = (channelId) => {
-        setSelectedChannelId(channelId);
-        fetchDetailsByChannelId(channelId);
-        const selected = channels.find((ch) => ch.id === channelId);
-        setSelectedChannelDescription(selected?.description || "가격 정보 없음");
+    const handleChannelClick = (channel) => {
+        setSelectedChannelId(channel.id);
+        const apiParam = channel.channelId ?? channel.id;
+        fetchDetailsByChannelId(apiParam);
+        setSelectedChannelDescription(channel.description || "가격 정보 없음");
     };
 
     const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -249,25 +304,26 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
@@ -294,25 +350,26 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
@@ -337,25 +394,26 @@ const toggleBookmark = async (channel) => {
                                             <li
                                                 key={channel.id}
                                                 className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
-                                                onClick={() => handleChannelClick(channel.id)}
+                                                onClick={() => handleChannelClick(channel)}
                                             >
                                                 <div>
                                                     <p className="channel-name">{channel.title || "제목 없음"}</p>
                                                     <p className="channel-username">@{channel.username || "unknown"}</p>
-                                                    <p className="channel-id"><strong>ID:</strong> {channel.id}</p>
+                                                    <p className="channel-id"><strong>ID:</strong> {channel.channelId ?? channel.id}</p>
                                                     <p className="channel-status">
                                                         <strong>Status:</strong> {channel.status}</p>
                                                     <p className="channel-updated">
                                                         <strong>Updated:</strong> {channel.createdAt}</p>
                                                 </div>
                                                 <button
-                                                    className={`bookmark-button ${isBookmarked(channel.id) ? "bookmarked" : ""}`}
+                                                    type="button"
+                                                    className={`bookmark-button ${isBookmarked(channel) ? "bookmarked" : ""}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleBookmark(channel);
                                                     }}
                                                 >
-                                                    {isBookmarked(channel.id) ? "★" : "☆"}
+                                                    {isBookmarked(channel) ? "★" : "☆"}
                                                 </button>
                                             </li>
                                         ))}
@@ -377,10 +435,10 @@ const toggleBookmark = async (channel) => {
 
                     <section className="channel-details">
                         <h3 className="tooltip" data-tooltip="선택한 텔레그램 채널의 상세 채팅 내역을 확인합니다.">채널 상세 정보</h3>
-                        {loading && selectedChannelId ? (
+                        {detailsLoading && selectedChannelId ? (
                             <p>Loading details...</p>
-                        ) : error ? (
-                            <p className="error-message">채널 상세를 불러오는 중 에러가 발생했습니다: {error}</p>
+                        ) : detailsError ? (
+                            <p className="error-message">채널 상세를 불러오는 중 에러가 발생했습니다: {detailsError}</p>
                         ) : selectedDetails.length > 0 ? (
                             <div className="details-content">
                                 {selectedDetails.map((detail, index) => {
@@ -394,14 +452,20 @@ const toggleBookmark = async (channel) => {
                                     }
 
                                     const isBase64 = detail.image && !detail.image.startsWith("http");
+                                    const msgUrl = detail.msgUrl || ((detail.channelId && detail.messageId) ? `https://t.me/c/${detail.channelId}/${detail.messageId}` : null);
+                                    const displayText = detail.text ?? detail.message ?? "";
 
                                     return (
                                         <div key={index} className="detail-item">
                                             <p>
                                                 <strong>Message URL:</strong>{" "}
-                                                <a href={detail.msgUrl} target="_blank" rel="noreferrer">
-                                                    {detail.msgUrl}
-                                                </a>
+                                                {msgUrl ? (
+                                                    <a href={msgUrl} target="_blank" rel="noreferrer">
+                                                        {msgUrl}
+                                                    </a>
+                                                ) : (
+                                                    <span>{detail.messageId ? `messageId: ${detail.messageId}` : "-"}</span>
+                                                )}
                                             </p>
                                             <p>
                                                 <strong>Text:</strong>
@@ -409,15 +473,18 @@ const toggleBookmark = async (channel) => {
                                             <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 rehypePlugins={[rehypeHighlight]}
-                                                children={detail.text}
+                                                children={displayText}
                                             />
+                                            {detail.argots && detail.argots.length > 0 && (
+                                                <p><strong>Argots:</strong> {detail.argots.join(", ")}</p>
+                                            )}
                                             {detail.image && fileType !== "mp4" && (
                                                 isBase64 ? (
                                                     <img
-                                                        src={isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image}
+                                                        src={`data:image/${fileType};base64,${detail.image}`}
                                                         alt="img"
                                                         className="channel-image"
-                                                        onClick={() => setModalImage(isBase64 ? `data:image/${fileType};base64,${detail.image}` : detail.image)}
+                                                        onClick={() => setModalImage(`data:image/${fileType};base64,${detail.image}`)}
                                                     />
                                                 ) : (
                                                     <img
@@ -447,7 +514,7 @@ const toggleBookmark = async (channel) => {
                                             )}
 
                                             <p>
-                                                <strong>Timestamp:</strong> {detail.timestamp}
+                                                <strong>Timestamp:</strong> {detail.timestamp ?? detail.date ?? "-"}
                                             </p>
                                         </div>
                                     );

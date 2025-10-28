@@ -8,6 +8,7 @@ import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import axios from "axios";
 import ToolTip from "../components/ToolTip";
+import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 
 const calculateMonthlyPostGrowth = (posts) => {
     const monthlyCounts = Array(12).fill(0);
@@ -57,8 +58,10 @@ const calculateMonthlyChannelGrowth = (channels) => {
 
 const RankList = ({title, items, link, tooltip}) => {
     const isNew = (date) => {
+        if (!date) return false;
         const today = new Date();
         const createdDate = new Date(date);
+        if (isNaN(createdDate.getTime())) return false;
         const diffTime = Math.abs(today - createdDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays <= 3;
@@ -74,10 +77,10 @@ const RankList = ({title, items, link, tooltip}) => {
                         <div className="rank-content">
                             {item.channelId ? (
                                 <a href={`/ai-reports?channelId=${item.channelId}`}>
-                                    <p className="rank-title">{item.name}</p>
+                                    <p className="rank-title">{item.title || item.name}</p>
                                 </a>
                             ) : (
-                                <p className="rank-title">{item.name}</p>
+                                <p className="rank-title">{item.title || item.name}</p>
                             )}
                             <p className="rank-detail">{item.detail}</p>
                         </div>
@@ -98,10 +101,10 @@ const MainDashboard = () => {
     const {posts} = useFetchPostDetails();
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
-    const {channels: allChannels} = useFetchChannels(); // fetch all channels
+    const {channels: allChannels} = useFetchChannels();
     const monthlyChannelGrowth = calculateMonthlyChannelGrowth(allChannels);
     const monthlyPostGrowth = calculateMonthlyPostGrowth(posts);
-    const newTelegramChannels = allChannels.slice(0, 6);
+    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(5);
     const [newReportData, setNewReportData] = useState([]);
     const {posts: newPosts} = useFetchNewPosts(5);
     const {channelCount} = useFetchChannelCount();
@@ -111,14 +114,21 @@ const MainDashboard = () => {
 
     const getWeeklyCount = (data) => {
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-        return data.filter((item) => new Date(item.createdAt) >= oneWeekAgo).length;
+        return data.filter((item) => {
+            if (!item) return false;
+            const dateStr = item.discoveredAt || item.createdAt || item.updatedAt || item.checkedAt || item.date || item.timestamp;
+            if (!dateStr) return false;
+            const d = new Date(dateStr);
+            return !isNaN(d.getTime()) && d >= oneWeekAgo;
+        }).length;
     };
 
     useEffect(() => {
         if (newTelegramChannels.length) {
-            setWeeklyChannelCount(getWeeklyCount(newTelegramChannels));
+            const activeChannels = newTelegramChannels.filter(channel => channel.status === "active");
+            setWeeklyChannelCount(getWeeklyCount(activeChannels));
         }
         if (newPosts.length) {
             setWeeklyPostCount(getWeeklyCount(newPosts));
@@ -153,23 +163,31 @@ const MainDashboard = () => {
             try {
                 const [reportsRes, channelsRes] = await Promise.all([
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true }),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true }),
+                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true }),
                 ]);
 
-                const reportList = reportsRes.data;
-                const channels = channelsRes.data;
+                const reportListRaw = reportsRes.data;
+                const reportList = Array.isArray(reportListRaw) ? reportListRaw : (reportListRaw && reportListRaw.data) ? reportListRaw.data : [];
+
+                const channelsRaw = channelsRes.data;
+                const channels = Array.isArray(channelsRaw) ? channelsRaw : (channelsRaw && channelsRaw.data) ? channelsRaw.data : [];
 
                 const channelMap = {};
                 channels.forEach((channel) => {
-                    channelMap[channel.id] = channel.title || "제목 없음";
+                    const rawId = channel.id ?? channel.channelId ?? channel._id;
+                    if (rawId !== undefined && rawId !== null) {
+                        const id = String(rawId);
+                        channelMap[id] = channel.title || "제목 없음";
+                    }
                 });
 
                 const latestReportPerChannel = {};
                 reportList.forEach((report) => {
                     if (!report.channelId || !report.timestamp) return;
-                    const existing = latestReportPerChannel[report.channelId];
+                    const key = String(report.channelId);
+                    const existing = latestReportPerChannel[key];
                     if (!existing || new Date(report.timestamp) > new Date(existing.timestamp)) {
-                        latestReportPerChannel[report.channelId] = report;
+                        latestReportPerChannel[key] = report;
                     }
                 });
 
@@ -177,7 +195,7 @@ const MainDashboard = () => {
                     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
                     .slice(0, 6)
                     .map((report) => ({
-                        name: channelMap[report.channelId] || `채널 ID: ${report.channelId}`,
+                        name: channelMap[String(report.channelId)] || `채널 ID: ${report.channelId}`,
                         detail: new Date(report.timestamp).toLocaleDateString(),
                         createdAt: report.timestamp,
                         channelId: report.channelId
@@ -194,11 +212,13 @@ const MainDashboard = () => {
 
 
     useEffect(() => {
-        if (!allChannels.length) return;
-
         const monthlyCounts = Array(12).fill(0);
         allChannels.forEach((channel) => {
-            const date = new Date(channel.createdAt);
+            if (!channel) return;
+            const dateStr = channel.createdAt || channel.updatedAt || channel.checkedAt || channel.date;
+            if (!dateStr) return;
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return;
             if (date.getFullYear() === 2025) {
                 const month = date.getMonth();
                 monthlyCounts[month]++;
@@ -270,7 +290,7 @@ const MainDashboard = () => {
                         </div>
                         <div className="card tooltip" data-tooltip="탐지된 전체 텔레그램 채널 수를 표시합니다.">
                             <h3>총 탐지 채널</h3>
-                            <p>{channelCount}</p>
+                            <p>{channelCount ?? 0}</p>
                         </div>
                         <div className="card tooltip" data-tooltip="직전 월 대비 홍보 게시글 증감율을 표시합니다.">
                             <h3>홍보 게시글 증감율</h3>

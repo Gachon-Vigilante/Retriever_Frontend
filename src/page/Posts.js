@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import "../css/page/Posts.css";
-import ReactPaginate from "react-paginate";
+import Pagination from "react-js-pagination";
 
 const Posts = () => {
     const {
@@ -45,6 +45,16 @@ const Posts = () => {
     }, [posts]);
 
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const pageParam = params.get("page");
+        if (pageParam !== null && !isNaN(pageParam)) {
+            const p = Number(pageParam);
+            const zeroBased = Math.max(0, p - 1);
+            setPostPage(zeroBased);
+        }
+    }, [setPostPage]);
+
+    useEffect(() => {
         let filtered = posts;
 
         if (searchTitle.trim() !== "") {
@@ -55,8 +65,8 @@ const Posts = () => {
 
         if (startDate || endDate) {
             filtered = filtered.filter((post) => {
-                if (!post.createdAt) return false;
-                const postDate = new Date(post.createdAt);
+                if (!post.updatedAt) return false;
+                const postDate = new Date(post.updatedAt);
                 return (
                     (!startDate || postDate >= startDate) &&
                     (!endDate || postDate <= endDate)
@@ -152,43 +162,58 @@ const Posts = () => {
                         ) : (
                             <ul>
                                 {filteredPosts.length > 0 ? (
-                                    filteredPosts.map((post) => (
-                                        <li
-                                            key={post.id}
-                                            className={`post-item ${
-                                                selectedPostId === post.id ? "active" : ""
-                                            }`}
-                                            onClick={() => handlePostClick(post.id)}
-                                        >
-                                            <div>
-                                                <p className="post-title">
-                                                    {post.content.length > 30 ? post.content.slice(0, 30) + "..." : post.content}
-                                                </p>
-                                                <p className="post-site">
-                                                    <strong>Site:</strong> {post.siteName || '없음'}
-                                                </p>
-                                                <p className="post-timestamp">
-                                                    <strong>발견일시:</strong>{" "}
-                                                    {new Date(post.createdAt).toLocaleDateString()}
-                                                </p>
-                                            </div>
-                                        </li>
-                                    ))
+                                    filteredPosts.map((post) => {
+                                        const displayText = post.title || post.content || "제목 없음";
+                                        const created = post.createdAt ? new Date(post.createdAt) : null;
+                                        const displayDate = created && !isNaN(created.getTime()) ? created.toLocaleString() : "알 수 없음";
+                                        return (
+                                            <li
+                                                key={post.id}
+                                                className={`post-item ${
+                                                    selectedPostId === post.id ? "active" : ""
+                                                }`}
+                                                onClick={() => handlePostClick(post.id)}
+                                            >
+                                                <div>
+                                                    <p className="post-title">
+                                                        {displayText.length > 30 ? displayText.slice(0, 30) + "..." : displayText}
+                                                    </p>
+                                                    <p className="post-site">
+                                                        <strong>사이트:</strong>{" "}
+                                                        {post.siteLink ? (
+                                                            (post.siteLink.length > 40 ? post.siteLink.slice(0, 40) + "..." : post.siteLink)
+                                                        ) : (
+                                                            '없음'
+                                                        )}
+                                                    </p>
+                                                    <p className="post-timestamp">
+                                                        <strong>발견일시:</strong>{" "}
+                                                        {displayDate}
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        );
+                                    })
                                 ) : (
                                     <p>검색 결과가 없습니다.</p>
                                 )}
                             </ul>
                         )}
-                        <ReactPaginate
-                            previousLabel={"<"}
-                            nextLabel={">"}
-                            pageCount={pageCount}
-                            onPageChange={({ selected }) => setPostPage(selected)}
+                        <Pagination
+                            activePage={postPage + 1}
+                            itemsCountPerPage={itemsPerPage}
+                            totalItemsCount={totalCount}
                             pageRangeDisplayed={5}
-                            marginPagesDisplayed={0}
-                            breakLabel={null}
-                            containerClassName={"pagination"}
-                            activeClassName={"active"}
+                            onChange={(pageNumber) => {
+                                const zeroBased = Math.max(0, pageNumber - 1);
+                                setPostPage(zeroBased);
+                                const params = new URLSearchParams(window.location.search);
+                                params.set("page", String(pageNumber));
+                                const newQuery = params.toString();
+                                window.history.replaceState({}, "", `${window.location.pathname}${newQuery ? `?${newQuery}` : ""}`);
+                            }}
+                            innerClass="pagination"
+                            activeClass="active"
                         />
                     </section>
                     <section className="post-details">
@@ -201,7 +226,10 @@ const Posts = () => {
                                     </p>
                                     <p>
                                         <strong>발견일시:</strong>{" "}
-                                        {new Date(selectedPost.createdAt).toLocaleDateString()}
+                                        {(() => {
+                                            const d = selectedPost.createdAt ? new Date(selectedPost.createdAt) : null;
+                                            return d && !isNaN(d.getTime()) ? d.toLocaleString() : "알 수 없음";
+                                        })()}
                                     </p>
                                     <p>
                                         <strong>게시글 내용:</strong> {selectedPost.content}

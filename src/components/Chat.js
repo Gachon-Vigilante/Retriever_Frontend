@@ -4,21 +4,45 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "../css/page/AiChat.css";
 
-const Chat = ({ channelId }) => {
-    const apiEndpoint = `${process.env.REACT_APP_AI_BASE_URL}/watson/c`;
-    const [messages, setMessages] = useState([]);
+const Chat = ({ selectedChannel }) => {
+    const baseApi = `${process.env.REACT_APP_AI_BASE_URL}/api/v1/watson/c`;
+
+    const [messagesByChannel, setMessagesByChannel] = useState({});
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     const inputRef = useRef(null);
     const headerRef = useRef(null);
 
-    const addMessage = (sender, message) => {
-        setMessages((prev) => [...prev, { sender, message }]);
+    const channelKey = selectedChannel ? (selectedChannel.channelId ?? selectedChannel.id) : null;
+    const currentMessages = channelKey ? (messagesByChannel[channelKey] || []) : [];
+
+    const addMessage = (sender, message, opts = {}) => {
+        if (!channelKey) return;
+        const { pending = false, messageId = null } = opts;
+        setMessagesByChannel((prev) => {
+            const prevArr = prev[channelKey] ? [...prev[channelKey]] : [];
+            const msgObj = { sender, message, pending, messageId };
+            return { ...prev, [channelKey]: [...prevArr, msgObj] };
+        });
+    };
+
+    const replaceMessage = (messageId, newFields) => {
+        if (!channelKey) return;
+        setMessagesByChannel((prev) => {
+            const prevArr = prev[channelKey] ? [...prev[channelKey]] : [];
+            const newArr = prevArr.map((m) => {
+                if (m.messageId && messageId && String(m.messageId) === String(messageId)) {
+                    return { ...m, ...newFields };
+                }
+                return m;
+            });
+            return { ...prev, [channelKey]: newArr };
+        });
     };
 
     const handleSendMessage = async () => {
-        if (!channelId) {
+        if (!selectedChannel || !(selectedChannel.channelId ?? selectedChannel.id)) {
             addMessage("bot", "채널을 먼저 선택해주세요.");
             return;
         }
@@ -30,47 +54,52 @@ const Chat = ({ channelId }) => {
         setUserInput("");
         setLoading(true);
 
-        try {
-            const res = await fetch(apiEndpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: "ask",
-                    channel_ids: [Number(channelId)],  // ✅ 여기 수정
-                    scope: "local",
-                    question: message,
-                }),
-            });
+        const channelKeyLocal = selectedChannel.channelId ?? selectedChannel.id;
+        const pendingId = `pending-${Date.now()}`;
+        addMessage("bot", "답변을 기다리는 중입니다.", { pending: true, messageId: pendingId });
 
+        try {
+            const askUrl = `${baseApi}/${encodeURIComponent(channelKeyLocal)}?q=${encodeURIComponent(message)}`;
+            const res = await fetch(askUrl, {
+                method: "GET",
+                credentials: "include",
+                headers: { "Accept": "application/json" },
+            });
             const data = await res.json();
-            addMessage("bot", data.answer || "응답이 없습니다.");
+
+            replaceMessage(pendingId, { sender: "bot", message: data.answer || "응답이 없습니다.", pending: false });
         } catch (err) {
             console.error(err);
-            addMessage("bot", "서버 오류가 발생했습니다.");
+            replaceMessage(pendingId, { sender: "bot", message: "서버 오류가 발생했습니다.", pending: false });
         } finally {
             setLoading(false);
         }
     };
 
     const handleResetChat = async () => {
-        if (!channelId) {
+        if (!selectedChannel || !(selectedChannel.channelId ?? selectedChannel.id)) {
             addMessage("bot", "채널을 먼저 선택해주세요.");
             return;
         }
 
         setLoading(true);
         try {
-            const res = await fetch(apiEndpoint, {
+            const channelKey = selectedChannel.channelId ?? selectedChannel.id;
+            const resetUrl = `${baseApi}/${encodeURIComponent(channelKey)}`;
+            const res = await fetch(resetUrl, {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     action: "reset",
-                    channel_ids: [Number(channelId)],  // ✅ 여기도 수정
+                    channel_ids: selectedChannel.id ? [Number(selectedChannel.id)] : [],
+                    origin_channel_ids: selectedChannel.channelId ? [String(selectedChannel.channelId)] : [],
                     scope: "local",
                 }),
             });
-
             const data = await res.json();
+
+            setMessagesByChannel((prev) => ({ ...prev, [channelKey]: [] }));
             addMessage("bot", data.response || "대화가 초기화되었습니다.");
         } catch (err) {
             console.error(err);
@@ -84,7 +113,6 @@ const Chat = ({ channelId }) => {
         if (e.key === "Enter") handleSendMessage();
     };
 
-    // Hide tooltip on click outside or blur
     useEffect(() => {
         if (!showTooltip) return;
         function handleClickOutside(event) {
@@ -102,6 +130,13 @@ const Chat = ({ channelId }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [showTooltip]);
+
+    useEffect(() => {
+        if (!selectedChannel) {
+            setUserInput("");
+        }
+        setShowTooltip(false);
+    }, [selectedChannel]);
 
     return (
         <div className="chat-wrapper">
@@ -122,12 +157,16 @@ const Chat = ({ channelId }) => {
                 )}
             </header>
             <div className="chat-messages">
-                {messages.map((msg, i) => (
-                    <div key={i} className={`chat-message ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
+                {currentMessages.map((msg, i) => (
+                    <div key={msg.messageId || i} className={`chat-message ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
                         {msg.sender === "bot" ? (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                                {msg.message}
-                            </ReactMarkdown>
+                            msg.pending ? (
+                                <p className="bot-pending">답변을 기다리는 중입니다.</p>
+                            ) : (
+                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+                                    {msg.message}
+                                </ReactMarkdown>
+                            )
                         ) : (
                             <p>{msg.message}</p>
                         )}

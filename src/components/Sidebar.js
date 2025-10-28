@@ -8,7 +8,10 @@ const Sidebar = () => {
     const [expandedMenu, setExpandedMenu] = useState(null);
     const [userName, setUserName] = useState(() => {
         const savedName = localStorage.getItem("name");
-        return savedName || "사용자";
+        if (savedName === null || savedName === undefined || savedName === "undefined" || savedName === "") {
+            return "사용자";
+        }
+        return savedName;
     });
     const [role, setRole] = useState(() => {
         const savedRole = localStorage.getItem("role");
@@ -35,6 +38,10 @@ const Sidebar = () => {
         }
         return true;
     });
+
+    const displayName = (userName === null || userName === undefined || userName === "" || userName === "undefined")
+        ? "사용자"
+        : userName;
 
     return (
         <aside className="sidebar open">
@@ -92,16 +99,25 @@ const Sidebar = () => {
                             </>
                         ) : (
                             menuItem.name === "테스트 페이지" || menuItem.name === "유사도 그래프" ? (
-                                <a
-                                    href={menuItem.path}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`menu-item ${
-                                        location.pathname === menuItem.path ? "active" : ""
-                                    }`}
-                                >
-                                    {menuItem.name}
-                                </a>
+                                (() => {
+                                    const hasQuery = menuItem.path.includes("?");
+                                    const fromParam = "from=sidebar";
+                                    const hrefWithFrom = menuItem.path.includes("from=sidebar")
+                                        ? menuItem.path
+                                        : `${menuItem.path}${hasQuery ? "&" : "?"}${fromParam}`;
+                                    return (
+                                        <a
+                                            href={hrefWithFrom}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`menu-item ${
+                                                location.pathname === menuItem.path ? "active" : ""
+                                            }`}
+                                        >
+                                            {menuItem.name}
+                                        </a>
+                                    );
+                                })()
                             ) : (
                                 <Link
                                     to={menuItem.path}
@@ -123,7 +139,7 @@ const Sidebar = () => {
                         alt="profile image"
                         className="profile-image"
                     />
-                    <p className="user-name">{userName}</p>
+                    <p className="user-name">{displayName}</p>
                 </div>
                 <div className="user-role">
                     <a

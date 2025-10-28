@@ -34,7 +34,7 @@ const ChannelSimilarities = () => {
                         try {
                             // /channels/id/{channelId}로 실제 channel_info 조회
                             const channelRes = await axios.get(
-                                `${process.env.REACT_APP_API_BASE_URL}/channels/id/${Number(entry.channelId)}`,
+                                `${process.env.REACT_APP_API_BASE_URL}/channel/id/${Number(entry.channelId)}`,
                                 { withCredentials: true }
                             );
                             const info = channelRes.data || {}; // channel_info 문서
@@ -72,7 +72,7 @@ const ChannelSimilarities = () => {
         const detailedChannels = await Promise.all(
             similarChannelsArray.map(async (sc) => {
                 try {
-                    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/id/${String(sc.channelId)}`, { withCredentials: true });
+                    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${String(sc.channelId)}`, { withCredentials: true });
                     const info = res.data || {};
                     return {
                         channelId: sc.channelId,

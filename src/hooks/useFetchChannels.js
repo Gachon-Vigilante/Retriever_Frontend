@@ -9,24 +9,29 @@ const useFetchChannels = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const [channelsRes, botsRes] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, { withCredentials: true }),         // channel_info
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/chatbots/all`, { withCredentials: true }),         // chat_bots
-                ]);
+                const channelsRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
 
-                const chatBots = botsRes.data;
+                const rawList = (channelsRes && channelsRes.data && Array.isArray(channelsRes.data.data))
+                    ? channelsRes.data.data
+                    : Array.isArray(channelsRes.data)
+                        ? channelsRes.data
+                        : [];
 
-                const formatted = channelsRes.data.map((channel) => {
-                    const matchingBot = chatBots.find((bot) =>
-                        bot.chats && Object.keys(bot.chats).includes(String(channel._id))
-                    );
+                const formatted = rawList.map((channel) => {
+                    const id = channel.id ?? channel._id ?? (channel.channelId ? String(channel.channelId) : undefined);
+                    const channelId = channel.channelId ?? channel.channel_id ?? channel.telegram_id ?? channel.telegramId ?? undefined;
 
                     return {
-                        id: channel.id,
-                        name: channel.title || "제목 없음",
-                        status: channel.status,
-                        createdAt: channel.createdAt,
-                        hasChatBot: Boolean(matchingBot),
+                        id: id,
+                        channelId: channelId,
+                        title: channel.title || "제목 없음",
+                        username: channel.username || "",
+                        link: channel.link || "",
+                        description: channel.about || channel.description || "",
+                        status: (channel.status || "").toLowerCase() === "active" ? "active" : "inactive",
+                        createdAt: channel.updatedAt || channel.checkedAt || channel.date || channel.createdAt || null,
+                        hasChatBot: false,
+                        raw: channel
                     };
                 });
 

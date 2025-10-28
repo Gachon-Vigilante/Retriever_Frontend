@@ -24,7 +24,9 @@ const AIReports = () => {
 
     useEffect(() => {
         if (selectedChannelIdFromQuery) {
-            setSelectedChannelId(Number(selectedChannelIdFromQuery));
+            // 숫자인 문자열이면 숫자로 변환, 아니면 null로 처리하여 Number(...)로 인한 NaN 방지
+            const parsed = Number(selectedChannelIdFromQuery);
+            setSelectedChannelId(Number.isFinite(parsed) ? parsed : null);
         }
     }, [selectedChannelIdFromQuery]);
 
@@ -36,15 +38,18 @@ const AIReports = () => {
         const fetchReports = async () => {
             try {
                 let response;
-                if (selectedChannelId) {
+                // selectedChannelId가 유한한 숫자일 때만 channelId 필터 API 사용
+                if (selectedChannelId !== null && selectedChannelId !== undefined && Number.isFinite(Number(selectedChannelId))) {
                     response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/channelId`, {
-                        params: {channelId: Number(selectedChannelId)},
+                        params: { channelId: Number(selectedChannelId) },
                         withCredentials: true,
                     });
                 } else {
-                    response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, {withCredentials: true});
+                    // 숫자가 아닌 경우(또는 null)에는 전체 리포트 받아오기 (혹은 필요 시 다른 처리)
+                    response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true });
                 }
-                const sortedReports = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                const list = Array.isArray(response.data) ? response.data : (response.data && response.data.data) ? response.data.data : [];
+                const sortedReports = list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 setReports(sortedReports);
             } catch (err) {
                 console.error("Error fetching reports:", err);
@@ -53,6 +58,8 @@ const AIReports = () => {
         };
         fetchReports();
     }, [selectedChannelId]);
+
+    const activeChannels = channels.filter((channel) => channel.status === "active");
 
     return (
         <div className="ai-chat-page">
@@ -66,25 +73,26 @@ const AIReports = () => {
                         {loading && <p>채널 목록 로딩 중...</p>}
                         {error && <p className="tooltip-error">채널을 불러오는 중 오류가 발생했습니다: {error}</p>}
                         <ul>
-                            {channels
-                                .filter((channel) => channel.status === "active")
+                            {activeChannels
                                 .slice(channelPage * channelsPerPage, (channelPage + 1) * channelsPerPage)
                                 .map((channel) => (
                                     <li
-                                        key={channel.id}
-                                        className={`channel-item ${selectedChannelId === channel.id ? "active" : ""}`}
+                                        key={channel.id ?? channel.channelId}
+                                        className={`channel-item ${String(selectedChannelId) === String(channel.channelId ?? channel.id) ? "active" : ""}`}
                                         onClick={() => {
-                                            if (selectedChannelId === channel.id) {
+                                            // channel.channelId(숫자)가 우선, 없으면 선택 불가(null)로 처리하여 NaN 방지
+                                            const newId = channel.channelId ?? null;
+                                            if (selectedChannelId === newId) {
                                                 setSelectedChannelId(null);
                                             } else {
-                                                setSelectedChannelId(channel.id);
+                                                setSelectedChannelId(newId);
                                             }
                                         }}
                                     >
                                         <div className="channel-info">
-                                            <p className="channel-name">{channel.name}</p>
+                                            <p className="channel-name">{channel.title || channel.name || "제목 없음"}</p>
                                             <p className="channel-chatSendTime">
-                                                {channel.createdAt}
+                                                {channel.createdAt ? new Date(channel.createdAt).toLocaleString() : "-"}
                                             </p>
                                         </div>
                                     </li>
@@ -93,7 +101,7 @@ const AIReports = () => {
                         <ReactPaginate
                             previousLabel={"<"}
                             nextLabel={">"}
-                            pageCount={Math.ceil(channels.length / channelsPerPage)}
+                            pageCount={Math.ceil(activeChannels.length / channelsPerPage) || 1}
                             onPageChange={({selected}) => setChannelPage(selected)}
                             containerClassName={"pagination"}
                             activeClassName={"active"}
@@ -103,7 +111,9 @@ const AIReports = () => {
                         <h3 className="tooltip" data-tooltip="선택한 채널에 대한 분석 리포트를 시간순으로 제공합니다.">AI 분석 보고서</h3>
                         <p className="selected-channel-name">
                             {selectedChannelId
-                                ? channels.find((ch) => ch.id === selectedChannelId)?.name
+                                ? (channels.find((ch) => String(ch.id) === String(selectedChannelId) || String(ch.channelId) === String(selectedChannelId))?.title
+                                    || channels.find((ch) => String(ch.id) === String(selectedChannelId) || String(ch.channelId) === String(selectedChannelId))?.name
+                                    || `ID: ${selectedChannelId}`)
                                 : "전체 채널 분석 리포트"}
                         </p>
                         <div className="report-list">
@@ -114,13 +124,15 @@ const AIReports = () => {
                                         .map((report) => (
                                             <li key={report.id} className="report-item">
                                                 <p><strong>Channel:</strong> {
-                                                    channels.find((ch) => ch.id === report.channelId)?.name || `ID: ${report.channelId}`
+                                                    (channels.find((ch) => String(ch.id) === String(report.channelId) || String(ch.channelId) === String(report.channelId))?.title
+                                                        || channels.find((ch) => String(ch.id) === String(report.channelId) || String(ch.channelId) === String(report.channelId))?.name
+                                                        || `ID: ${report.channelId}`)
                                                 }</p>
                                                 <p><strong>Type:</strong> {report.type}</p>
                                                 <p><strong>Content:</strong> {report.content}</p>
                                                 <p><strong>Description:</strong> {report.description}</p>
                                                 <p>
-                                                    <strong>Created:</strong> {new Date(report.timestamp).toLocaleString()}
+                                                    <strong>Created:</strong> {report.timestamp ? new Date(report.timestamp).toLocaleString() : "-"}
                                                 </p>
                                             </li>
                                         ))}
@@ -132,7 +144,7 @@ const AIReports = () => {
                         <ReactPaginate
                             previousLabel={"<"}
                             nextLabel={">"}
-                            pageCount={Math.ceil(reports.length / reportsPerPage)}
+                            pageCount={Math.ceil(reports.length / reportsPerPage) || 1}
                             onPageChange={({selected}) => setReportPage(selected)}
                             containerClassName={"pagination"}
                             activeClassName={"active"}

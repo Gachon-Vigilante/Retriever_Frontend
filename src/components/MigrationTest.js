@@ -26,6 +26,8 @@ const MigrationTest = () => {
     const [channelCatalogMap, setChannelCatalogMap] = useState(new Map());
     const fgRef = useRef();
     const [fetchError, setFetchError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const openedFromSidebar = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("from") === "sidebar";
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,9 +39,9 @@ const MigrationTest = () => {
                     axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
                 ]);
 
-                const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channels/all`, {withCredentials: true});
+                const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, {withCredentials: true});
                 const catalogMap = new Map();
-                catalogRes.data.forEach((ch) => {
+                catalogRes.data.data.forEach((ch) => {
                     if (ch.catalog?.description) {
                         catalogMap.set(ch.id, ch.catalog.description);
                     }
@@ -54,7 +56,7 @@ const MigrationTest = () => {
                 const argotMap = new Map();
                 const drugMap = new Map();
 
-                postsRes.data.forEach((post) => {
+                postsRes.data.data.forEach((post) => {
                     const {
                         postId,
                         content,
@@ -121,7 +123,7 @@ const MigrationTest = () => {
 
                 const globalArgotMap = new Map();
 
-                drugsRes.data.forEach((drug) => {
+                drugsRes.data.data.forEach((drug) => {
                     if (!drugMap.has(drug.id)) {
                         drugMap.set(drug.id, true);
                         nodes.push({
@@ -132,8 +134,7 @@ const MigrationTest = () => {
                         });
                     }
                 });
-
-                channelsRes.data.forEach((channel) => {
+                channelsRes.data.data.forEach((channel) => {
                     channelMap.set(channel.id, true);
                     nodes.push({
                         id: channel.id,
@@ -185,14 +186,20 @@ const MigrationTest = () => {
 
                 setGraphData({nodes, links: cleanedLinks});
                 setOriginalGraphData({nodes, links: cleanedLinks});
-            } catch (err) {
-                console.error("Graph fetch error:", err);
-                setFetchError(true);
-            }
-        };
 
-        fetchData();
-    }, []);
+                if (openedFromSidebar && (!nodes || nodes.length === 0)) {
+                    setErrorMessage("표시할 데이터가 없습니다.");
+                    setFetchError(true);
+                }
+             } catch (err) {
+                 console.error("Graph fetch error:", err);
+                setErrorMessage("네트워크 오류로 인해 그래프 생성에 실패했습니다.");
+                setFetchError(true);
+             }
+         };
+
+         fetchData();
+     }, []);
 
     const [tooltipVisible, setTooltipVisible] = useState(false);
     return (
@@ -481,7 +488,7 @@ const MigrationTest = () => {
             </Drawer>
             <GraphErrorModal
                 open={fetchError}
-                message="네트워크 오류로 인해 그래프 생성에 실패했습니다."
+                message={errorMessage}
                 onClose={() => window.close()}
             />
         </div>
