@@ -20,7 +20,7 @@ const ProgressBar = ({label, percentage, value, color}) => (
             <div
                 className="progress-bar-fill"
                 style={{
-                    width: `${percentage}%`, // Proportional width
+                    width: `${percentage}%`,
                     backgroundColor: color,
                 }}
             ></div>
@@ -440,8 +440,11 @@ const Statistics = () => {
                 </section>
 
                 <section className="tables">
-                    <RankList title="신규 탐지 채널"
-                              items={newTelegramChannels.filter(channel => channel.status === "active")} tooltip="감지된 텔레그램 채널을 최신순으로 표시합니다."/>
+                    <RankList
+                        title="신규 탐지 채널"
+                        items={newTelegramChannels.slice(0, 5)}
+                        tooltip="감지된 텔레그램 채널을 최신순으로 표시합니다."
+                    />
                     <RankList title="최근 탐지 은어" items={newArgotData} tooltip="새롭게 감지된 은어명을 최신순으로 표시합니다."/>
                 </section>
             </main>

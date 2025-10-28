@@ -8,7 +8,10 @@ const Sidebar = () => {
     const [expandedMenu, setExpandedMenu] = useState(null);
     const [userName, setUserName] = useState(() => {
         const savedName = localStorage.getItem("name");
-        return savedName || "사용자";
+        if (savedName === null || savedName === undefined || savedName === "undefined" || savedName === "") {
+            return "사용자";
+        }
+        return savedName;
     });
     const [role, setRole] = useState(() => {
         const savedRole = localStorage.getItem("role");
@@ -35,6 +38,10 @@ const Sidebar = () => {
         }
         return true;
     });
+
+    const displayName = (userName === null || userName === undefined || userName === "" || userName === "undefined")
+        ? "사용자"
+        : userName;
 
     return (
         <aside className="sidebar open">
@@ -132,7 +139,7 @@ const Sidebar = () => {
                         alt="profile image"
                         className="profile-image"
                     />
-                    <p className="user-name">{userName}</p>
+                    <p className="user-name">{displayName}</p>
                 </div>
                 <div className="user-role">
                     <a

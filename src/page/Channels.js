@@ -40,7 +40,6 @@ const Channels = () => {
         filteredChannels.filter((channel) => channel.status === "inactive").length / itemsPerPage
     );
 
-    // use hook for details (fetches /message/channel/{channelId} internally)
     const {
         selectedDetails,
         channelMeta,
@@ -84,14 +83,11 @@ const Channels = () => {
                 return String(bkCid) === String(channel.id) || (channel.channelId && String(bkCid) === String(channel.channelId));
             });
 
-            // 삭제: 낙관적 제거
             if (matchIdx !== -1) {
                 const existing = bookmarks[matchIdx];
                 const bookmarkId = existing.bookmarkId || existing.id || existing._id;
-                // optimistic UI remove
                 setBookmarks((prev) => prev.filter((_, i) => i !== matchIdx));
                 if (!bookmarkId) {
-                    // id가 없으면 서버에선 삭제 불가 -> refresh
                     await refreshBookmarks();
                     return;
                 }
@@ -101,14 +97,12 @@ const Channels = () => {
                         { withCredentials: true }
                     );
                 } catch (err) {
-                    // 실패 시 서버 상태로 복구
                     console.error("삭제 실패, 북마크 다시 로드:", err);
                     await refreshBookmarks();
                 }
                 return;
             }
 
-            // 추가: 낙관적 추가 (임시 항목)
             const channelIdForApi = channel.channelId ?? channel.id;
             const tempBookmark = { bookmarkId: `temp-${Date.now()}`, channelId: channelIdForApi };
             setBookmarks((prev) => [...prev, tempBookmark]);
@@ -120,14 +114,12 @@ const Channels = () => {
                 );
                 const created = (res && res.data && res.data.data) ? res.data.data : res.data;
                 if (created) {
-                    // replace temp with real created item(s)
                     setBookmarks((prev) => {
                         const withoutTemp = prev.filter((b) => !(b.bookmarkId && String(b.bookmarkId).startsWith("temp-") && String(b.channelId) === String(channelIdForApi)));
                         if (Array.isArray(created)) return [...withoutTemp, ...created];
                         return [...withoutTemp, created];
                     });
                 } else {
-                    // 서버가 created를 반환하지 않으면 새로고침으로 동기화
                     await refreshBookmarks();
                 }
             } catch (err) {
@@ -177,7 +169,7 @@ const Channels = () => {
     const handleChannelClick = (channel) => {
         setSelectedChannelId(channel.id);
         const apiParam = channel.channelId ?? channel.id;
-        fetchDetailsByChannelId(apiParam); // hook 함수 사용
+        fetchDetailsByChannelId(apiParam);
         setSelectedChannelDescription(channel.description || "가격 정보 없음");
     };
 
@@ -460,7 +452,6 @@ const Channels = () => {
                                     }
 
                                     const isBase64 = detail.image && !detail.image.startsWith("http");
-                                    // 메시지 URL: API가 제공하지 않으면 channelId+messageId로 추정 URL 생성
                                     const msgUrl = detail.msgUrl || ((detail.channelId && detail.messageId) ? `https://t.me/c/${detail.channelId}/${detail.messageId}` : null);
                                     const displayText = detail.text ?? detail.message ?? "";
 

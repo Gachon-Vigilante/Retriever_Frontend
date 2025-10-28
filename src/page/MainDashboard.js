@@ -8,6 +8,7 @@ import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
 import axios from "axios";
 import ToolTip from "../components/ToolTip";
+import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 
 const calculateMonthlyPostGrowth = (posts) => {
     const monthlyCounts = Array(12).fill(0);
@@ -100,10 +101,10 @@ const MainDashboard = () => {
     const {posts} = useFetchPostDetails();
     const [monthlyPostData, setMonthlyPostData] = useState(Array(12).fill(0));
 
-    const {channels: allChannels} = useFetchChannels(); // fetch all channels
+    const {channels: allChannels} = useFetchChannels();
     const monthlyChannelGrowth = calculateMonthlyChannelGrowth(allChannels);
     const monthlyPostGrowth = calculateMonthlyPostGrowth(posts);
-    const newTelegramChannels = allChannels.slice(0, 6);
+    const { channels: newTelegramChannels } = useFetchNewTelegramChannels(5);
     const [newReportData, setNewReportData] = useState([]);
     const {posts: newPosts} = useFetchNewPosts(5);
     const {channelCount} = useFetchChannelCount();
@@ -113,7 +114,7 @@ const MainDashboard = () => {
 
     const getWeeklyCount = (data) => {
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // 7 days ago
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
         return data.filter((item) => {
             if (!item) return false;
