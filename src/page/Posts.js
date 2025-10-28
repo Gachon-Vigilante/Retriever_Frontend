@@ -164,6 +164,8 @@ const Posts = () => {
                                 {filteredPosts.length > 0 ? (
                                     filteredPosts.map((post) => {
                                         const displayText = post.title || post.content || "제목 없음";
+                                        const created = post.createdAt ? new Date(post.createdAt) : null;
+                                        const displayDate = created && !isNaN(created.getTime()) ? created.toLocaleString() : "알 수 없음";
                                         return (
                                             <li
                                                 key={post.id}
@@ -177,11 +179,16 @@ const Posts = () => {
                                                         {displayText.length > 30 ? displayText.slice(0, 30) + "..." : displayText}
                                                     </p>
                                                     <p className="post-site">
-                                                        <strong>사이트:</strong> {post.siteName || '없음'}
+                                                        <strong>사이트:</strong>{" "}
+                                                        {post.siteLink ? (
+                                                            (post.siteLink.length > 40 ? post.siteLink.slice(0, 40) + "..." : post.siteLink)
+                                                        ) : (
+                                                            '없음'
+                                                        )}
                                                     </p>
                                                     <p className="post-timestamp">
                                                         <strong>발견일시:</strong>{" "}
-                                                        {new Date(post.createdAt).toLocaleDateString()}
+                                                        {displayDate}
                                                     </p>
                                                 </div>
                                             </li>
@@ -219,7 +226,10 @@ const Posts = () => {
                                     </p>
                                     <p>
                                         <strong>발견일시:</strong>{" "}
-                                        {new Date(selectedPost.createdAt).toLocaleDateString()}
+                                        {(() => {
+                                            const d = selectedPost.createdAt ? new Date(selectedPost.createdAt) : null;
+                                            return d && !isNaN(d.getTime()) ? d.toLocaleString() : "알 수 없음";
+                                        })()}
                                     </p>
                                     <p>
                                         <strong>게시글 내용:</strong> {selectedPost.content}

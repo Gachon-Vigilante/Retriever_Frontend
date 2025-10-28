@@ -14,17 +14,47 @@ const useFetchPostDetails = () => {
         const fetchPosts = async () => {
             try {
                 setLoading(true);
-                const apiPage = (Number(postPage) || 0) + 1;
-                const response = await axios.get(
-                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${apiPage}&size=10`,
+                const size = 10;
+
+                const initRes = await axios.get(
+                    `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=1&size=1`,
                     { withCredentials: true }
                 );
+                const initData = initRes.data?.data ?? initRes.data;
+                let attemptTotal = Number(initData?.totalCount ?? initData?.total ?? 0);
+                setTotalCount(attemptTotal);
 
-                const respData = response.data?.data ?? response.data;
-                const postsArray = respData?.posts ?? [];
+                let attempts = 0;
+                const maxAttempts = 10;
+                let postsArray = [];
+                let lastRespData = initData;
+
+                while (attempts < maxAttempts) {
+                    const totalPages = Math.max(1, Math.ceil(attemptTotal / size));
+                    let backendPage = totalPages - (Number(postPage) || 0);
+                    if (backendPage < 1) backendPage = 1;
+
+                    const response = await axios.get(
+                        `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${backendPage}&size=${size}`,
+                        { withCredentials: true }
+                    );
+                    lastRespData = response.data?.data ?? response.data;
+                    postsArray = lastRespData?.posts ?? [];
+
+                    if ((postsArray && postsArray.length > 0) || backendPage <= 1) {
+                        break;
+                    }
+
+                    if (postsArray.length === 0 && attemptTotal > size) {
+                        attemptTotal = Math.max(0, attemptTotal - size);
+                        attempts++;
+                        continue;
+                    }
+                    break;
+                }
 
                 const formattedData = (postsArray || []).map((post) => {
-                    const isoDate = post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
+                    const isoDate = post.discoveredAt || post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
 
                     return {
                         id: post.id,
@@ -40,7 +70,7 @@ const useFetchPostDetails = () => {
                 });
 
                 setPosts(formattedData);
-                setTotalCount(Number(respData?.totalCount ?? 0));
+                setTotalCount(Number(lastRespData?.totalCount ?? attemptTotal));
             } catch (err) {
                 setError(`${err.message}`);
             } finally {
@@ -64,7 +94,7 @@ const useFetchPostDetails = () => {
                 return;
             }
 
-            const isoDate = post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
+            const isoDate = post.discoveredAt || post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
 
             const formattedPost = {
                 id: post.id,
