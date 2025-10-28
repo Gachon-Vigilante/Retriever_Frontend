@@ -139,7 +139,7 @@ const Statistics = () => {
 
         return data.filter((item) => {
             if (!item) return false;
-            const dateStr = item.createdAt || item.updatedAt || item.checkedAt || item.date || item.timestamp;
+            const dateStr = item.discoveredAt || item.createdAt || item.updatedAt || item.checkedAt || item.date || item.timestamp;
             if (!dateStr) return false;
             const d = new Date(dateStr);
             return !isNaN(d.getTime()) && d >= oneWeekAgo;
