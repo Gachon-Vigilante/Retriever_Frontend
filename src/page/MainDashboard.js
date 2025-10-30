@@ -6,7 +6,7 @@ import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchPostDetails from "../hooks/useFetchPostDetails";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 import ToolTip from "../components/ToolTip";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 
@@ -162,8 +162,8 @@ const MainDashboard = () => {
         const fetchRecentReports = async () => {
             try {
                 const [reportsRes, channelsRes] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true }),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true }),
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/report/all`, { withCredentials: true }),
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true }),
                 ]);
 
                 const reportListRaw = reportsRes.data;

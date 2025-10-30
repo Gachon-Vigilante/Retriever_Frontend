@@ -1,7 +1,7 @@
 // ForceGraph2D를 사용하는 유사도 그래프 컴포넌트.
 import React, {useEffect, useRef, useState} from "react";
 import ForceGraph2D from "react-force-graph-2d";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 import {Drawer, Table, TableBody, TableCell, TableContainer, TableRow, Paper} from "@mui/material";
 import styles from "../css/components/MigrationTest.module.css";
 import GraphErrorModal from "./GraphErrorModal";
@@ -33,13 +33,13 @@ const MigrationTest = () => {
         const fetchData = async () => {
             try {
                 const [postsRes, channelsRes, argotsRes, drugsRes] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/posts/streamed`, {withCredentials: true}),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/channels/depth`, {withCredentials: true}),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/depth`, {withCredentials: true}),
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/posts/streamed`, {withCredentials: true}),
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/channels/depth`, {withCredentials: true}),
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/depth`, {withCredentials: true}),
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
                 ]);
 
-                const catalogRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, {withCredentials: true});
+                const catalogRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, {withCredentials: true});
                 const catalogMap = new Map();
                 catalogRes.data.data.forEach((ch) => {
                     if (ch.catalog?.description) {

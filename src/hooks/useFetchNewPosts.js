@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const useFetchNewPosts = (limit = 4) => {
     const [posts, setPosts] = useState([]);
@@ -8,7 +8,7 @@ const useFetchNewPosts = (limit = 4) => {
     useEffect(() => {
         const fetchNewPosts = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=0&size=${limit}`,
                     { withCredentials: true }
                 );

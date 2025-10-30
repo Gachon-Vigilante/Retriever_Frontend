@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const useFetchNewTelegramChannels = (limit = 5) => {
     const [channels, setChannels] = useState([]);
@@ -8,7 +8,7 @@ const useFetchNewTelegramChannels = (limit = 5) => {
     useEffect(() => {
         const fetchNewChannels = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
+                const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
                 const raw = (response && response.data && Array.isArray(response.data.data))
                     ? response.data.data
                     : Array.isArray(response.data)

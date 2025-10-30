@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import React, {useState} from 'react';
 import {
     Backdrop,
@@ -29,7 +29,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post(
+            const res = await axiosInstance.post(
                 `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
                 {
                     loginId: id,
@@ -38,9 +38,12 @@ const Login = () => {
                 { withCredentials: true }
             );
 
-            const { name, role } = res.data;
+            const { name, role, accessToken, refreshToken } = res.data;
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('name', name);
             localStorage.setItem('role', role);
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             navigate('/dashboard');
         } catch (e) {
             console.error('로그인 실패', e);

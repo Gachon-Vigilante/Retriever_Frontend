@@ -3,12 +3,12 @@ import UserAdd from "../components/UserAdd";
 import React, {useEffect, useState} from "react";
 import "../css/components/Pagination.css";
 import "../css/page/UserList.css";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 import {DataGrid} from '@mui/x-data-grid';
 import {Box} from '@mui/material';
 import {jwtDecode} from "jwt-decode";
 
-axios.defaults.withCredentials = true;
+axiosInstance.defaults.withCredentials = true;
 
 const getRoleFromAccessToken = () => {
     const storedRole = localStorage.getItem("role");
@@ -23,7 +23,7 @@ const UserList = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user`, {withCredentials: true});
+            const res = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/user`, {withCredentials: true});
             setUsers(res.data);
         } catch (err) {
             console.error("Error fetching users:", err);
@@ -40,7 +40,7 @@ const UserList = () => {
     const handleRoleChange = async (rowId, newRole) => {
         const targetUser = users[rowId];
         try {
-            await axios.patch(`${process.env.REACT_APP_API_BASE_URL}/user/grant-role`, {
+            await axiosInstance.patch(`${process.env.REACT_APP_API_BASE_URL}/user/grant-role`, {
                 loginId: targetUser.loginId,
                 role: newRole
             }, {withCredentials: true});

@@ -7,7 +7,7 @@ import useFetchChannels from "../hooks/useFetchChannels";
 import useFetchBookmarks from "../hooks/useFetchBookmarks";
 import useFetchChannelDetails from "../hooks/useFetchChannelDetails";
 import "../css/page/Channels.css";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -92,7 +92,7 @@ const Channels = () => {
                     return;
                 }
                 try {
-                    await axios.delete(
+                    await axiosInstance.delete(
                         `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(bookmarkId)}`,
                         { withCredentials: true }
                     );
@@ -107,7 +107,7 @@ const Channels = () => {
             const tempBookmark = { bookmarkId: `temp-${Date.now()}`, channelId: channelIdForApi };
             setBookmarks((prev) => [...prev, tempBookmark]);
             try {
-                const res = await axios.post(
+                const res = await axiosInstance.post(
                     `${process.env.REACT_APP_API_BASE_URL}/bookmarks/${encodeURIComponent(channelIdForApi)}`,
                     null,
                     { withCredentials: true }

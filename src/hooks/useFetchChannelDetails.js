@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const parseDateTime = (dateTime) => {
     if (!dateTime) return "N/A";
@@ -24,7 +24,7 @@ const useFetchChannelDetails = () => {
     const fetchChannels = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
+            const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
             const raw = (response && response.data && Array.isArray(response.data.data)) ? response.data.data : Array.isArray(response.data) ? response.data : [];
             const formatted = raw.map((ch) => ({
                 id: ch.id ?? ch._id ?? (ch.channelId ? String(ch.channelId) : undefined),
@@ -53,7 +53,7 @@ const useFetchChannelDetails = () => {
 
         try {
             // 1) 메시지 엔드포인트에서 메시지 목록 조회 (/message/channel/{channelId})
-            const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/channel/${encodeURIComponent(channelId)}`, { withCredentials: true });
+            const msgRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/message/channel/${encodeURIComponent(channelId)}`, { withCredentials: true });
             const rawList = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
             const formattedMessages = rawList.map((m) => ({
                 id: m.id ?? m._id ?? m.messageId ?? null,
@@ -73,7 +73,7 @@ const useFetchChannelDetails = () => {
 
             // 2) 채널 메타도 병행 조회 (있으면 채널 설명 등 보정)
             try {
-                const metaRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(channelId)}`, { withCredentials: true });
+                const metaRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/id/${encodeURIComponent(channelId)}`, { withCredentials: true });
                 const metaObj = (metaRes && metaRes.data && (typeof metaRes.data.data === "object")) ? metaRes.data.data : metaRes.data;
                 setChannelMeta(metaObj || null);
             } catch (metaErr) {

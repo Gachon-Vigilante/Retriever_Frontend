@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Chart} from "chart.js/auto";
 import Sidebar from "../components/Sidebar";
 import "../css/page/Statistics.css";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 import useFetchNewPosts from "../hooks/useFetchNewPosts";
 import useFetchChannelCount from "../hooks/useFetchChannelCount";
 import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
@@ -246,7 +246,7 @@ const Statistics = () => {
     useEffect(() => {
         const fetchMessagesAndDrugs = async () => {
             try {
-                const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
+                const msgRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
                 const messages = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
 
                 const argotCounts = {};
@@ -270,7 +270,7 @@ const Statistics = () => {
 
                 const argotKeys = Object.keys(argotCounts);
                 const settled = await Promise.allSettled(argotKeys.map((a) =>
-                    axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/argot/${encodeURIComponent(a)}`, { withCredentials: true })
+                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/argot/${encodeURIComponent(a)}`, { withCredentials: true })
                 ));
 
                 const drugCounts = {};
@@ -308,7 +308,7 @@ const Statistics = () => {
 
         const fetchDrugTypes = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/all`);
+                const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/drugs/all`);
                 const list = (response && response.data && Array.isArray(response.data.data)) ? response.data.data : Array.isArray(response.data) ? response.data : [];
                 const types = [...new Set(list.map((drug) => drug.drugType))].filter(Boolean);
                 setDrugTypes(["All", ...types]);
@@ -319,7 +319,7 @@ const Statistics = () => {
 
         const fetchRecentArgotData = async () => {
             try {
-                const msgRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
+                const msgRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/message/all`, { withCredentials: true });
                 const messages = (msgRes && msgRes.data && Array.isArray(msgRes.data.data)) ? msgRes.data.data : Array.isArray(msgRes.data) ? msgRes.data : [];
 
                 const latestArgotMap = {};

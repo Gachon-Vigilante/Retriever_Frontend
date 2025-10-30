@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const useFetchPostDetails = () => {
     const [posts, setPosts] = useState([]);
@@ -16,7 +16,7 @@ const useFetchPostDetails = () => {
                 setLoading(true);
                 const size = 10;
 
-                const initRes = await axios.get(
+                const initRes = await axiosInstance.get(
                     `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=1&size=1`,
                     { withCredentials: true }
                 );
@@ -34,7 +34,7 @@ const useFetchPostDetails = () => {
                     let backendPage = totalPages - (Number(postPage) || 0);
                     if (backendPage < 1) backendPage = 1;
 
-                    const response = await axios.get(
+                    const response = await axiosInstance.get(
                         `${process.env.REACT_APP_API_BASE_URL}/posts/all?page=${backendPage}&size=${size}`,
                         { withCredentials: true }
                     );
@@ -84,7 +84,7 @@ const useFetchPostDetails = () => {
     const fetchPostsDetail = async (id) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${id}`, { withCredentials: true });
+            const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/posts/id/${id}`, { withCredentials: true });
 
             const respData = response.data?.data ?? response.data;
             const post = respData?.post ?? respData;
@@ -120,7 +120,7 @@ const useFetchPostDetails = () => {
     const fetchDetailsByPostId = async (postId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/${postId}`, { withCredentials: true });
+            const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/post-similarity/${postId}`, { withCredentials: true });
             const respData = response.data?.data ?? response.data;
             const similarPosts = respData?.similarPosts ?? respData?.similarPosts ?? [];
 
