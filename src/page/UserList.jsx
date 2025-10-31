@@ -33,7 +33,6 @@ const UserList = () => {
     useEffect(() => {
         fetchUsers();
         const role = getRoleFromAccessToken();
-        console.log("현재 로그인한 사용자 권한:", role);
         setCurrentUserRole(role);
     }, []);
 

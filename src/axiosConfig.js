@@ -13,9 +13,7 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                console.log("🔄 Attempting token reissue...");
                 const response = await axiosInstance.post('/auth/reissue', {}, { withCredentials: true });
-                console.log("✅ Token reissued successfully");
 
                 return axiosInstance(originalRequest);
             } catch (reissueError) {
