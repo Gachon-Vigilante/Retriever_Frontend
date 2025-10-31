@@ -204,9 +204,6 @@ const Channels = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const closeModal = () => setIsModalOpen(false);
-
-
     return (
         <div className="channel-page">
             <Sidebar/>
