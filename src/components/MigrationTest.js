@@ -30,15 +30,211 @@ const MigrationTest = () => {
     const openedFromSidebar = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("from") === "sidebar";
 
     useEffect(() => {
+        const graphDataRef = {nodes: [], links: []};
+        const nodeMapRef = {
+            post: new Map(),
+            channel: new Map(),
+            argot: new Map(),
+            drug: new Map(),
+            globalArgot: new Map(),
+        };
+
+        function ensureNode(map, key, nodeBuilder) {
+            if (!map.has(key)) {
+                const node = nodeBuilder();
+                map.set(key, node);
+                graphDataRef.nodes.push(node);
+                return node;
+            }
+            return map.get(key);
+        }
+
+        async function* ndjsonStream(url) {
+            const res = await fetch(url, {credentials: "include"});
+            if (!res.ok) throw new Error("Failed to fetch posts stream");
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let {value: chunk, done: readerDone} = await reader.read();
+            let buffer = "";
+            while (!readerDone) {
+                buffer += decoder.decode(chunk, {stream: true});
+                let lines = buffer.split("\n");
+                buffer = lines.pop();
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    try {
+                        yield JSON.parse(line);
+                    } catch (err) {
+                    }
+                }
+                ({value: chunk, done: readerDone} = await reader.read());
+            }
+            if (buffer.trim()) {
+                try {
+                    yield JSON.parse(buffer);
+                } catch (err) {
+                }
+            }
+        }
+
+        async function buildDrugNodes(drugs) {
+            for (const drug of drugs) {
+                ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
+                    id: drug.drugBankId,
+                    label: "Drug",
+                    name: drug.name || drug.drugBankId,
+                    color: "#FF5722"
+                }));
+            }
+        }
+
+        async function buildChannelNodes(channels) {
+            for (const channel of channels) {
+                const channelId = channel.channelId || channel.id;
+                ensureNode(nodeMapRef.channel, channelId, () => ({
+                    id: channelId,
+                    label: "Channel",
+                    name: channel.title,
+                    color: "#4CAF50",
+                    title: channel.title,
+                    username: channel.username,
+                    status: channel.status,
+                    promotedCount: channel.promotedCount
+                }));
+                for (const argot of channel.sellsArgots || []) {
+                    const argotName = argot.name;
+                    const argotNodeId = `argot:${argotName}`;
+                    ensureNode(nodeMapRef.globalArgot, argotName, () => ({
+                        id: argotNodeId,
+                        label: "Argot",
+                        name: argotName,
+                        color: "#000"
+                    }));
+                    nodeMapRef.argot.set(argotNodeId, nodeMapRef.globalArgot.get(argotName));
+                    graphDataRef.links.push({source: channelId, target: argotNodeId, label: "SELLS"});
+                    for (const drug of argot.refersDrugs || []) {
+                        if (drug.drugBankId) {
+                            ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
+                                id: drug.drugBankId,
+                                label: "Drug",
+                                name: drug.name || drug.drugBankId,
+                                color: "#FF5722"
+                            }));
+                            graphDataRef.links.push({
+                                source: argotNodeId,
+                                target: drug.drugBankId,
+                                label: "REFERS_TO"
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        async function buildArgotNodes(argots) {
+            for (const argot of argots) {
+                const argotName = argot.name;
+                const argotNodeId = `argot:${argotName}`;
+                ensureNode(nodeMapRef.globalArgot, argotName, () => ({
+                    id: argotNodeId,
+                    label: "Argot",
+                    name: argotName,
+                    color: "#000"
+                }));
+                nodeMapRef.argot.set(argotNodeId, nodeMapRef.globalArgot.get(argotName));
+                for (const drug of argot.refersDrugs || []) {
+                    if (drug.drugBankId) {
+                        ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
+                            id: drug.drugBankId,
+                            label: "Drug",
+                            name: drug.name || drug.drugBankId,
+                            color: "#FF5722"
+                        }));
+                        graphDataRef.links.push({
+                            source: argotNodeId,
+                            target: drug.drugBankId,
+                            label: "REFERS_TO"
+                        });
+                    }
+                }
+            }
+        }
+
+        async function buildPostNodes(postsStream) {
+            for await (const post of postsStream) {
+                const {
+                    postId,
+                    content,
+                    siteName,
+                    createdAt,
+                    updatedAt,
+                    link,
+                    similarPosts = [],
+                    similar = [],
+                    promotesChannels = [],
+                    cluster = -1
+                } = post;
+                ensureNode(nodeMapRef.post, postId, () => ({
+                    id: postId,
+                    label: "Post",
+                    cluster,
+                    color: getClusterColor(cluster),
+                    name: siteName || (content?.slice(0, 20)),
+                    siteName,
+                    createdAt,
+                    updatedAt,
+                    content,
+                    link
+                }));
+                const similars = Array.isArray(similarPosts) && similarPosts.length > 0 ? similarPosts : similar;
+                for (const similarItem of (similars || [])) {
+                    ensureNode(nodeMapRef.post, similarItem.postId, () => ({
+                        id: similarItem.postId,
+                        label: "Post",
+                        cluster: similarItem.cluster ?? -1,
+                        color: getClusterColor(similarItem.cluster ?? -1),
+                        name: similarItem.siteName || similarItem.content?.slice(0, 20),
+                        siteName: similarItem.siteName,
+                        createdAt: similarItem.createdAt,
+                        updatedAt: similarItem.updatedAt,
+                        content: similarItem.content,
+                        link: similarItem.link
+                    }));
+                    graphDataRef.links.push({
+                        source: postId,
+                        target: similarItem.postId,
+                        label: "SIMILAR"
+                    });
+                }
+                for (const promotes of (promotesChannels || [])) {
+                    const channelObj = promotes.channel || promotes;
+                    const channelId = channelObj.channelId || channelObj.id;
+                    ensureNode(nodeMapRef.channel, channelId, () => ({
+                        id: channelId,
+                        label: "Channel",
+                        name: channelObj.title,
+                        color: "#4CAF50",
+                        title: channelObj.title,
+                        username: channelObj.username,
+                        status: channelObj.status,
+                        promotedCount: channelObj.promotedCount
+                    }));
+                    graphDataRef.links.push({
+                        source: postId,
+                        target: channelId,
+                        label: "PROMOTES"
+                    });
+                }
+            }
+        }
+
         const fetchData = async () => {
             try {
-                const [postsRes, channelsRes, argotsRes, drugsRes] = await Promise.all([
-                    axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/posts/streamed`, {withCredentials: true}),
+                const [channelsRes, argotsRes, drugsRes] = await Promise.all([
                     axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/channels/depth`, {withCredentials: true}),
                     axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/depth`, {withCredentials: true}),
                     axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/neo4j/drugs`, {withCredentials: true})
                 ]);
-
                 const catalogRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, {withCredentials: true});
                 const catalogMap = new Map();
                 catalogRes.data.data.forEach((ch) => {
@@ -47,159 +243,40 @@ const MigrationTest = () => {
                     }
                 });
                 setChannelCatalogMap(catalogMap);
-
-                const nodes = [];
-                const links = [];
-
-                const postMap = new Map();
-                const channelMap = new Map();
-                const argotMap = new Map();
-                const drugMap = new Map();
-
-                postsRes.data.data.forEach((post) => {
-                    const {
-                        postId,
-                        content,
-                        siteName,
-                        createdAt,
-                        updatedAt,
-                        link,
-                        similarPosts = [],
-                        promotesChannels = [],
-                        cluster = -1
-                    } = post;
-                    postMap.set(postId, true);
-                    nodes.push({
-                        id: postId,
-                        label: "Post",
-                        cluster,
-                        color: getClusterColor(cluster),
-                        name: siteName || content?.slice(0, 20),
-                        siteName,
-                        createdAt,
-                        updatedAt,
-                        content,
-                        link
-                    });
-
-                    similarPosts.forEach((similar) => {
-                        if (!postMap.has(similar.postId)) {
-                            nodes.push({
-                                id: similar.postId,
-                                label: "Post",
-                                cluster: similar.cluster ?? -1,
-                                color: getClusterColor(similar.cluster ?? -1),
-                                name: similar.siteName || similar.content?.slice(0, 20),
-                                siteName: similar.siteName,
-                                createdAt: similar.createdAt,
-                                updatedAt: similar.updatedAt,
-                                content: similar.content,
-                                link: similar.link
-                            });
-                            postMap.set(similar.postId, true);
-                        }
-                        links.push({source: postId, target: similar.postId, label: "SIMILAR"});
-                    });
-
-                    promotesChannels.forEach((promotes) => {
-                        const channelObj = promotes.channel || promotes;
-                        const channelId = channelObj.id;
-                        if (!channelMap.has(channelId)) {
-                            channelMap.set(channelId, true);
-                            nodes.push({
-                                id: channelId,
-                                label: "Channel",
-                                name: channelObj.title,
-                                color: "#4CAF50",
-                                title: channelObj.title,
-                                username: channelObj.username,
-                                status: channelObj.status,
-                                promotedCount: channelObj.promotedCount
-                            });
-                        }
-                        links.push({source: postId, target: channelId, label: "PROMOTES"});
-                    });
-                });
-
-                const globalArgotMap = new Map();
-
-                drugsRes.data.data.forEach((drug) => {
-                    if (!drugMap.has(drug.id)) {
-                        drugMap.set(drug.id, true);
-                        nodes.push({
-                            id: drug.id,
-                            label: "Drug",
-                            name: drug.name || drug.id,
-                            color: "#FF5722"
-                        });
-                    }
-                });
-                channelsRes.data.data.forEach((channel) => {
-                    channelMap.set(channel.id, true);
-                    nodes.push({
-                        id: channel.id,
-                        label: "Channel",
-                        name: channel.title,
-                        color: "#4CAF50",
-                        title: channel.title,
-                        username: channel.username,
-                        status: channel.status,
-                        promotedCount: channel.promotedCount
-                    });
-
-                    channel.sellsArgots?.forEach((argot) => {
-                        const argotName = argot.name;
-                        if (!globalArgotMap.has(argotName)) {
-                            const argotNodeId = `argot:${argotName}`;
-                            globalArgotMap.set(argotName, {
-                                id: argotNodeId,
-                                label: "Argot",
-                                name: argotName,
-                                color: "#000",
-                                drugId: argot.drugId
-                            });
-                            argotMap.set(argotNodeId, true);
-                            nodes.push(globalArgotMap.get(argotName));
-                        }
-                        const argotNodeId = `argot:${argotName}`;
-                        links.push({source: channel.id, target: argotNodeId, label: "SELLS"});
-
-                        if (argot.drugId) {
-                            links.push({source: argotNodeId, target: argot.drugId, label: "REFERS_TO"});
-                        }
-                    });
-                });
-
-
-                const validIds = new Set(nodes.map((n) => n.id));
-                const filteredLinks = links.filter(link => {
-                    const sourceId = typeof link.source === 'object' ? link.source?.id : link.source;
-                    const targetId = typeof link.target === 'object' ? link.target?.id : link.target;
+                await buildDrugNodes(drugsRes.data.data || []);
+                await buildChannelNodes(channelsRes.data.data || []);
+                await buildArgotNodes(argotsRes.data.data || []);
+                const postsStream = ndjsonStream(`${process.env.REACT_APP_API_BASE_URL}/neo4j/posts/streamed`);
+                await buildPostNodes(postsStream);
+                const nodeMap = new Map();
+                for (const n of graphDataRef.nodes) {
+                    if (!nodeMap.has(n.id)) nodeMap.set(n.id, n);
+                }
+                const finalNodes = Array.from(nodeMap.values());
+                const validIds = new Set(finalNodes.map((n) => n.id));
+                const filteredLinks = graphDataRef.links.filter(link => {
+                    const sourceId = typeof link.source === "object" ? link.source?.id : link.source;
+                    const targetId = typeof link.target === "object" ? link.target?.id : link.target;
                     return validIds.has(sourceId) && validIds.has(targetId);
                 });
-
                 const cleanedLinks = filteredLinks.map(link => ({
-                    source: typeof link.source === 'object' ? link.source?.id : link.source,
-                    target: typeof link.target === 'object' ? link.target?.id : link.target,
+                    source: typeof link.source === "object" ? link.source?.id : link.source,
+                    target: typeof link.target === "object" ? link.target?.id : link.target,
                     label: link.label
                 }));
-
-                setGraphData({nodes, links: cleanedLinks});
-                setOriginalGraphData({nodes, links: cleanedLinks});
-
-                if (openedFromSidebar && (!nodes || nodes.length === 0)) {
+                setGraphData({nodes: finalNodes, links: cleanedLinks});
+                setOriginalGraphData({nodes: finalNodes, links: cleanedLinks});
+                if (openedFromSidebar && (!finalNodes || finalNodes.length === 0)) {
                     setErrorMessage("표시할 데이터가 없습니다.");
                     setFetchError(true);
                 }
-             } catch (err) {
-                 console.error("Graph fetch error:", err);
+            } catch (err) {
                 setErrorMessage("네트워크 오류로 인해 그래프 생성에 실패했습니다.");
                 setFetchError(true);
-             }
-         };
-
-         fetchData();
-     }, []);
+            }
+        };
+        fetchData();
+    }, []);
 
     const [tooltipVisible, setTooltipVisible] = useState(false);
     return (
