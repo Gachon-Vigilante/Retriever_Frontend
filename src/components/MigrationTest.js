@@ -100,7 +100,8 @@ const MigrationTest = () => {
                     title: channel.title,
                     username: channel.username,
                     status: channel.status,
-                    promotedCount: channel.promotedCount
+                    promotedCount: channel.promotedCount,
+                    sellsArgots: channel.sellsArgots || []
                 }));
                 for (const argot of channel.sellsArgots || []) {
                     const argotName = argot.name;
@@ -424,7 +425,7 @@ const MigrationTest = () => {
                 }}
             />
             <Drawer anchor="left" open={!!selectedNode} onClose={() => setSelectedNode(null)}>
-                <div style={{width: 300, padding: 20, height: '100vh', overflowY: 'auto'}}>
+                <div style={{width: 600, padding: 20, height: '100vh', overflowY: 'auto'}}>
                     <h3>{selectedNode?.label} 정보</h3>
 
                     <TableContainer component={Paper}>
@@ -433,29 +434,31 @@ const MigrationTest = () => {
                                 {selectedNode?.label === "Channel" && (
                                     <>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Title</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>채널명</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.title}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Username</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>유저명</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.username}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Status</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>상태</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.status}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Promoted</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>홍보 횟수</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.promotedCount}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Catalog</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>판매 목록</TableCell>
                                             <TableCell style={{wordBreak: 'break-word', whiteSpace: 'pre-wrap'}}>
-                                                {channelCatalogMap.get(selectedNode?.id) || "없음"}
+                                                {selectedNode?.sellsArgots?.length
+                                                    ? selectedNode.sellsArgots.map(a => a.name).join(", ")
+                                                    : "없음"}
                                             </TableCell>
                                         </TableRow>
                                     </>
@@ -463,12 +466,12 @@ const MigrationTest = () => {
                                 {selectedNode?.label === "Argot" && (
                                     <>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Name</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>은어명</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Description</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>상세</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.description}</TableCell>
                                         </TableRow>
@@ -477,16 +480,16 @@ const MigrationTest = () => {
                                 {selectedNode?.label === "Drug" && (
                                     <>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Name</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>마약명</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Drug ID</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>마약 ID</TableCell>
                                             <TableCell style={{wordBreak: 'break-word'}}>{selectedNode?.id}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>English Name</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>영문 명칭</TableCell>
                                             <TableCell style={{wordBreak: 'break-word'}}>{selectedNode?.englishName}</TableCell>
                                         </TableRow>
                                     </>
@@ -494,32 +497,32 @@ const MigrationTest = () => {
                                 {selectedNode?.label === "Post" && (
                                     <>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Title</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>제목</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.title}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Discovered At</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>발견일시</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.discoveredAt}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Cluster</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>클러스터</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.cluster}</TableCell>
                                         </TableRow>
+                                        {/*<TableRow>*/}
+                                        {/*    <TableCell style={{fontWeight: 'bold'}}>Updated At</TableCell>*/}
+                                        {/*    <TableCell*/}
+                                        {/*        style={{wordBreak: 'break-word'}}>{selectedNode?.updatedAt}</TableCell>*/}
+                                        {/*</TableRow>*/}
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Updated At</TableCell>
-                                            <TableCell
-                                                style={{wordBreak: 'break-word'}}>{selectedNode?.updatedAt}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Content</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>내용</TableCell>
                                             <TableCell
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.content}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Link</TableCell>
+                                            <TableCell style={{fontWeight: 'bold', width: '100px'}}>링크</TableCell>
                                             <TableCell style={{wordBreak: 'break-word'}}>
                                                 <a href={selectedNode?.link} target="_blank" rel="noopener noreferrer">
                                                     {selectedNode?.link}
