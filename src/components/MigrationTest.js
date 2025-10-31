@@ -165,8 +165,9 @@ const MigrationTest = () => {
                 const {
                     postId,
                     content,
+                    title,
+                    discoveredAt,
                     siteName,
-                    createdAt,
                     updatedAt,
                     link,
                     similarPosts = [],
@@ -181,7 +182,8 @@ const MigrationTest = () => {
                     color: getClusterColor(cluster),
                     name: siteName || (content?.slice(0, 20)),
                     siteName,
-                    createdAt,
+                    title,
+                    discoveredAt,
                     updatedAt,
                     content,
                     link
@@ -195,7 +197,8 @@ const MigrationTest = () => {
                         color: getClusterColor(similarItem.cluster ?? -1),
                         name: similarItem.siteName || similarItem.content?.slice(0, 20),
                         siteName: similarItem.siteName,
-                        createdAt: similarItem.createdAt,
+                        title: similarItem.title,
+                        createdAt: similarItem.discoveredAt,
                         updatedAt: similarItem.updatedAt,
                         content: similarItem.content,
                         link: similarItem.link
@@ -482,14 +485,14 @@ const MigrationTest = () => {
                                 {selectedNode?.label === "Post" && (
                                     <>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Site</TableCell>
+                                            <TableCell style={{fontWeight: 'bold'}}>Title</TableCell>
                                             <TableCell
-                                                style={{wordBreak: 'break-word'}}>{selectedNode?.siteName}</TableCell>
+                                                style={{wordBreak: 'break-word'}}>{selectedNode?.title}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Created At</TableCell>
+                                            <TableCell style={{fontWeight: 'bold'}}>Discovered At</TableCell>
                                             <TableCell
-                                                style={{wordBreak: 'break-word'}}>{selectedNode?.createdAt}</TableCell>
+                                                style={{wordBreak: 'break-word'}}>{selectedNode?.discoveredAt}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell style={{fontWeight: 'bold'}}>Cluster</TableCell>
