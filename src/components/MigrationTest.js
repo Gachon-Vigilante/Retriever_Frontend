@@ -81,6 +81,7 @@ const MigrationTest = () => {
             for (const drug of drugs) {
                 ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
                     id: drug.drugBankId,
+                    englishName: drug.englishName,
                     label: "Drug",
                     name: drug.name || drug.drugBankId,
                     color: "#FF5722"
@@ -118,6 +119,7 @@ const MigrationTest = () => {
                             ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
                                 id: drug.drugBankId,
                                 label: "Drug",
+                                englishName: drug.englishName,
                                 name: drug.name || drug.drugBankId,
                                 color: "#FF5722"
                             }));
@@ -149,6 +151,7 @@ const MigrationTest = () => {
                         ensureNode(nodeMapRef.drug, drug.drugBankId, () => ({
                             id: drug.drugBankId,
                             label: "Drug",
+                            englishName: drug.englishName,
                             name: drug.name || drug.drugBankId,
                             color: "#FF5722"
                         }));
@@ -481,6 +484,10 @@ const MigrationTest = () => {
                                         <TableRow>
                                             <TableCell style={{fontWeight: 'bold'}}>Drug ID</TableCell>
                                             <TableCell style={{wordBreak: 'break-word'}}>{selectedNode?.id}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell style={{fontWeight: 'bold'}}>English Name</TableCell>
+                                            <TableCell style={{wordBreak: 'break-word'}}>{selectedNode?.englishName}</TableCell>
                                         </TableRow>
                                     </>
                                 )}
