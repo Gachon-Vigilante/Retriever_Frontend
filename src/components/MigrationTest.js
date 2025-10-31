@@ -106,6 +106,7 @@ const MigrationTest = () => {
                     const argotNodeId = `argot:${argotName}`;
                     ensureNode(nodeMapRef.globalArgot, argotName, () => ({
                         id: argotNodeId,
+                        description: argot.description,
                         label: "Argot",
                         name: argotName,
                         color: "#000"
@@ -137,6 +138,7 @@ const MigrationTest = () => {
                 const argotNodeId = `argot:${argotName}`;
                 ensureNode(nodeMapRef.globalArgot, argotName, () => ({
                     id: argotNodeId,
+                    description: argot.description,
                     label: "Argot",
                     name: argotName,
                     color: "#000"
@@ -463,9 +465,9 @@ const MigrationTest = () => {
                                                 style={{wordBreak: 'break-word'}}>{selectedNode?.name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell style={{fontWeight: 'bold'}}>Drug ID</TableCell>
+                                            <TableCell style={{fontWeight: 'bold'}}>Description</TableCell>
                                             <TableCell
-                                                style={{wordBreak: 'break-word'}}>{selectedNode?.drugId}</TableCell>
+                                                style={{wordBreak: 'break-word'}}>{selectedNode?.description}</TableCell>
                                         </TableRow>
                                     </>
                                 )}
