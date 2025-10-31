@@ -30,12 +30,11 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             const res = await axiosInstance.post(
-                `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
+                '/auth/login',
                 {
                     loginId: id,
                     password: password
-                },
-                { withCredentials: true }
+                }
             );
 
             const { name, role, accessToken, refreshToken } = res.data;
@@ -99,7 +98,6 @@ const Login = () => {
                 )}
             </Paper>
 
-            {/* 모달 영역 */}
             <Modal
                 open={modalOpen}
                 onClose={handleModalClose}
