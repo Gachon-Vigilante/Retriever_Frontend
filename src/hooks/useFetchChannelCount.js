@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const useFetchChannelCount = () => {
     const [channelCount, setChannelCount] = useState(0);
@@ -9,7 +9,7 @@ const useFetchChannelCount = () => {
     useEffect(() => {
         const fetchChannelCount = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
+                const response = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
                 const resp = response?.data ?? [];
                 let count = 0;
                 if (Array.isArray(resp)) {

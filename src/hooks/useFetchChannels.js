@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../axiosConfig";
 
 const useFetchChannels = () => {
     const [channels, setChannels] = useState([]);
@@ -9,7 +9,7 @@ const useFetchChannels = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const channelsRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
+                const channelsRes = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/channel/all`, { withCredentials: true });
 
                 const rawList = (channelsRes && channelsRes.data && Array.isArray(channelsRes.data.data))
                     ? channelsRes.data.data

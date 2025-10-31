@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const UserAdd = ({ open, onClose, onUserAdded }) => {
   const [formData, setFormData] = useState({
@@ -11,7 +11,7 @@ const UserAdd = ({ open, onClose, onUserAdded }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_BASE_URL}/auth/signup`,
         formData,
         { withCredentials: true }
