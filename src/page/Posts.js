@@ -181,7 +181,7 @@ const Posts = () => {
                                                     <p className="post-site">
                                                         <strong>사이트:</strong>{" "}
                                                         {post.siteLink ? (
-                                                            (post.siteLink.length > 40 ? post.siteLink.slice(0, 40) + "..." : post.siteLink)
+                                                            (post.siteLink.length > 30 ? post.siteLink.slice(0, 30) + "..." : post.siteLink)
                                                         ) : (
                                                             '없음'
                                                         )}
