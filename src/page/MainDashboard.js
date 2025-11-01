@@ -13,8 +13,8 @@ import useFetchNewTelegramChannels from "../hooks/useFetchNewTelegramChannels";
 const calculateMonthlyPostGrowth = (posts) => {
     const monthlyCounts = Array(12).fill(0);
     posts.forEach(post => {
-        if (post.updatedAt) {
-            const date = new Date(post.updatedAt);
+        if (post.discoveredAt) {
+            const date = new Date(post.discoveredAt);
             if (!isNaN(date) && date.getFullYear() === 2025) {
                 monthlyCounts[date.getMonth()]++;
             }
@@ -313,7 +313,12 @@ const MainDashboard = () => {
                 <section className="tables">
                     <RankList title="신규 텔레그램 채널" items={newTelegramChannels} link="/channels" tooltip="감지된 텔레그램 채널을 최신순으로 표시합니다."/>
                     <RankList title="신규 탐지 게시글" items={newPosts} link="/posts" tooltip="감지된 홍보 게시글을 최신순으로 표시합니다."/>
-                    <RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports" tooltip="AI가 분석한 리포트를 최신순으로 표시합니다."/>
+                    {/*<RankList title="실시간 AI 리포트" items={newReportData} link="/ai-reports" tooltip="AI가 분석한 리포트를 최신순으로 표시합니다."/>*/}
+                    <div className="rank-card more-stats-card">
+                        <a href="/statistics" className="more-stats-btn" role="button" aria-label="통계 더보기">
+                            통계 더보기 <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
                 </section>
             </main>
         </div>

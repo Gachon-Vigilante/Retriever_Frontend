@@ -54,7 +54,7 @@ const useFetchPostDetails = () => {
                 }
 
                 const formattedData = (postsArray || []).map((post) => {
-                    const isoDate = post.discoveredAt || post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
+                    const isoDate = post.discoveredAt || post.createdAt || post.publishedAt || post.discoveredAt || post.timestamp || null;
 
                     return {
                         id: post.id,
@@ -64,7 +64,7 @@ const useFetchPostDetails = () => {
                         promoSiteLink: post.promoSiteLink ?? null,
                         siteLink: post.link ?? post.siteLink ?? null,
                         createdAt: isoDate,
-                        updatedAt: post.updatedAt || post.publishedAt || post.createdAt || post.timestamp || null,
+                        discoveredAt: post.discoveredAt || post.publishedAt || post.createdAt || post.timestamp || null,
                         timestamp: post.timestamp || null,
                     };
                 });
@@ -104,7 +104,7 @@ const useFetchPostDetails = () => {
                 promoSiteLink: post.promoSiteLink ?? null,
                 siteLink: post.link ?? post.siteLink ?? null,
                 createdAt: isoDate,
-                updatedAt: post.updatedAt || post.publishedAt || post.createdAt || post.timestamp || null,
+                discoveredAt: post.discoveredAt || post.publishedAt || post.createdAt || post.timestamp || null,
                 timestamp: post.timestamp || null,
             };
 

@@ -37,7 +37,7 @@ const Login = () => {
                 }
             );
 
-            const { name, role, accessToken, refreshToken } = res.data;
+            const {name, role, accessToken, refreshToken} = res.data;
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('name', name);
@@ -80,9 +80,9 @@ const Login = () => {
                             e.preventDefault();
                             handleLogin();
                         }}>
-                            <TextField fullWidth label="아이디(daycon 을 입력해 주세요)" variant="outlined" sx={{mb: 2}}
+                            <TextField fullWidth label="아이디를 입력해 주세요" variant="outlined" sx={{mb: 2}}
                                        value={id} onChange={(e) => setId(e.target.value)}/>
-                            <TextField fullWidth label="비밀번호(1234 를 입력해 주세요)"
+                            <TextField fullWidth label="비밀번호를 입력해 주세요"
                                        type={showPassword ? 'text' : 'password'} variant="outlined" sx={{mb: 1}}
                                        value={password} onChange={(e) => setPassword(e.target.value)}/>
                             <FormControlLabel
