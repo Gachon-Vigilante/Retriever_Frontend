@@ -557,8 +557,60 @@ const MigrationTest = () => {
                     <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
                         <button
                             className={styles.modalsButton}
-                            onClick={() => {
+                            onClick={async () => {
                                 if (!originalGraphData || !selectedNode) return;
+
+                                if (selectedNode?.label === "Argot") {
+                                    try {
+                                        const argotName = selectedNode.name;
+                                        const res = await axiosInstance.get(
+                                            `${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/${encodeURIComponent(argotName)}`,
+                                            { withCredentials: true }
+                                        );
+                                        const connectedIds = new Set();
+                                        connectedIds.add(selectedNode.id);
+
+                                        if (res?.data?.success && res.data.data) {
+                                            const data = res.data.data;
+                                            (data.refersToDrugs || []).forEach(d => {
+                                                if (d.drugBankId) connectedIds.add(d.drugBankId);
+                                            });
+                                            (data.soldByChannels || []).forEach(ch => {
+                                                if (ch.id !== undefined && ch.id !== null) connectedIds.add(ch.id);
+                                                (ch.promotingPosts || []).forEach(p => {
+                                                    if (p.postId) connectedIds.add(p.postId);
+                                                });
+                                            });
+                                        }
+
+                                        const highlighted = [];
+                                        const others = [];
+                                        originalGraphData.nodes.forEach((n) => {
+                                            const is = connectedIds.has(n.id);
+                                            const copy = { ...n, highlighted: is, faded: !is };
+                                            if (is) highlighted.push(copy);
+                                            else others.push(copy);
+                                        });
+                                        const orderedNodes = [...others, ...highlighted];
+
+                                        const linksWithIds = originalGraphData.links.map(link => {
+                                            const s = typeof link.source === 'object' ? link.source.id : link.source;
+                                            const t = typeof link.target === 'object' ? link.target.id : link.target;
+                                            return {
+                                                source: s,
+                                                target: t,
+                                                label: link.label,
+                                                highlighted: connectedIds.has(s) && connectedIds.has(t)
+                                            };
+                                        });
+
+                                        setGraphData({ nodes: orderedNodes, links: linksWithIds });
+                                        setShowRelatedOnly(false);
+                                        return;
+                                    } catch (err) {
+                                        console.error("Argot detail fetch failed, falling back:", err);
+                                    }
+                                }
 
                                 const connectedIds = new Set();
                                 originalGraphData.links.forEach((edge) => {
