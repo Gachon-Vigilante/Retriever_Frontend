@@ -24,10 +24,10 @@ function AppRouter() {
                 <Route path="/posts" element={<Posts/>}/>
                 <Route path="/aichat" element={<AiChat/>}/>
                 <Route path="/statistics" element={<Statistics/>}/>
-                <Route path="/similarity" element={<Similarity/>}/>
-                <Route path="/channel-similarities" element={<ChannelSimilarities/>}/>
+                {/*<Route path="/similarity" element={<Similarity/>}/>*/}
+                {/*<Route path="/channel-similarities" element={<ChannelSimilarities/>}/>*/}
                 <Route path="/network-graph" element={<MigrationTest/>}/>
-                <Route path="/ai-reports" element={<AIReports/>}/>
+                {/*<Route path="/ai-reports" element={<AIReports/>}/>*/}
                 <Route path="/userlist" element={<UserList/>}/>
             </Routes>
         </BrowserRouter>

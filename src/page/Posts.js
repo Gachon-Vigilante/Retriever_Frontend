@@ -181,7 +181,7 @@ const Posts = () => {
                                                     <p className="post-site">
                                                         <strong>사이트:</strong>{" "}
                                                         {post.siteLink ? (
-                                                            (post.siteLink.length > 40 ? post.siteLink.slice(0, 40) + "..." : post.siteLink)
+                                                            (post.siteLink.length > 30 ? post.siteLink.slice(0, 30) + "..." : post.siteLink)
                                                         ) : (
                                                             '없음'
                                                         )}
@@ -253,6 +253,7 @@ const Posts = () => {
                                             borderRadius: "8px",
                                             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)"
                                         }}
+                                        sandbox="allow-same-origin allow-scripts"
                                     ></iframe>
                                 )}
                             </div>

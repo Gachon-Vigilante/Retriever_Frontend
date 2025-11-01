@@ -356,65 +356,84 @@ const MigrationTest = () => {
                 linkDistance={150}
                 nodeLabel={(node) => `${node.label}: ${node.name}`}
                 nodeCanvasObject={(node, ctx, globalScale) => {
-                    const label = node.name;
-                    const fontSize = 12 / globalScale;
-                    ctx.font = `${fontSize}px Sans-Serif`;
+                    const pulse = (Math.sin(Date.now() / 300) + 1) / 2;
 
-                    ctx.fillStyle = node.color;
+                    const isHighlighted = !!node.highlighted;
+                    const alpha = isHighlighted ? 1 : (node.faded ? 0.08 : 1);
+
+                    const baseRadius = 6;
+                    const radius = isHighlighted ? baseRadius + 4 + (pulse * 3) : baseRadius;
+
+                    ctx.save();
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = node.color || "#666";
                     ctx.beginPath();
 
                     switch (node.label) {
                         case "Post":
-                            ctx.rect(node.x - 6, node.y - 6, 12, 12);
+                            ctx.rect(node.x - radius, node.y - radius, radius * 2, radius * 2);
                             break;
                         case "Channel":
-                            ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
+                            ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
                             break;
                         case "Argot":
-                            ctx.moveTo(node.x, node.y - 6);
-                            ctx.lineTo(node.x + 6, node.y);
-                            ctx.lineTo(node.x, node.y + 6);
-                            ctx.lineTo(node.x - 6, node.y);
+                            ctx.moveTo(node.x, node.y - radius);
+                            ctx.lineTo(node.x + radius, node.y);
+                            ctx.lineTo(node.x, node.y + radius);
+                            ctx.lineTo(node.x - radius, node.y);
                             ctx.closePath();
                             break;
                         case "Drug":
                             const spikes = 5;
-                            const outerRadius = 6;
-                            const innerRadius = 3;
+                            const outer = radius;
+                            const inner = Math.max(2, Math.round(radius / 2));
                             let rot = Math.PI / 2 * 3;
                             let x = node.x;
                             let y = node.y;
-                            let step = Math.PI / spikes;
-
-                            ctx.moveTo(x, y - outerRadius);
+                            const step = Math.PI / spikes;
+                            ctx.moveTo(x, y - outer);
                             for (let i = 0; i < spikes; i++) {
-                                ctx.lineTo(x + Math.cos(rot) * outerRadius, y + Math.sin(rot) * outerRadius);
+                                ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer);
                                 rot += step;
-                                ctx.lineTo(x + Math.cos(rot) * innerRadius, y + Math.sin(rot) * innerRadius);
+                                ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner);
                                 rot += step;
                             }
-                            ctx.lineTo(x, y - outerRadius);
+                            ctx.lineTo(x, y - outer);
                             ctx.closePath();
                             break;
                         default:
-                            ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
+                            ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false);
+                    }
+                    ctx.fill();
+
+                    if (isHighlighted) {
+                        ctx.lineWidth = 2.5;
+                        ctx.strokeStyle = "#FF4500";
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, radius + 6 + pulse * 4, 0, 2 * Math.PI, false);
+                        ctx.strokeStyle = `rgba(255,0,0,${0.22 + pulse * 0.13})`;
+                        ctx.lineWidth = 10;
+                        ctx.stroke();
+                    } else {
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = "#333";
+                        ctx.stroke();
                     }
 
-                    ctx.fill();
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeStyle = "#333";
-                    ctx.stroke();
                     if (globalScale > 1.5) {
                         ctx.fillStyle = "black";
-                        ctx.fillText(label, node.x + 8, node.y + 4);
+                        ctx.font = `${12 / globalScale}px Sans-Serif`;
+                        ctx.fillText(node.name, node.x + radius + 6, node.y + 4);
                     }
+                    ctx.restore();
                 }}
-                linkLabel={(link) => link.label}
-                linkDirectionalArrowLength={4}
-                linkDirectionalArrowRelPos={1}
-                linkDirectionalParticles={0}
-                linkColor={() => "#999"}
-                linkWidth={0.5}
+                linkColor={(link) => link.highlighted ? "#FF4500" : "#999"}
+                linkWidth={(link) => link.highlighted ? 2.4 : 0.5}
+                linkOpacity={(link) => link.highlighted ? 1 : 0.06}
+                linkDirectionalParticles={(link) => link.highlighted ? 2 : 0}
+                linkDirectionalParticleWidth={(link) => link.highlighted ? 2 : 0}
                 cooldownTicks={100}
                 onNodeClick={(node) => {
                     setSelectedNode(node);
@@ -490,7 +509,8 @@ const MigrationTest = () => {
                                         </TableRow>
                                         <TableRow>
                                             <TableCell style={{fontWeight: 'bold', width: '100px'}}>영문 명칭</TableCell>
-                                            <TableCell style={{wordBreak: 'break-word'}}>{selectedNode?.englishName}</TableCell>
+                                            <TableCell
+                                                style={{wordBreak: 'break-word'}}>{selectedNode?.englishName}</TableCell>
                                         </TableRow>
                                     </>
                                 )}
@@ -537,6 +557,101 @@ const MigrationTest = () => {
                     <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
                         <button
                             className={styles.modalsButton}
+                            onClick={async () => {
+                                if (!originalGraphData || !selectedNode) return;
+
+                                if (selectedNode?.label === "Argot") {
+                                    try {
+                                        const argotName = selectedNode.name;
+                                        const res = await axiosInstance.get(
+                                            `${process.env.REACT_APP_API_BASE_URL}/neo4j/argots/${encodeURIComponent(argotName)}`,
+                                            { withCredentials: true }
+                                        );
+                                        const connectedIds = new Set();
+                                        connectedIds.add(selectedNode.id);
+
+                                        if (res?.data?.success && res.data.data) {
+                                            const data = res.data.data;
+                                            (data.refersToDrugs || []).forEach(d => {
+                                                if (d.drugBankId) connectedIds.add(d.drugBankId);
+                                            });
+                                            (data.soldByChannels || []).forEach(ch => {
+                                                if (ch.id !== undefined && ch.id !== null) connectedIds.add(ch.id);
+                                                (ch.promotingPosts || []).forEach(p => {
+                                                    if (p.postId) connectedIds.add(p.postId);
+                                                });
+                                            });
+                                        }
+
+                                        const highlighted = [];
+                                        const others = [];
+                                        originalGraphData.nodes.forEach((n) => {
+                                            const is = connectedIds.has(n.id);
+                                            const copy = { ...n, highlighted: is, faded: !is };
+                                            if (is) highlighted.push(copy);
+                                            else others.push(copy);
+                                        });
+                                        const orderedNodes = [...others, ...highlighted];
+
+                                        const linksWithIds = originalGraphData.links.map(link => {
+                                            const s = typeof link.source === 'object' ? link.source.id : link.source;
+                                            const t = typeof link.target === 'object' ? link.target.id : link.target;
+                                            return {
+                                                source: s,
+                                                target: t,
+                                                label: link.label,
+                                                highlighted: connectedIds.has(s) && connectedIds.has(t)
+                                            };
+                                        });
+
+                                        setGraphData({ nodes: orderedNodes, links: linksWithIds });
+                                        setShowRelatedOnly(false);
+                                        return;
+                                    } catch (err) {
+                                        console.error("Argot detail fetch failed, falling back:", err);
+                                    }
+                                }
+
+                                const connectedIds = new Set();
+                                originalGraphData.links.forEach((edge) => {
+                                    const sourceId = typeof edge.source === 'object' ? edge.source.id : edge.source;
+                                    const targetId = typeof edge.target === 'object' ? edge.target.id : edge.target;
+                                    if (sourceId === selectedNode.id || targetId === selectedNode.id) {
+                                        connectedIds.add(sourceId);
+                                        connectedIds.add(targetId);
+                                    }
+                                });
+
+                                const highlighted = [];
+                                const others = [];
+                                originalGraphData.nodes.forEach((n) => {
+                                    const is = connectedIds.has(n.id);
+                                    const copy = {...n, highlighted: is, faded: !is};
+                                    if (is) highlighted.push(copy);
+                                    else others.push(copy);
+                                });
+
+                                const orderedNodes = [...others, ...highlighted];
+
+                                const linksWithIds = originalGraphData.links.map(link => {
+                                    const s = typeof link.source === 'object' ? link.source.id : link.source;
+                                    const t = typeof link.target === 'object' ? link.target.id : link.target;
+                                    return {
+                                        source: s,
+                                        target: t,
+                                        label: link.label,
+                                        highlighted: connectedIds.has(s) && connectedIds.has(t) && (s === selectedNode.id || t === selectedNode.id)
+                                    };
+                                });
+
+                                setGraphData({nodes: orderedNodes, links: linksWithIds});
+                                setShowRelatedOnly(false);
+                            }}
+                        >
+                            연결된 노드 강조하기
+                        </button>
+                        <button
+                            className={styles.modalsButton}
                             onClick={() => {
                                 if (!originalGraphData) return;
                                 const connectedIds = new Set();
@@ -566,7 +681,6 @@ const MigrationTest = () => {
                         >
                             관련 노드만 보기
                         </button>
-
                         <button
                             className={styles.modalsButton}
                             onClick={() => {
