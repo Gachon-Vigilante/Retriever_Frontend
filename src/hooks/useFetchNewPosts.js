@@ -21,7 +21,7 @@ const useFetchNewPosts = (limit = 4) => {
                     .slice(0, limit);
 
                 const formattedData = sortedData.map(post => {
-                    const isoDate = post.createdAt || post.publishedAt || post.updatedAt || post.timestamp || null;
+                    const isoDate = post.createdAt || post.publishedAt || post.discoveredAt || post.timestamp || null;
                     return {
                         name: post.text?.length > 30 ? post.text.slice(0, 30) + "..." : (post.title ?? post.text ?? "제목 없음"),
                         detail: isoDate && !isNaN(Date.parse(isoDate))

@@ -31,8 +31,8 @@ const ProgressBar = ({label, percentage, value, color}) => (
 const calculateMonthlyPostGrowth = (posts) => {
     const monthlyCounts = Array(12).fill(0);
     posts.forEach(post => {
-        if (post.updatedAt) {
-            const date = new Date(post.updatedAt);
+        if (post.discoveredAt) {
+            const date = new Date(post.discoveredAt);
             if (!isNaN(date) && date.getFullYear() === 2025) {
                 monthlyCounts[date.getMonth()]++;
             }
