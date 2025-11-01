@@ -34,15 +34,13 @@ const Login = () => {
                 {
                     loginId: id,
                     password: password
-                }
+                },
+                { withCredentials: true }
             );
 
-            const {name, role, accessToken, refreshToken} = res.data;
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            const { name, role } = res.data.data;
             localStorage.setItem('name', name);
             localStorage.setItem('role', role);
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             navigate('/dashboard');
         } catch (e) {
             console.error('로그인 실패', e);
