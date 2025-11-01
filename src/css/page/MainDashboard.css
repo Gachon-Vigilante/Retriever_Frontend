@@ -218,3 +218,34 @@
     color: #0056b3;
     text-decoration: underline;
 }
+
+.more-stats-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.more-stats-btn {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.more-stats-btn:hover {
+    background-color: #0056b3;
+    text-decoration: none;
+}
