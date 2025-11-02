@@ -248,6 +248,7 @@ const MainDashboard = () => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: true,
@@ -266,12 +267,43 @@ const MainDashboard = () => {
             }
         });
 
+        if (chartInstance.current && typeof chartInstance.current.resize === 'function') {
+            chartInstance.current.resize();
+        }
+
         return () => {
             if (chartInstance.current) {
                 chartInstance.current.destroy();
             }
         };
     }, [allChannels]);
+
+    useEffect(() => {
+        if (!chartRef.current) return;
+
+        const target = chartRef.current.parentElement || chartRef.current;
+        let observer;
+        if (window.ResizeObserver) {
+            observer = new ResizeObserver(() => {
+                if (chartInstance.current && typeof chartInstance.current.resize === 'function') {
+                    chartInstance.current.resize();
+                }
+            });
+            observer.observe(target);
+        }
+
+        const onWindowResize = () => {
+            if (chartInstance.current && typeof chartInstance.current.resize === 'function') {
+                chartInstance.current.resize();
+            }
+        };
+        window.addEventListener('resize', onWindowResize);
+
+        return () => {
+            if (observer && observer.disconnect) observer.disconnect();
+            window.removeEventListener('resize', onWindowResize);
+        };
+    }, []);
 
     return (
         <div className="dashboard with-sidebar">
@@ -306,7 +338,10 @@ const MainDashboard = () => {
                         </div>
                     </div>
                     <div className="chart">
-                        <canvas ref={chartRef}></canvas>
+                        <canvas
+                            ref={chartRef}
+                            style={{ width: '100%', height: '100%', display: 'block' }}
+                        ></canvas>
                     </div>
                 </section>
 

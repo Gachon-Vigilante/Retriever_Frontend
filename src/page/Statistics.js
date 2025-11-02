@@ -218,6 +218,7 @@ const Statistics = () => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: true,
@@ -235,6 +236,10 @@ const Statistics = () => {
                 }
             }
         });
+
+        if (chartInstance.current && typeof chartInstance.current.resize === 'function') {
+            chartInstance.current.resize();
+        }
 
         return () => {
             if (chartInstance.current) {
@@ -409,7 +414,10 @@ const Statistics = () => {
                         </div>
                     </div>
                     <div className="chart">
-                        <canvas ref={chartRef}></canvas>
+                        <canvas
+                            ref={chartRef}
+                            style={{ width: '100%', height: '100%', display: 'block' }}
+                        ></canvas>
                     </div>
                 </section>
 
@@ -453,3 +461,4 @@ const Statistics = () => {
 };
 
 export default Statistics;
+
